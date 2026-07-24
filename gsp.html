@@ -153,9 +153,23 @@
     color:var(--cinza);
     width:2rem;
   }
-  tr.top1 td.rank{color:var(--vermelho);}
   td.nome{font-weight:600;}
   td.partido{color:var(--cinza); font-size:.82rem;}
+  tr.top1{background:#EFEBE1;}
+  .badge-top{
+    display:inline-block;
+    margin-left:.5rem;
+    font-family:'Space Grotesk',sans-serif;
+    font-size:.6rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    background:var(--tinta);
+    color:#fff;
+    padding:.15rem .4rem;
+    border-radius:3px;
+    vertical-align:middle;
+  }
   td.votos{
     text-align:right;
     font-variant-numeric:tabular-nums;
@@ -173,7 +187,6 @@
     background:var(--azul);
     border-radius:2px;
   }
-  tr.top1 .barra{background:var(--vermelho);}
 
   .vazio{
     padding:2rem 1rem;
@@ -196,8 +209,8 @@
 
 <header>
   <div class="faixa">Eleições 2022</div>
-  <h1>Resultados por zona eleitoral</h1>
-  <p>São Paulo (capital) por zona eleitoral · municípios da Grande São Paulo por totais — dados oficiais do TSE.</p>
+  <h1>Como votamos? Os resultados de 2022 nas periferias de SP</h1>
+  <p>Confira quem foram os candidatos mais votados em cada zona eleitoral de São Paulo e nos municípios da Grande São Paulo.</p>
 </header>
 
 <main>
@@ -289,7 +302,7 @@ function preencherSelect(select, opcoes, comTotal) {
 }
 
 function capitaliza(s) {
-  return s.toLowerCase().replace(/(^|\s)\S/g, l => l.toUpperCase());
+  return s.toLowerCase().replace(/(^|[\s-])\S/g, l => l.toUpperCase());
 }
 
 function montarSelects() {
@@ -376,7 +389,7 @@ function renderizarTabela() {
   const linhas = lista.map((c, i) => `
     <tr class="${i === 0 ? 'top1' : ''}">
       <td class="rank">${i + 1}</td>
-      <td class="nome">${c.nome}</td>
+      <td class="nome">${c.nome}${i === 0 ? '<span class="badge-top">Mais votado</span>' : ''}</td>
       <td class="partido">${c.partido}</td>
       <td class="barra-cel">
         <div class="barra-fundo"><div class="barra" style="width:${(c.votos / maxVotos * 100).toFixed(1)}%"></div></div>
