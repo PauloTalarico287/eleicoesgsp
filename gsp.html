@@ -170,6 +170,21 @@
     border-radius:3px;
     vertical-align:middle;
   }
+  .badge-eleito{
+    display:inline-block;
+    margin-left:.4rem;
+    font-family:'Space Grotesk',sans-serif;
+    font-size:.6rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    background:transparent;
+    color:var(--azul);
+    border:1.3px solid var(--azul);
+    padding:.1rem .4rem;
+    border-radius:3px;
+    vertical-align:middle;
+  }
   td.votos{
     text-align:right;
     font-variant-numeric:tabular-nums;
@@ -208,7 +223,7 @@
 <body>
 
 <header>
-  <div class="faixa">Mural dos Votos</div>
+  <div class="faixa">Mural de Votos</div>
   <h1>Como votamos? Os resultados de 2022 nas periferias de SP</h1>
   <p>Confira quem foram os candidatos mais votados em cada zona eleitoral de São Paulo e nos municípios da Grande São Paulo.</p>
 </header>
@@ -240,6 +255,9 @@
     <h2 id="titulo-resultado">—</h2>
     <span id="subtitulo-resultado"></span>
   </div>
+  <p style="font-size:.78rem; color:var(--cinza); margin:-.3rem 0 .8rem;">
+    A etiqueta <strong>Eleito</strong> reflete o resultado final da disputa (estado ou país inteiro) — não apenas a votação nesta zona ou município.
+  </p>
 
   <div id="area-tabela">
     <div class="vazio">Carregando dados…</div>
@@ -417,7 +435,7 @@ function renderizarTabela() {
   const linhas = lista.map((c, i) => `
     <tr class="${i === 0 ? 'top1' : ''}">
       <td class="rank">${i + 1}</td>
-      <td class="nome">${c.nome}${i === 0 ? '<span class="badge-top">Mais votado</span>' : ''}</td>
+      <td class="nome">${c.nome}${i === 0 ? '<span class="badge-top">Mais votado</span>' : ''}${c.eleito ? '<span class="badge-eleito">Eleito</span>' : ''}</td>
       <td class="partido">${c.partido}</td>
       <td class="barra-cel">
         <div class="barra-fundo"><div class="barra" style="width:${(c.votos / maxVotos * 100).toFixed(1)}%"></div></div>
