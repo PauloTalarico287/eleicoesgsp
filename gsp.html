@@ -256,6 +256,34 @@
 let DADOS = null;
 let turnoAtual = "1";
 
+// Nomes de referência das zonas eleitorais de São Paulo (capital).
+// O TSE não nomeia zonas oficialmente — esses nomes são a referência de bairro
+// mais usada publicamente para cada número de zona.
+const NOMES_ZONAS_SP = {
+  "1": "Bela Vista", "2": "Perdizes", "3": "Santa Ifigênia", "4": "Moóca",
+  "5": "Jardim Paulista", "6": "Vila Mariana", "20": "Valo Velho",
+  "246": "Santo Amaro", "247": "São Miguel Paulista", "248": "Itaquera",
+  "249": "Santana", "250": "Lapa", "251": "Pinheiros", "252": "Penha de França",
+  "253": "Tatuapé", "254": "Vila Maria", "255": "Casa Verde", "256": "Tucuruvi",
+  "257": "Vila Prudente", "258": "Indianópolis", "259": "Saúde", "260": "Ipiranga",
+  "280": "Capela do Socorro", "320": "Jabaquara", "325": "Pirituba",
+  "326": "Ermelino Matarazzo", "327": "Nossa Senhora do Ó", "328": "Campo Limpo",
+  "346": "Morumbi", "347": "Vila Matilde", "348": "Vila Formosa", "349": "Jaçanã",
+  "350": "Sapopemba", "351": "Cidade Ademar", "352": "Itaim Paulista",
+  "353": "Guaianases", "371": "Grajaú", "372": "Piraporinha", "373": "Capão Redondo",
+  "374": "Rio Pequeno", "375": "São Mateus", "376": "Brasilândia",
+  "381": "Parelheiros", "389": "Perus", "390": "Cangaíba", "392": "Ponte Rasa",
+  "397": "Jardim Helena", "403": "Jaraguá", "404": "Cidade Tiradentes",
+  "405": "Conjunto José Bonifácio", "408": "Jardim São Luís", "413": "Cursino",
+  "417": "Parque do Carmo", "418": "Pedreira", "420": "Vila Sabrina",
+  "421": "Teotônio Vilela", "422": "Lauzane Paulista",
+};
+
+function rotuloZona(numeroZona) {
+  const nome = NOMES_ZONAS_SP[String(numeroZona)];
+  return nome ? `Zona ${numeroZona} – ${nome}` : `Zona ${numeroZona}`;
+}
+
 async function carregar() {
   try {
     const resp = await fetch('resultados.json');
@@ -296,7 +324,7 @@ function preencherSelect(select, opcoes, comTotal) {
   opcoes.forEach(op => {
     const el = document.createElement("option");
     el.value = op;
-    el.textContent = comTotal ? `Zona ${op}` : capitaliza(op);
+    el.textContent = comTotal ? rotuloZona(op) : capitaliza(op);
     select.appendChild(el);
   });
 }
@@ -374,10 +402,10 @@ function renderizarTabela() {
 
   const lista = (((DADOS.dados[turnoAtual] || {})[cargo] || {})[municipio] || {})[zonaChave] || [];
 
-  const rotuloZona = zonaChave === "TOTAL" ? "todas as zonas" : `zona ${zonaChave}`;
+  const rotuloZonaAtual = zonaChave === "TOTAL" ? "todas as zonas" : rotuloZona(zonaChave).toLowerCase();
   document.getElementById("titulo-resultado").textContent = `${capitaliza(cargo)} — ${capitaliza(municipio)}`;
   document.getElementById("subtitulo-resultado").textContent =
-    `${turnoAtual}º turno · ${rotuloZona} · ${lista.length} candidatos no ranking`;
+    `${turnoAtual}º turno · ${rotuloZonaAtual} · ${lista.length} candidatos no ranking`;
 
   const container = document.getElementById("area-tabela");
   if (lista.length === 0) {
