@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resultados 2022 · Zonas Eleitorais · Grande São Paulo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --vermelho:#E53F1A;
+    --azul:#2366B1;
+    --tinta:#171717;
+    --papel:#FAF8F5;
+    --linha:#E4E0D8;
+    --cinza:#6B675F;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--papel);
+    color:var(--tinta);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  header{
+    padding:2.5rem 1.5rem 1.5rem;
+    border-bottom:3px solid var(--tinta);
+    max-width:1000px;
+    margin:0 auto;
+  }
+  h1{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:clamp(1.6rem, 4vw, 2.4rem);
+    margin:0 0 .3rem;
+    letter-spacing:-.01em;
+  }
+  header p{
+    margin:0;
+    color:var(--cinza);
+    font-size:.95rem;
+  }
+  .faixa{
+    display:inline-block;
+    background:var(--vermelho);
+    color:#fff;
+    font-family:'Space Grotesk',sans-serif;
+    font-size:.7rem;
+    font-weight:700;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    padding:.2rem .55rem;
+    border-radius:3px;
+    margin-bottom:.7rem;
+  }
+
+  main{max-width:1000px; margin:0 auto; padding:1.5rem;}
+
+  .controles{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(150px,1fr));
+    gap:.8rem;
+    margin-bottom:1.5rem;
+  }
+  .campo label{
+    display:block;
+    font-size:.72rem;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    color:var(--cinza);
+    margin-bottom:.3rem;
+  }
+  select, input[type="text"]{
+    width:100%;
+    padding:.55rem .6rem;
+    border:1.5px solid var(--tinta);
+    border-radius:4px;
+    background:#fff;
+    font-family:'Inter',sans-serif;
+    font-size:.9rem;
+    color:var(--tinta);
+  }
+  select:focus, input:focus{
+    outline:3px solid var(--azul);
+    outline-offset:1px;
+  }
+
+  .toggle-turno{
+    display:flex;
+    gap:.4rem;
+  }
+  .toggle-turno button{
+    flex:1;
+    padding:.55rem;
+    border:1.5px solid var(--tinta);
+    background:#fff;
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:.85rem;
+    cursor:pointer;
+    border-radius:4px;
+  }
+  .toggle-turno button.ativo{
+    background:var(--tinta);
+    color:#fff;
+  }
+
+  .resumo{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    flex-wrap:wrap;
+    gap:.5rem;
+    margin:1.2rem 0 .6rem;
+    padding-bottom:.5rem;
+    border-bottom:1.5px solid var(--linha);
+  }
+  .resumo h2{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:1.1rem;
+    margin:0;
+  }
+  .resumo span{
+    font-size:.8rem;
+    color:var(--cinza);
+  }
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:.9rem;
+  }
+  thead th{
+    text-align:left;
+    font-size:.7rem;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    color:var(--cinza);
+    font-weight:600;
+    padding:.4rem .5rem;
+    border-bottom:1.5px solid var(--tinta);
+  }
+  tbody td{
+    padding:.55rem .5rem;
+    border-bottom:1px solid var(--linha);
+  }
+  tbody tr:hover{background:#F1EEE7;}
+  td.rank{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    color:var(--cinza);
+    width:2rem;
+  }
+  tr.top1 td.rank{color:var(--vermelho);}
+  td.nome{font-weight:600;}
+  td.partido{color:var(--cinza); font-size:.82rem;}
+  td.votos{
+    text-align:right;
+    font-variant-numeric:tabular-nums;
+    font-weight:600;
+  }
+  td.barra-cel{width:30%;}
+  .barra-fundo{
+    background:var(--linha);
+    height:8px;
+    border-radius:2px;
+    overflow:hidden;
+  }
+  .barra{
+    height:100%;
+    background:var(--azul);
+    border-radius:2px;
+  }
+  tr.top1 .barra{background:var(--vermelho);}
+
+  .vazio{
+    padding:2rem 1rem;
+    text-align:center;
+    color:var(--cinza);
+    font-size:.9rem;
+  }
+  footer{
+    max-width:1000px;
+    margin:0 auto;
+    padding:1.5rem;
+    font-size:.78rem;
+    color:var(--cinza);
+    border-top:1px solid var(--linha);
+  }
+  footer a{color:var(--azul);}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="faixa">Eleições 2022</div>
+  <h1>Resultados por zona eleitoral</h1>
+  <p>São Paulo (capital) por zona eleitoral · municípios da Grande São Paulo por totais — dados oficiais do TSE.</p>
+</header>
+
+<main>
+  <div class="controles">
+    <div class="campo">
+      <label for="sel-turno-label">Turno</label>
+      <div class="toggle-turno" id="toggle-turno">
+        <button data-turno="1" class="ativo">1º turno</button>
+        <button data-turno="2">2º turno</button>
+      </div>
+    </div>
+    <div class="campo">
+      <label for="sel-cargo">Cargo</label>
+      <select id="sel-cargo"></select>
+    </div>
+    <div class="campo">
+      <label for="sel-municipio">Município</label>
+      <select id="sel-municipio"></select>
+    </div>
+    <div class="campo" id="campo-zona">
+      <label for="sel-zona">Zona eleitoral</label>
+      <select id="sel-zona"></select>
+    </div>
+  </div>
+
+  <div class="resumo">
+    <h2 id="titulo-resultado">—</h2>
+    <span id="subtitulo-resultado"></span>
+  </div>
+
+  <div id="area-tabela">
+    <div class="vazio">Carregando dados…</div>
+  </div>
+</main>
+
+<footer>
+  Fonte: Portal de Dados Abertos do TSE — Votação nominal por candidato, por município e zona (2022).
+  Rankings limitados aos candidatos mais votados de cada recorte.
+  <br>Construído por <strong>Agência Mural de Jornalismo das Periferias</strong>.
+</footer>
+
+<script>
+let DADOS = null;
+let turnoAtual = "1";
+
+async function carregar() {
+  try {
+    const resp = await fetch('resultados.json');
+    DADOS = await resp.json();
+  } catch (e) {
+    document.getElementById('area-tabela').innerHTML =
+      '<div class="vazio">Não encontrei o arquivo <code>resultados.json</code> nesta pasta. Gere-o com o pipeline em Python e coloque-o junto deste HTML.</div>';
+    return;
+  }
+  montarSelects();
+  atualizarTudo();
+}
+
+function opcoesCargo() {
+  const turno = DADOS.dados[turnoAtual] || {};
+  return Object.keys(turno).sort();
+}
+
+function opcoesMunicipio(cargo) {
+  const bloco = (DADOS.dados[turnoAtual] || {})[cargo] || {};
+  return Object.keys(bloco).sort();
+}
+
+function opcoesZona(cargo, municipio) {
+  const bloco = ((DADOS.dados[turnoAtual] || {})[cargo] || {})[municipio] || {};
+  return Object.keys(bloco).filter(k => k !== "TOTAL")
+    .sort((a,b) => parseInt(a) - parseInt(b));
+}
+
+function preencherSelect(select, opcoes, comTotal) {
+  select.innerHTML = "";
+  if (comTotal) {
+    const optTotal = document.createElement("option");
+    optTotal.value = "TOTAL";
+    optTotal.textContent = "Todas as zonas (total do município)";
+    select.appendChild(optTotal);
+  }
+  opcoes.forEach(op => {
+    const el = document.createElement("option");
+    el.value = op;
+    el.textContent = comTotal ? `Zona ${op}` : capitaliza(op);
+    select.appendChild(el);
+  });
+}
+
+function capitaliza(s) {
+  return s.toLowerCase().replace(/(^|\s)\S/g, l => l.toUpperCase());
+}
+
+function montarSelects() {
+  const selCargo = document.getElementById("sel-cargo");
+  const selMun = document.getElementById("sel-municipio");
+  const selZona = document.getElementById("sel-zona");
+
+  const cargos = opcoesCargo();
+  preencherSelect(selCargo, cargos, false);
+
+  selCargo.addEventListener("change", () => {
+    const municipios = opcoesMunicipio(selCargo.value);
+    preencherSelect(selMun, municipios, false);
+    atualizarZonas();
+    renderizarTabela();
+  });
+
+  selMun.addEventListener("change", () => {
+    atualizarZonas();
+    renderizarTabela();
+  });
+
+  selZona.addEventListener("change", renderizarTabela);
+
+  document.querySelectorAll("#toggle-turno button").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll("#toggle-turno button").forEach(b => b.classList.remove("ativo"));
+      btn.classList.add("ativo");
+      turnoAtual = btn.dataset.turno;
+      const cargosNovo = opcoesCargo();
+      const cargoAtual = cargosNovo.includes(selCargo.value) ? selCargo.value : cargosNovo[0];
+      preencherSelect(selCargo, cargosNovo, false);
+      selCargo.value = cargoAtual;
+      const municipiosNovo = opcoesMunicipio(selCargo.value);
+      preencherSelect(selMun, municipiosNovo, false);
+      atualizarZonas();
+      renderizarTabela();
+    });
+  });
+
+  // seleção inicial: São Paulo, se existir
+  const primeiraCidade = municipios => municipios.includes("SÃO PAULO") ? "SÃO PAULO" : municipios[0];
+  const municipiosIniciais = opcoesMunicipio(selCargo.value);
+  preencherSelect(selMun, municipiosIniciais, false);
+  selMun.value = primeiraCidade(municipiosIniciais);
+  atualizarZonas();
+}
+
+function atualizarZonas() {
+  const selCargo = document.getElementById("sel-cargo");
+  const selMun = document.getElementById("sel-municipio");
+  const selZona = document.getElementById("sel-zona");
+  const zonas = opcoesZona(selCargo.value, selMun.value);
+  const campoZona = document.getElementById("campo-zona");
+
+  if (zonas.length === 0) {
+    campoZona.style.display = "none";
+  } else {
+    campoZona.style.display = "";
+    preencherSelect(selZona, zonas, true);
+  }
+}
+
+function renderizarTabela() {
+  const cargo = document.getElementById("sel-cargo").value;
+  const municipio = document.getElementById("sel-municipio").value;
+  const selZona = document.getElementById("sel-zona");
+  const zonaChave = selZona.options.length ? selZona.value : "TOTAL";
+
+  const lista = (((DADOS.dados[turnoAtual] || {})[cargo] || {})[municipio] || {})[zonaChave] || [];
+
+  const rotuloZona = zonaChave === "TOTAL" ? "todas as zonas" : `zona ${zonaChave}`;
+  document.getElementById("titulo-resultado").textContent = `${capitaliza(cargo)} — ${capitaliza(municipio)}`;
+  document.getElementById("subtitulo-resultado").textContent =
+    `${turnoAtual}º turno · ${rotuloZona} · ${lista.length} candidatos no ranking`;
+
+  const container = document.getElementById("area-tabela");
+  if (lista.length === 0) {
+    container.innerHTML = '<div class="vazio">Sem dados para esse recorte.</div>';
+    return;
+  }
+
+  const maxVotos = lista[0].votos;
+  const linhas = lista.map((c, i) => `
+    <tr class="${i === 0 ? 'top1' : ''}">
+      <td class="rank">${i + 1}</td>
+      <td class="nome">${c.nome}</td>
+      <td class="partido">${c.partido}</td>
+      <td class="barra-cel">
+        <div class="barra-fundo"><div class="barra" style="width:${(c.votos / maxVotos * 100).toFixed(1)}%"></div></div>
+      </td>
+      <td class="votos">${c.votos.toLocaleString('pt-BR')} <span style="color:var(--cinza); font-weight:400;">(${c.pct}%)</span></td>
+    </tr>
+  `).join("");
+
+  container.innerHTML = `
+    <table>
+      <thead>
+        <tr><th></th><th>Candidato</th><th>Partido</th><th></th><th style="text-align:right;">Votos</th></tr>
+      </thead>
+      <tbody>${linhas}</tbody>
+    </table>
+  `;
+}
+
+function atualizarTudo() {
+  atualizarZonas();
+  renderizarTabela();
+}
+
+carregar();
+</script>
+
+</body>
+</html>
