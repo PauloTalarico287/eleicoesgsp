@@ -302,6 +302,12 @@ function rotuloZona(numeroZona) {
   return nome ? `Zona ${numeroZona} – ${nome}` : `Zona ${numeroZona}`;
 }
 
+function escolherPreferido(opcoes, atual, preferidoPadrao) {
+  if (atual && opcoes.includes(atual)) return atual;
+  if (preferidoPadrao && opcoes.includes(preferidoPadrao)) return preferidoPadrao;
+  return opcoes[0];
+}
+
 async function carregar() {
   try {
     const resp = await fetch('resultados.json');
@@ -360,8 +366,10 @@ function montarSelects() {
   preencherSelect(selCargo, cargos, false);
 
   selCargo.addEventListener("change", () => {
+    const municipioAtual = selMun.value;
     const municipios = opcoesMunicipio(selCargo.value);
     preencherSelect(selMun, municipios, false);
+    selMun.value = escolherPreferido(municipios, municipioAtual, "SÃO PAULO");
     atualizarZonas();
     renderizarTabela();
   });
@@ -378,12 +386,18 @@ function montarSelects() {
       document.querySelectorAll("#toggle-turno button").forEach(b => b.classList.remove("ativo"));
       btn.classList.add("ativo");
       turnoAtual = btn.dataset.turno;
+
+      const cargoAtual = selCargo.value;
+      const municipioAtual = selMun.value;
+
       const cargosNovo = opcoesCargo();
-      const cargoAtual = cargosNovo.includes(selCargo.value) ? selCargo.value : cargosNovo[0];
       preencherSelect(selCargo, cargosNovo, false);
-      selCargo.value = cargoAtual;
+      selCargo.value = escolherPreferido(cargosNovo, cargoAtual);
+
       const municipiosNovo = opcoesMunicipio(selCargo.value);
       preencherSelect(selMun, municipiosNovo, false);
+      selMun.value = escolherPreferido(municipiosNovo, municipioAtual, "SÃO PAULO");
+
       atualizarZonas();
       renderizarTabela();
     });
@@ -401,6 +415,7 @@ function atualizarZonas() {
   const selCargo = document.getElementById("sel-cargo");
   const selMun = document.getElementById("sel-municipio");
   const selZona = document.getElementById("sel-zona");
+  const zonaAtual = selZona.value;
   const zonas = opcoesZona(selCargo.value, selMun.value);
   const campoZona = document.getElementById("campo-zona");
 
@@ -409,6 +424,7 @@ function atualizarZonas() {
   } else {
     campoZona.style.display = "";
     preencherSelect(selZona, zonas, true);
+    selZona.value = escolherPreferido(["TOTAL", ...zonas], zonaAtual, "TOTAL");
   }
 }
 
