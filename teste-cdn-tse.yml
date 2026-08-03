@@ -1,0 +1,41 @@
+name: Teste de acesso ao CDN do TSE
+
+# Workflow de diagnóstico: só testa se o runner do GitHub Actions consegue
+# baixar o consulta_cand_2026.zip sem cair no bloqueio de IP que o Colab
+# (Google Cloud) está tomando. Roda manualmente pelo botão "Run workflow"
+# na aba Actions do repositório.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  testar-download:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Tentar baixar o ZIP de candidatos 2026
+        run: |
+          echo "IP público deste runner:"
+          curl -s https://ifconfig.me || true
+          echo ""
+          echo "Tentando baixar o arquivo..."
+          HTTP_STATUS=$(curl -sL \
+            -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" \
+            -H "Accept: application/zip,application/octet-stream,*/*" \
+            -H "Accept-Language: pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7" \
+            -w "%{http_code}" \
+            -o consulta_cand_2026.zip \
+            "https://cdn.tse.jus.br/estatistica/sead/odsele/consulta_cand/consulta_cand_2026.zip")
+          echo "Status HTTP: $HTTP_STATUS"
+          echo "Tamanho do arquivo baixado:"
+          ls -lh consulta_cand_2026.zip || echo "arquivo não foi criado"
+          echo "Primeiros bytes (pra confirmar se é um ZIP de verdade ou uma página de erro):"
+          file consulta_cand_2026.zip || true
+          head -c 300 consulta_cand_2026.zip || true
+
+      - name: Salvar resultado como artefato (se baixou algo)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: resultado-teste-tse
+          path: consulta_cand_2026.zip
+          if-no-files-found: ignore
