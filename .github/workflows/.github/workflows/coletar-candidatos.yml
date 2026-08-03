@@ -1,0 +1,47 @@
+name: Coletar candidatos SP 2026
+
+# Roda o script de coleta (baixa o ZIP do TSE, filtra SP e os 5 cargos
+# gerais, gera o JSON) e commita o resultado de volta no repositório.
+# Como o CDN do TSE bloqueia IPs de nuvem tipo Google Colab, isso só
+# funciona rodando por aqui (Azure/GitHub) — já confirmado no teste.
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    # todo dia às 09:00 e às 21:00 (horário de Brasília = UTC-3, então
+    # 12:00 e 00:00 em UTC). Ajuste como quiser.
+    - cron: "0 12 * * *"
+    - cron: "0 0 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  coletar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependências
+        run: pip install requests pandas
+
+      - name: Rodar script de coleta
+        run: python coleta_candidatos_sp_2026.py
+
+      - name: Commitar resultado se houve mudança
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add candidatos_sp_2026.json candidatos_sp_2026.csv
+          if git diff --cached --quiet; then
+            echo "Nada mudou desde a última coleta."
+          else
+            git commit -m "Atualiza candidatos SP 2026 ($(date -u +'%Y-%m-%d %H:%M UTC'))"
+            git push
+          fi
