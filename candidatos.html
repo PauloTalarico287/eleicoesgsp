@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Candidatos SP 2026 — Mural</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --vermelho: #E53F1A;
+    --azul: #2366B1;
+    --tinta: #1A1A1A;
+    --tinta-suave: #56534E;
+    --papel: #FAF8F4;
+    --linha: #E4DFD5;
+    --branco: #FFFFFF;
+    --font-titulo: 'Space Grotesk', sans-serif;
+    --font-corpo: 'Inter', sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--papel);
+    color: var(--tinta);
+    font-family: var(--font-corpo);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: inherit; }
+
+  /* ---------- Cabeçalho ---------- */
+  header {
+    padding: 48px 24px 32px;
+    max-width: 1100px;
+    margin: 0 auto;
+    border-bottom: 3px solid var(--tinta);
+  }
+
+  .eyebrow {
+    font-family: var(--font-corpo);
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--vermelho);
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-family: var(--font-titulo);
+    font-weight: 700;
+    font-size: clamp(32px, 5vw, 52px);
+    line-height: 1.05;
+    margin: 0 0 16px;
+    letter-spacing: -0.01em;
+  }
+
+  h1 span {
+    color: var(--azul);
+  }
+
+  .subtitulo {
+    font-size: 16px;
+    color: var(--tinta-suave);
+    max-width: 640px;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .meta-atualizacao {
+    font-size: 13px;
+    color: var(--tinta-suave);
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .ponto-vivo {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--vermelho);
+    display: inline-block;
+    animation: pulsar 2s ease-in-out infinite;
+  }
+
+  @keyframes pulsar {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+
+  /* ---------- Controles ---------- */
+  .controles {
+    max-width: 1100px;
+    margin: 32px auto 0;
+    padding: 0 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .campo-busca {
+    flex: 1 1 280px;
+    position: relative;
+  }
+
+  .campo-busca input {
+    width: 100%;
+    padding: 12px 16px 12px 40px;
+    border: 2px solid var(--tinta);
+    border-radius: 8px;
+    font-family: var(--font-corpo);
+    font-size: 15px;
+    background: var(--branco);
+  }
+
+  .campo-busca input:focus {
+    outline: 3px solid var(--azul);
+    outline-offset: 1px;
+  }
+
+  .campo-busca svg {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.5;
+  }
+
+  select {
+    padding: 12px 14px;
+    border: 2px solid var(--tinta);
+    border-radius: 8px;
+    font-family: var(--font-corpo);
+    font-weight: 500;
+    font-size: 14px;
+    background: var(--branco);
+    cursor: pointer;
+    min-width: 160px;
+  }
+
+  select:focus {
+    outline: 3px solid var(--azul);
+    outline-offset: 1px;
+  }
+
+  /* ---------- Contador de resultados ---------- */
+  .contador {
+    max-width: 1100px;
+    margin: 20px auto 0;
+    padding: 0 24px;
+    font-size: 14px;
+    color: var(--tinta-suave);
+    font-weight: 500;
+  }
+
+  .contador strong {
+    color: var(--tinta);
+  }
+
+  /* ---------- Grid de candidatos ---------- */
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px 24px 80px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+    margin-top: 16px;
+  }
+
+  .card {
+    background: var(--branco);
+    border: 2px solid var(--tinta);
+    border-radius: 10px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+  }
+
+  .card:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0 var(--tinta);
+  }
+
+  .card-topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .numero-urna {
+    font-family: var(--font-titulo);
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--azul);
+    white-space: nowrap;
+  }
+
+  .tag-cargo {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 4px 8px;
+    border-radius: 5px;
+    background: #FCEBE4;
+    color: var(--vermelho);
+    white-space: nowrap;
+  }
+
+  .nome-urna {
+    font-family: var(--font-titulo);
+    font-weight: 600;
+    font-size: 17px;
+    line-height: 1.25;
+    margin: 0;
+  }
+
+  .partido-linha {
+    font-size: 13px;
+    color: var(--tinta-suave);
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid var(--linha);
+    padding-top: 10px;
+  }
+
+  .partido-sigla {
+    font-weight: 600;
+    color: var(--tinta);
+  }
+
+  /* ---------- Estados vazios / carregando ---------- */
+  .estado-info {
+    text-align: center;
+    padding: 60px 24px;
+    color: var(--tinta-suave);
+    font-size: 15px;
+  }
+
+  .estado-info strong {
+    display: block;
+    font-family: var(--font-titulo);
+    font-size: 20px;
+    color: var(--tinta);
+    margin-bottom: 8px;
+  }
+
+  /* ---------- Responsivo ---------- */
+  @media (max-width: 560px) {
+    header { padding: 32px 16px 24px; }
+    .controles, .contador, main { padding-left: 16px; padding-right: 16px; }
+    select { min-width: 0; flex: 1 1 45%; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ponto-vivo { animation: none; }
+    .card { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Eleições Gerais 2026 · Estado de São Paulo</div>
+  <h1>Quem disputa <span>o seu voto</span> em 2026</h1>
+  <p class="subtitulo">
+    Presidente, governador, senador, deputado federal e deputado estadual —
+    todas as candidaturas registradas na Justiça Eleitoral pra São Paulo,
+    atualizadas direto da fonte oficial do TSE.
+  </p>
+  <div class="meta-atualizacao">
+    <span class="ponto-vivo"></span>
+    <span id="texto-atualizacao">Carregando dados...</span>
+  </div>
+</header>
+
+<div class="controles">
+  <div class="campo-busca">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <circle cx="11" cy="11" r="7"></circle>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+    </svg>
+    <input type="text" id="busca" placeholder="Buscar por nome ou número...">
+  </div>
+  <select id="filtro-cargo">
+    <option value="">Todos os cargos</option>
+  </select>
+  <select id="filtro-partido">
+    <option value="">Todos os partidos</option>
+  </select>
+</div>
+
+<div class="contador" id="contador">Carregando...</div>
+
+<main>
+  <div class="grid" id="grid"></div>
+  <div class="estado-info" id="estado-vazio" style="display:none;">
+    <strong>Nenhum candidato encontrado</strong>
+    Tenta ajustar a busca ou os filtros acima.
+  </div>
+  <div class="estado-info" id="estado-erro" style="display:none;">
+    <strong>Não deu pra carregar os dados</strong>
+    Confere se o arquivo candidatos_sp_2026.json está no mesmo diretório desta página.
+  </div>
+</main>
+
+<script>
+(function () {
+  let candidatos = [];
+
+  const grid = document.getElementById('grid');
+  const contador = document.getElementById('contador');
+  const buscaInput = document.getElementById('busca');
+  const filtroCargo = document.getElementById('filtro-cargo');
+  const filtroPartido = document.getElementById('filtro-partido');
+  const estadoVazio = document.getElementById('estado-vazio');
+  const estadoErro = document.getElementById('estado-erro');
+  const textoAtualizacao = document.getElementById('texto-atualizacao');
+
+  function formatarData(isoString) {
+    try {
+      const data = new Date(isoString);
+      return data.toLocaleString('pt-BR', {
+        day: '2-digit', month: '2-digit', year: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+      });
+    } catch (e) {
+      return isoString;
+    }
+  }
+
+  function popularSelect(select, valores) {
+    valores.sort().forEach(function (v) {
+      const opt = document.createElement('option');
+      opt.value = v;
+      opt.textContent = v;
+      select.appendChild(opt);
+    });
+  }
+
+  function renderizar() {
+    const termoBusca = buscaInput.value.trim().toLowerCase();
+    const cargoSelecionado = filtroCargo.value;
+    const partidoSelecionado = filtroPartido.value;
+
+    const filtrados = candidatos.filter(function (c) {
+      const bateCargo = !cargoSelecionado || c.cargo === cargoSelecionado;
+      const batePartido = !partidoSelecionado || c.partido_sigla === partidoSelecionado;
+      const bateBusca = !termoBusca ||
+        (c.nome_urna || '').toLowerCase().includes(termoBusca) ||
+        (c.nome_completo || '').toLowerCase().includes(termoBusca) ||
+        String(c.numero || '').includes(termoBusca);
+      return bateCargo && batePartido && bateBusca;
+    });
+
+    contador.innerHTML = '<strong>' + filtrados.length + '</strong> candidato' +
+      (filtrados.length === 1 ? '' : 's') +
+      (filtrados.length !== candidatos.length ? ' de ' + candidatos.length : '') +
+      ' encontrado' + (filtrados.length === 1 ? '' : 's');
+
+    grid.innerHTML = '';
+    estadoVazio.style.display = filtrados.length === 0 ? 'block' : 'none';
+
+    filtrados.forEach(function (c) {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML =
+        '<div class="card-topo">' +
+          '<span class="numero-urna">' + (c.numero || '—') + '</span>' +
+          '<span class="tag-cargo">' + (c.cargo || '') + '</span>' +
+        '</div>' +
+        '<p class="nome-urna">' + (c.nome_urna || c.nome_completo || 'Nome não informado') + '</p>' +
+        '<div class="partido-linha">' +
+          '<span class="partido-sigla">' + (c.partido_sigla || '') + '</span>' +
+          '<span>' + (c.partido_nome || '') + '</span>' +
+        '</div>';
+      grid.appendChild(card);
+    });
+  }
+
+  fetch('candidatos_sp_2026.json')
+    .then(function (resp) {
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      return resp.json();
+    })
+    .then(function (dados) {
+      candidatos = dados.candidatos || [];
+
+      textoAtualizacao.textContent = 'Atualizado em ' + formatarData(dados.atualizado_em) +
+        ' · ' + (dados.total_candidatos || candidatos.length) + ' candidaturas registradas';
+
+      const cargosUnicos = Array.from(new Set(candidatos.map(function (c) { return c.cargo; }).filter(Boolean)));
+      const partidosUnicos = Array.from(new Set(candidatos.map(function (c) { return c.partido_sigla; }).filter(Boolean)));
+
+      popularSelect(filtroCargo, cargosUnicos);
+      popularSelect(filtroPartido, partidosUnicos);
+
+      renderizar();
+    })
+    .catch(function (err) {
+      console.error(err);
+      textoAtualizacao.textContent = 'Erro ao carregar dados';
+      estadoErro.style.display = 'block';
+      contador.textContent = '';
+    });
+
+  buscaInput.addEventListener('input', renderizar);
+  filtroCargo.addEventListener('change', renderizar);
+  filtroPartido.addEventListener('change', renderizar);
+})();
+</script>
+
+</body>
+</html>
