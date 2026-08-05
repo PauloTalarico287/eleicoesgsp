@@ -173,96 +173,105 @@
 
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 14px;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 12px;
     margin-top: 16px;
   }
 
   .card {
     background: var(--branco);
-    border: 2px solid var(--tinta);
-    border-radius: 10px;
-    padding: 18px;
+    border: 1px solid var(--linha);
+    border-radius: 12px;
+    padding: 16px;
     display: flex;
-    flex-direction: column;
-    gap: 10px;
-    transition: transform 0.12s ease, box-shadow 0.12s ease;
+    align-items: flex-start;
+    gap: 14px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    transition: box-shadow 0.12s ease, border-color 0.12s ease;
   }
 
   .card:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 4px 4px 0 var(--tinta);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.10);
+    border-color: var(--azul);
   }
 
   .foto-candidato {
-    width: 100%;
-    aspect-ratio: 3 / 4;
-    border-radius: 6px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
     object-fit: cover;
+    flex-shrink: 0;
     background: var(--linha);
     border: 1px solid var(--linha);
   }
 
   .foto-placeholder {
-    width: 100%;
-    aspect-ratio: 3 / 4;
-    border-radius: 6px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    flex-shrink: 0;
     background: var(--linha);
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--tinta-suave);
     font-family: var(--font-titulo);
-    font-size: 13px;
-  }
-
-  .card-topo {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 8px;
-  }
-
-  .numero-urna {
-    font-family: var(--font-titulo);
-    font-weight: 700;
-    font-size: 22px;
-    color: var(--azul);
-    white-space: nowrap;
-  }
-
-  .tag-cargo {
-    font-size: 11px;
     font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    padding: 4px 8px;
-    border-radius: 5px;
-    background: #FCEBE4;
-    color: var(--vermelho);
-    white-space: nowrap;
+    font-size: 15px;
+  }
+
+  .card-info {
+    flex: 1;
+    min-width: 0;
   }
 
   .nome-urna {
     font-family: var(--font-titulo);
     font-weight: 600;
-    font-size: 17px;
+    font-size: 16px;
     line-height: 1.25;
-    margin: 0;
+    margin: 0 0 4px;
   }
 
-  .partido-linha {
+  .numero-partido {
     font-size: 13px;
-    color: var(--tinta-suave);
-    display: flex;
-    justify-content: space-between;
-    border-top: 1px solid var(--linha);
-    padding-top: 10px;
+    color: var(--tinta);
+    margin: 0 0 2px;
   }
 
-  .partido-sigla {
-    font-weight: 600;
-    color: var(--tinta);
+  .numero-partido strong {
+    font-weight: 700;
+  }
+
+  .cargo-uf {
+    font-size: 13px;
+    color: var(--azul);
+    font-weight: 500;
+    margin: 0 0 8px;
+  }
+
+  .badge-situacao {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    padding: 5px 10px;
+    border-radius: 20px;
+    background: #FDF3DC;
+    color: #8A6416;
+  }
+
+  .badge-situacao.deferido {
+    background: #E4F3E8;
+    color: #226A3E;
+  }
+
+  .badge-situacao.indeferido {
+    background: #FCE7E4;
+    color: var(--vermelho);
   }
 
   /* ---------- Estados vazios / carregando ---------- */
@@ -408,16 +417,22 @@
         ? '<img class="foto-candidato" src="' + c.foto + '" alt="Foto de ' + nomeExibicao + '" loading="lazy">'
         : '<div class="foto-placeholder">' + iniciais + '</div>';
 
+      const situacao = (c.situacao_candidatura || '').trim();
+      let classeBadge = '';
+      if (/^DEFERID/i.test(situacao)) classeBadge = 'deferido';
+      else if (/^INDEFERID/i.test(situacao)) classeBadge = 'indeferido';
+
+      const blocoBadge = situacao
+        ? '<span class="badge-situacao ' + classeBadge + '">' + situacao + '</span>'
+        : '';
+
       card.innerHTML =
         blocoFoto +
-        '<div class="card-topo">' +
-          '<span class="numero-urna">' + (c.numero || '—') + '</span>' +
-          '<span class="tag-cargo">' + (c.cargo || '') + '</span>' +
-        '</div>' +
-        '<p class="nome-urna">' + nomeExibicao + '</p>' +
-        '<div class="partido-linha">' +
-          '<span class="partido-sigla">' + (c.partido_sigla || '') + '</span>' +
-          '<span>' + (c.partido_nome || '') + '</span>' +
+        '<div class="card-info">' +
+          '<p class="nome-urna">' + nomeExibicao + '</p>' +
+          '<p class="numero-partido"><strong>' + (c.numero || '—') + '</strong> · ' + (c.partido_sigla || '') + '</p>' +
+          '<p class="cargo-uf">' + (c.cargo || '') + ' · São Paulo</p>' +
+          blocoBadge +
         '</div>';
       grid.appendChild(card);
     });
