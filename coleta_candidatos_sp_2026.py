@@ -17,6 +17,7 @@
 import requests
 import zipfile
 import io
+import os
 import pandas as pd
 import json
 import time
@@ -39,6 +40,15 @@ HEADERS_NAVEGADOR = {
 ANO_ELEICAO = 2026
 UF = "SP"
 URL_ZIP = f"https://cdn.tse.jus.br/estatistica/sead/odsele/consulta_cand/consulta_cand_{ANO_ELEICAO}.zip"
+
+# Padrão descoberto a partir de anos anteriores (2024: foto_cand2024_PB_div.zip
+# em .../eleicoes/eleicoes2024/fotos/). Especulativo pra 2026 — se o nome
+# mudar, o erro 404/403 vai aparecer no download e a gente ajusta.
+URL_ZIP_FOTOS = (
+    f"https://cdn.tse.jus.br/estatistica/sead/eleicoes/eleicoes{ANO_ELEICAO}"
+    f"/fotos/foto_cand{ANO_ELEICAO}_{{uf}}_div.zip"
+)
+PASTA_FOTOS = "fotos"
 
 # Cargos que entram na página (nomes exatamente como o TSE grava em DS_CARGO)
 CARGOS_DESEJADOS = [
@@ -190,9 +200,23 @@ def filtrar_e_limpar(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def exportar(df: pd.DataFrame, prefixo: str = "candidatos_sp_2026"):
+def exportar(df: pd.DataFrame, prefixo: str = "candidatos_sp_2026", pasta_fotos: str = PASTA_FOTOS):
     """Gera JSON (pro site) e CSV (backup/conferência)."""
     registros = df.to_dict(orient="records")
+
+    # Se já rodamos baixar_fotos antes disso, aproveita e linka a foto de
+    # cada candidato no JSON (caminho relativo, pra funcionar direto no
+    # GitHub Pages). Se não achar arquivo, deixa null — o front-end trata.
+    for r in registros:
+        candidato_id = str(r.get("id", ""))
+        caminho_foto = None
+        if os.path.isdir(pasta_fotos):
+            for ext in (".jpg", ".jpeg", ".png"):
+                candidato_path = os.path.join(pasta_fotos, candidato_id + ext)
+                if os.path.isfile(candidato_path):
+                    caminho_foto = f"{pasta_fotos}/{candidato_id}{ext}"
+                    break
+        r["foto"] = caminho_foto
 
     saida = {
         "atualizado_em": datetime.now(timezone.utc).isoformat(),
@@ -217,9 +241,58 @@ def exportar(df: pd.DataFrame, prefixo: str = "candidatos_sp_2026"):
     print(df["cargo"].value_counts())
 
 
+def baixar_fotos(uf: str, ids_candidatos: set, pasta_destino: str = PASTA_FOTOS) -> int:
+    """
+    Baixa o ZIP de fotos da UF e extrai só as imagens dos candidatos que
+    estão no nosso recorte (ids_candidatos = conjunto de SQ_CANDIDATO).
+    Retorna quantas fotos foram extraídas. Se o ZIP não existir ainda
+    (404) ou vier bloqueado (403), avisa e segue sem quebrar o pipeline
+    inteiro — fotos são um "nice to have", não podem travar a coleta.
+    """
+    url = URL_ZIP_FOTOS.format(uf=uf)
+    print(f"\nBaixando fotos de {uf}: {url}")
+    sessao = _sessao_com_retry()
+
+    try:
+        resp = sessao.get(url, timeout=180)
+    except requests.RequestException as e:
+        print(f"[aviso] não deu pra baixar fotos ({e}). Seguindo sem fotos.")
+        return 0
+
+    if resp.status_code == 404:
+        print(f"[aviso] {url} não existe (404). O padrão de nome pode ter "
+              f"mudado pra {ANO_ELEICAO} — ainda não temos fotos.")
+        return 0
+    if resp.status_code != 200:
+        print(f"[aviso] status {resp.status_code} ao baixar fotos. "
+              f"Seguindo sem fotos por enquanto.")
+        return 0
+
+    os.makedirs(pasta_destino, exist_ok=True)
+    extraidas = 0
+
+    with zipfile.ZipFile(io.BytesIO(resp.content)) as zf:
+        for nome_arquivo in zf.namelist():
+            # Os nomes dentro do zip costumam ser "{SQ_CANDIDATO}.jpg" ou
+            # similar. Extraímos só o que bate com nosso recorte de candidatos.
+            base = os.path.splitext(os.path.basename(nome_arquivo))[0]
+            if base in ids_candidatos:
+                destino = os.path.join(pasta_destino, os.path.basename(nome_arquivo))
+                with zf.open(nome_arquivo) as origem, open(destino, "wb") as saida:
+                    saida.write(origem.read())
+                extraidas += 1
+
+    print(f"Fotos extraídas: {extraidas} de {len(ids_candidatos)} candidatos no recorte")
+    return extraidas
+
+
 def main():
     df_bruto = baixar_e_extrair_sp(URL_ZIP, UF)
     df_limpo = filtrar_e_limpar(df_bruto)
+
+    ids_candidatos = set(df_limpo["id"].astype(str))
+    baixar_fotos(UF, ids_candidatos)
+
     exportar(df_limpo)
 
 
