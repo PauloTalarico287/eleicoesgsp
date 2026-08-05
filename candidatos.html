@@ -194,6 +194,28 @@
     box-shadow: 4px 4px 0 var(--tinta);
   }
 
+  .foto-candidato {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    border-radius: 6px;
+    object-fit: cover;
+    background: var(--linha);
+    border: 1px solid var(--linha);
+  }
+
+  .foto-placeholder {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    border-radius: 6px;
+    background: var(--linha);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--tinta-suave);
+    font-family: var(--font-titulo);
+    font-size: 13px;
+  }
+
   .card-topo {
     display: flex;
     justify-content: space-between;
@@ -378,12 +400,21 @@
     filtrados.forEach(function (c) {
       const card = document.createElement('div');
       card.className = 'card';
+
+      const nomeExibicao = c.nome_urna || c.nome_completo || 'Nome não informado';
+      const iniciais = nomeExibicao.split(' ').slice(0, 2).map(function (p) { return p[0]; }).join('');
+
+      const blocoFoto = c.foto
+        ? '<img class="foto-candidato" src="' + c.foto + '" alt="Foto de ' + nomeExibicao + '" loading="lazy">'
+        : '<div class="foto-placeholder">' + iniciais + '</div>';
+
       card.innerHTML =
+        blocoFoto +
         '<div class="card-topo">' +
           '<span class="numero-urna">' + (c.numero || '—') + '</span>' +
           '<span class="tag-cargo">' + (c.cargo || '') + '</span>' +
         '</div>' +
-        '<p class="nome-urna">' + (c.nome_urna || c.nome_completo || 'Nome não informado') + '</p>' +
+        '<p class="nome-urna">' + nomeExibicao + '</p>' +
         '<div class="partido-linha">' +
           '<span class="partido-sigla">' + (c.partido_sigla || '') + '</span>' +
           '<span>' + (c.partido_nome || '') + '</span>' +
