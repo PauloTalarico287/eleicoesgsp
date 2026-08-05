@@ -272,7 +272,11 @@ def baixar_fotos(uf: str, ids_candidatos: set, pasta_destino: str = PASTA_FOTOS)
     extraidas = 0
 
     with zipfile.ZipFile(io.BytesIO(resp.content)) as zf:
-        for nome_arquivo in zf.namelist():
+        nomes_no_zip = zf.namelist()
+        print(f"[debug] {len(nomes_no_zip)} arquivo(s) dentro do zip. "
+              f"Primeiros 10 nomes: {nomes_no_zip[:10]}")
+
+        for nome_arquivo in nomes_no_zip:
             # Os nomes dentro do zip costumam ser "{SQ_CANDIDATO}.jpg" ou
             # similar. Extraímos só o que bate com nosso recorte de candidatos.
             base = os.path.splitext(os.path.basename(nome_arquivo))[0]
