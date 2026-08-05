@@ -276,15 +276,24 @@ def baixar_fotos(uf: str, ids_candidatos: set, pasta_destino: str = PASTA_FOTOS)
         print(f"[debug] {len(nomes_no_zip)} arquivo(s) dentro do zip. "
               f"Primeiros 10 nomes: {nomes_no_zip[:10]}")
 
+        # Padrão real descoberto: "F{UF}{SQ_CANDIDATO}_div.jpg"
+        # (ex: FSP250002532324_div.jpg). Monta um índice nome-sem-extensão
+        # -> nome completo pra casar rápido com nosso recorte de ids.
+        indice_por_base = {}
         for nome_arquivo in nomes_no_zip:
-            # Os nomes dentro do zip costumam ser "{SQ_CANDIDATO}.jpg" ou
-            # similar. Extraímos só o que bate com nosso recorte de candidatos.
             base = os.path.splitext(os.path.basename(nome_arquivo))[0]
-            if base in ids_candidatos:
-                destino = os.path.join(pasta_destino, os.path.basename(nome_arquivo))
-                with zf.open(nome_arquivo) as origem, open(destino, "wb") as saida:
-                    saida.write(origem.read())
-                extraidas += 1
+            indice_por_base[base] = nome_arquivo
+
+        for candidato_id in ids_candidatos:
+            base_esperada = f"F{uf}{candidato_id}_div"
+            nome_arquivo = indice_por_base.get(base_esperada)
+            if nome_arquivo is None:
+                continue
+            extensao = os.path.splitext(nome_arquivo)[1] or ".jpg"
+            destino = os.path.join(pasta_destino, f"{candidato_id}{extensao}")
+            with zf.open(nome_arquivo) as origem, open(destino, "wb") as saida:
+                saida.write(origem.read())
+            extraidas += 1
 
     print(f"Fotos extraídas: {extraidas} de {len(ids_candidatos)} candidatos no recorte")
     return extraidas
