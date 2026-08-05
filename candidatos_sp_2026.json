@@ -1,8 +1,8 @@
 {
-  "atualizado_em": "2026-08-05T02:46:18.726918+00:00",
+  "atualizado_em": "2026-08-05T13:39:45.114083+00:00",
   "ano_eleicao": 2026,
   "uf": "SP",
-  "total_candidatos": 884,
+  "total_candidatos": 885,
   "cargos": [
     "PRESIDENTE",
     "GOVERNADOR",
@@ -17667,6 +17667,26 @@
       "genero": "FEMININO",
       "grau_instrucao": "SUPERIOR COMPLETO",
       "cor_raca": "BRANCA",
+      "uf": "SP",
+      "codigo_ue": "SP",
+      "unidade_eleitoral": "SÃO PAULO"
+    },
+    {
+      "id": 250002536915,
+      "nome_completo": "VERA LÚCIA PEREIRA DA SILVA SALGADO",
+      "nome_urna": "VERA LÚCIA",
+      "nome_social": "#NULO",
+      "numero": 16,
+      "cargo": "GOVERNADOR",
+      "partido_sigla": "PSTU",
+      "partido_nome": "PARTIDO SOCIALISTA  DOS TRABALHADORES UNIFICADO",
+      "coligacao": "PARTIDO ISOLADO",
+      "coligacao_composicao": "PSTU",
+      "situacao_eleitoral": "#NULO",
+      "situacao_candidatura": "#NE",
+      "genero": "FEMININO",
+      "grau_instrucao": "SUPERIOR COMPLETO",
+      "cor_raca": "PRETA",
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO"
