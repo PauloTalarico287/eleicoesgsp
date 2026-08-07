@@ -172,6 +172,32 @@ def baixar_e_extrair_sp(url: str, uf: str) -> pd.DataFrame:
             # TSE usa ; como separador e latin-1 como encoding
             df = pd.read_csv(f, sep=";", encoding="latin-1", low_memory=False)
 
+        # Presidente/Vice-Presidente é candidatura nacional, não fica no
+        # arquivo de SP. Deve estar num arquivo à parte dentro do mesmo
+        # ZIP (algo como consulta_cand_2026_BR.csv ou _BRASIL.csv).
+        # Loga os candidatos pra confirmar o padrão certo na prática.
+        candidatos_nacional = [
+            n for n in nomes
+            if n.upper() != arquivo.upper() and "BR" in n.upper()
+        ]
+        print(f"[debug] arquivos candidatos a nível nacional (Presidente): {candidatos_nacional}")
+
+        df_presidente = pd.DataFrame()
+        if candidatos_nacional:
+            arquivo_nacional = candidatos_nacional[0]
+            print(f"Lendo {arquivo_nacional} (candidaturas nacionais) ...")
+            with zf.open(arquivo_nacional) as f:
+                df_nacional = pd.read_csv(f, sep=";", encoding="latin-1", low_memory=False)
+            df_nacional.columns = [c.strip().upper() for c in df_nacional.columns]
+            if "DS_CARGO" in df_nacional.columns:
+                df_presidente = df_nacional[
+                    df_nacional["DS_CARGO"].str.strip().str.upper() == "PRESIDENTE"
+                ]
+                print(f"[debug] {len(df_presidente)} candidato(s) a Presidente encontrado(s)")
+
+    if not df_presidente.empty:
+        df = pd.concat([df, df_presidente], ignore_index=True)
+
     return df
 
 
