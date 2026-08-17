@@ -1,5 +1,5 @@
 {
-  "atualizado_em": "2026-08-17T12:19:51.056562+00:00",
+  "atualizado_em": "2026-08-17T18:06:10.156475+00:00",
   "ano_eleicao": 2026,
   "uf": "SP",
   "total_candidatos": 2522,
@@ -1148,7 +1148,7 @@
     {
       "id": 250002551225,
       "nome_completo": "FABIO DOS SANTOS MAFALDO",
-      "nome_urna": "FABIO MAFALDO",
+      "nome_urna": "FABIO MAFALDO - FORÇA DO POVO",
       "nome_social": "#NULO",
       "numero": 70770,
       "cargo": "DEPUTADO ESTADUAL",
@@ -12467,7 +12467,7 @@
     {
       "id": 250002536344,
       "nome_completo": "MOSART ARAGÃO PEREIRA",
-      "nome_urna": "CAPITÃO MOSART BOLSONARO",
+      "nome_urna": "CAPITÃO MOSART",
       "nome_social": "#NULO",
       "numero": 22022,
       "cargo": "DEPUTADO ESTADUAL",
@@ -14796,6 +14796,27 @@
       "foto": "fotos/250002545168.jpg"
     },
     {
+      "id": 250002545200,
+      "nome_completo": "VALERIA APARECIDA MESSIAS LIMA",
+      "nome_urna": "DRA. VALERIA MESSIAS",
+      "nome_social": "#NULO",
+      "numero": 20330,
+      "cargo": "DEPUTADO ESTADUAL",
+      "partido_sigla": "PODE",
+      "partido_nome": "PODEMOS",
+      "coligacao": "PARTIDO ISOLADO",
+      "coligacao_composicao": "PODE",
+      "situacao_eleitoral": "#NULO",
+      "situacao_candidatura": "#NE",
+      "genero": "FEMININO",
+      "grau_instrucao": "SUPERIOR COMPLETO",
+      "cor_raca": "BRANCA",
+      "uf": "SP",
+      "codigo_ue": "SP",
+      "unidade_eleitoral": "SÃO PAULO",
+      "foto": "fotos/250002545200.jpg"
+    },
+    {
       "id": 250002545169,
       "nome_completo": "EDNILSON CAZELLATO",
       "nome_urna": "DU CAZELLATO",
@@ -15671,7 +15692,7 @@
       "situacao_candidatura": "#NE",
       "genero": "FEMININO",
       "grau_instrucao": "SUPERIOR COMPLETO",
-      "cor_raca": "PARDA",
+      "cor_raca": "BRANCA",
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
@@ -16075,27 +16096,6 @@
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
       "foto": "fotos/250002545176.jpg"
-    },
-    {
-      "id": 250002545200,
-      "nome_completo": "VALERIA APARECIDA MESSIAS LIMA",
-      "nome_urna": "VALERIA MESSIAS",
-      "nome_social": "#NULO",
-      "numero": 20330,
-      "cargo": "DEPUTADO ESTADUAL",
-      "partido_sigla": "PODE",
-      "partido_nome": "PODEMOS",
-      "coligacao": "PARTIDO ISOLADO",
-      "coligacao_composicao": "PODE",
-      "situacao_eleitoral": "#NULO",
-      "situacao_candidatura": "#NE",
-      "genero": "FEMININO",
-      "grau_instrucao": "SUPERIOR COMPLETO",
-      "cor_raca": "BRANCA",
-      "uf": "SP",
-      "codigo_ue": "SP",
-      "unidade_eleitoral": "SÃO PAULO",
-      "foto": "fotos/250002545200.jpg"
     },
     {
       "id": 250002545141,
@@ -41130,27 +41130,6 @@
       "foto": "fotos/250002544337.jpg"
     },
     {
-      "id": 250002544352,
-      "nome_completo": "NERIA LUCIO BUZATTO",
-      "nome_urna": "DOUTORA NÉRIA",
-      "nome_social": "#NULO",
-      "numero": 2082,
-      "cargo": "DEPUTADO FEDERAL",
-      "partido_sigla": "PODE",
-      "partido_nome": "PODEMOS",
-      "coligacao": "PARTIDO ISOLADO",
-      "coligacao_composicao": "PODE",
-      "situacao_eleitoral": "#NULO",
-      "situacao_candidatura": "#NE",
-      "genero": "FEMININO",
-      "grau_instrucao": "SUPERIOR COMPLETO",
-      "cor_raca": "PRETA",
-      "uf": "SP",
-      "codigo_ue": "SP",
-      "unidade_eleitoral": "SÃO PAULO",
-      "foto": "fotos/250002544352.jpg"
-    },
-    {
       "id": 250002544322,
       "nome_completo": "EMANUEL JEFFERSON MARINHO DA SILVA",
       "nome_urna": "DR JEFFERSON MARINHO",
@@ -41170,6 +41149,27 @@
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
       "foto": "fotos/250002544322.jpg"
+    },
+    {
+      "id": 250002544352,
+      "nome_completo": "NERIA LUCIO BUZATTO",
+      "nome_urna": "DRA. NÉRIA",
+      "nome_social": "#NULO",
+      "numero": 2082,
+      "cargo": "DEPUTADO FEDERAL",
+      "partido_sigla": "PODE",
+      "partido_nome": "PODEMOS",
+      "coligacao": "PARTIDO ISOLADO",
+      "coligacao_composicao": "PODE",
+      "situacao_eleitoral": "#NULO",
+      "situacao_candidatura": "#NE",
+      "genero": "FEMININO",
+      "grau_instrucao": "SUPERIOR COMPLETO",
+      "cor_raca": "PRETA",
+      "uf": "SP",
+      "codigo_ue": "SP",
+      "unidade_eleitoral": "SÃO PAULO",
+      "foto": "fotos/250002544352.jpg"
     },
     {
       "id": 250002544349,
@@ -46625,7 +46625,7 @@
       "situacao_candidatura": "#NE",
       "genero": "FEMININO",
       "grau_instrucao": "SUPERIOR COMPLETO",
-      "cor_raca": "BRANCA",
+      "cor_raca": "PARDA",
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
@@ -52404,7 +52404,7 @@
       "uf": "BR",
       "codigo_ue": "BR",
       "unidade_eleitoral": "BRASIL",
-      "foto": null
+      "foto": "fotos/280002551547.jpg"
     },
     {
       "id": 280002552484,
@@ -52425,7 +52425,7 @@
       "uf": "BR",
       "codigo_ue": "BR",
       "unidade_eleitoral": "BRASIL",
-      "foto": null
+      "foto": "fotos/280002552484.jpg"
     },
     {
       "id": 280002548139,
@@ -52446,7 +52446,7 @@
       "uf": "BR",
       "codigo_ue": "BR",
       "unidade_eleitoral": "BRASIL",
-      "foto": null
+      "foto": "fotos/280002548139.jpg"
     },
     {
       "id": 280002540694,
@@ -52467,7 +52467,7 @@
       "uf": "BR",
       "codigo_ue": "BR",
       "unidade_eleitoral": "BRASIL",
-      "foto": null
+      "foto": "fotos/280002540694.jpg"
     },
     {
       "id": 280002539826,
@@ -52488,7 +52488,7 @@
       "uf": "BR",
       "codigo_ue": "BR",
       "unidade_eleitoral": "BRASIL",
-      "foto": null
+      "foto": "fotos/280002539826.jpg"
     },
     {
       "id": 280002551975,
@@ -52509,7 +52509,7 @@
       "uf": "BR",
       "codigo_ue": "BR",
       "unidade_eleitoral": "BRASIL",
-      "foto": null
+      "foto": "fotos/280002551975.jpg"
     },
     {
       "id": 280002552487,
@@ -52530,7 +52530,7 @@
       "uf": "BR",
       "codigo_ue": "BR",
       "unidade_eleitoral": "BRASIL",
-      "foto": null
+      "foto": "fotos/280002552487.jpg"
     },
     {
       "id": 280002551544,
@@ -52551,7 +52551,7 @@
       "uf": "BR",
       "codigo_ue": "BR",
       "unidade_eleitoral": "BRASIL",
-      "foto": null
+      "foto": "fotos/280002551544.jpg"
     },
     {
       "id": 280002553884,
@@ -52572,7 +52572,7 @@
       "uf": "BR",
       "codigo_ue": "BR",
       "unidade_eleitoral": "BRASIL",
-      "foto": null
+      "foto": "fotos/280002553884.jpg"
     },
     {
       "id": 280002551932,
@@ -52593,7 +52593,7 @@
       "uf": "BR",
       "codigo_ue": "BR",
       "unidade_eleitoral": "BRASIL",
-      "foto": null
+      "foto": "fotos/280002551932.jpg"
     },
     {
       "id": 280002541457,
@@ -52614,7 +52614,7 @@
       "uf": "BR",
       "codigo_ue": "BR",
       "unidade_eleitoral": "BRASIL",
-      "foto": null
+      "foto": "fotos/280002541457.jpg"
     },
     {
       "id": 280002542548,
@@ -52635,7 +52635,7 @@
       "uf": "BR",
       "codigo_ue": "BR",
       "unidade_eleitoral": "BRASIL",
-      "foto": null
+      "foto": "fotos/280002542548.jpg"
     },
     {
       "id": 280002538811,
@@ -52656,7 +52656,7 @@
       "uf": "BR",
       "codigo_ue": "BR",
       "unidade_eleitoral": "BRASIL",
-      "foto": null
+      "foto": "fotos/280002538811.jpg"
     },
     {
       "id": 250002553252,
