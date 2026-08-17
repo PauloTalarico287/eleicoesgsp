@@ -1,8 +1,8 @@
 {
-  "atualizado_em": "2026-08-17T01:25:59.293571+00:00",
+  "atualizado_em": "2026-08-17T12:19:51.056562+00:00",
   "ano_eleicao": 2026,
   "uf": "SP",
-  "total_candidatos": 2521,
+  "total_candidatos": 2522,
   "cargos": [
     "PRESIDENTE",
     "GOVERNADOR",
@@ -72,7 +72,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552957.jpg"
     },
     {
       "id": 250002553325,
@@ -93,7 +93,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553325.jpg"
     },
     {
       "id": 250002548172,
@@ -219,7 +219,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553299.jpg"
     },
     {
       "id": 250002548162,
@@ -408,7 +408,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553339.jpg"
     },
     {
       "id": 250002548167,
@@ -4394,7 +4394,7 @@
       "situacao_candidatura": "#NE",
       "genero": "MASCULINO",
       "grau_instrucao": "SUPERIOR COMPLETO",
-      "cor_raca": "PRETA",
+      "cor_raca": "PARDA",
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
@@ -11499,27 +11499,6 @@
       "foto": "fotos/250002547973.jpg"
     },
     {
-      "id": 250002547985,
-      "nome_completo": "CELSO RODRIGO DOS SANTOS",
-      "nome_urna": "CELSO RODRIGO GALLO",
-      "nome_social": "#NULO",
-      "numero": 12001,
-      "cargo": "DEPUTADO ESTADUAL",
-      "partido_sigla": "PDT",
-      "partido_nome": "PARTIDO DEMOCRÁTICO TRABALHISTA",
-      "coligacao": "PARTIDO ISOLADO",
-      "coligacao_composicao": "PDT",
-      "situacao_eleitoral": "#NULO",
-      "situacao_candidatura": "#NE",
-      "genero": "MASCULINO",
-      "grau_instrucao": "SUPERIOR INCOMPLETO",
-      "cor_raca": "PARDA",
-      "uf": "SP",
-      "codigo_ue": "SP",
-      "unidade_eleitoral": "SÃO PAULO",
-      "foto": "fotos/250002547985.jpg"
-    },
-    {
       "id": 250002547965,
       "nome_completo": "ANDRÉ LUIZ BARBOSA",
       "nome_urna": "DR ANDRÉ",
@@ -11665,6 +11644,27 @@
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
       "foto": "fotos/250002547982.jpg"
+    },
+    {
+      "id": 250002547985,
+      "nome_completo": "CELSO RODRIGO DOS SANTOS",
+      "nome_urna": "GALO",
+      "nome_social": "#NULO",
+      "numero": 12001,
+      "cargo": "DEPUTADO ESTADUAL",
+      "partido_sigla": "PDT",
+      "partido_nome": "PARTIDO DEMOCRÁTICO TRABALHISTA",
+      "coligacao": "PARTIDO ISOLADO",
+      "coligacao_composicao": "PDT",
+      "situacao_eleitoral": "#NULO",
+      "situacao_candidatura": "#NE",
+      "genero": "MASCULINO",
+      "grau_instrucao": "SUPERIOR INCOMPLETO",
+      "cor_raca": "PARDA",
+      "uf": "SP",
+      "codigo_ue": "SP",
+      "unidade_eleitoral": "SÃO PAULO",
+      "foto": "fotos/250002547985.jpg"
     },
     {
       "id": 250002548008,
@@ -18387,6 +18387,27 @@
       "foto": "fotos/250002539256.jpg"
     },
     {
+      "id": 250002539291,
+      "nome_completo": "EMERSON OLHO",
+      "nome_urna": "EMERSON OLHO",
+      "nome_social": "#NULO",
+      "numero": 40360,
+      "cargo": "DEPUTADO ESTADUAL",
+      "partido_sigla": "PSB",
+      "partido_nome": "PARTIDO SOCIALISTA BRASILEIRO",
+      "coligacao": "PARTIDO ISOLADO",
+      "coligacao_composicao": "PSB",
+      "situacao_eleitoral": "#NULO",
+      "situacao_candidatura": "#NE",
+      "genero": "MASCULINO",
+      "grau_instrucao": "SUPERIOR COMPLETO",
+      "cor_raca": "BRANCA",
+      "uf": "SP",
+      "codigo_ue": "SP",
+      "unidade_eleitoral": "SÃO PAULO",
+      "foto": "fotos/250002539291.jpg"
+    },
+    {
       "id": 250002539262,
       "nome_completo": "FABIO CESAR FERREIRA",
       "nome_urna": "FÁBIO JABA",
@@ -19393,27 +19414,6 @@
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
       "foto": "fotos/250002539302.jpg"
-    },
-    {
-      "id": 250002539291,
-      "nome_completo": "EMERSON OLHO",
-      "nome_urna": "TIO EMERSON",
-      "nome_social": "#NULO",
-      "numero": 40360,
-      "cargo": "DEPUTADO ESTADUAL",
-      "partido_sigla": "PSB",
-      "partido_nome": "PARTIDO SOCIALISTA BRASILEIRO",
-      "coligacao": "PARTIDO ISOLADO",
-      "coligacao_composicao": "PSB",
-      "situacao_eleitoral": "#NULO",
-      "situacao_candidatura": "#NE",
-      "genero": "MASCULINO",
-      "grau_instrucao": "SUPERIOR COMPLETO",
-      "cor_raca": "BRANCA",
-      "uf": "SP",
-      "codigo_ue": "SP",
-      "unidade_eleitoral": "SÃO PAULO",
-      "foto": "fotos/250002539291.jpg"
     },
     {
       "id": 250002539296,
@@ -21622,7 +21622,7 @@
     },
     {
       "id": 250002553717,
-      "nome_completo": "BAHIA DO LAVA RÁPIDO",
+      "nome_completo": "JOSE LEANDRO DOS REIS MACEDO",
       "nome_urna": "BAHIA DO LAVA RÁPIDO",
       "nome_social": "#NULO",
       "numero": 45222,
@@ -21639,7 +21639,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553717.jpg"
     },
     {
       "id": 250002548875,
@@ -30270,7 +30270,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553909.jpg"
     },
     {
       "id": 250002551616,
@@ -46797,7 +46797,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552939.jpg"
     },
     {
       "id": 250002550350,
@@ -49553,7 +49553,7 @@
     {
       "id": 250002536744,
       "nome_completo": "WILLIAM VIEIRA DE GOES",
-      "nome_urna": "WILLIAM",
+      "nome_urna": "WILLIAM VIEIRA",
       "nome_social": "#NULO",
       "numero": 1340,
       "cargo": "DEPUTADO FEDERAL",
@@ -49864,6 +49864,27 @@
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
       "foto": "fotos/250002539592.jpg"
+    },
+    {
+      "id": 250002553919,
+      "nome_completo": "ALEX SANDRO JUNIO DA SILVA BENTO",
+      "nome_urna": "ALEX GURU",
+      "nome_social": "#NULO",
+      "numero": 1008,
+      "cargo": "DEPUTADO FEDERAL",
+      "partido_sigla": "REPUBLICANOS",
+      "partido_nome": "REPUBLICANOS",
+      "coligacao": "PARTIDO ISOLADO",
+      "coligacao_composicao": "REPUBLICANOS",
+      "situacao_eleitoral": "#NULO",
+      "situacao_candidatura": "#NE",
+      "genero": "MASCULINO",
+      "grau_instrucao": "ENSINO MÉDIO COMPLETO",
+      "cor_raca": "PRETA",
+      "uf": "SP",
+      "codigo_ue": "SP",
+      "unidade_eleitoral": "SÃO PAULO",
+      "foto": "fotos/250002553919.jpg"
     },
     {
       "id": 250002537973,
@@ -52698,7 +52719,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553928.jpg"
     },
     {
       "id": 250002532794,
