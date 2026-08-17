@@ -221,7 +221,7 @@ def filtrar_e_limpar(df: pd.DataFrame) -> pd.DataFrame:
         df = df[~situacao_upper.isin(SITUACOES_EXCLUIR)]
 
     df = df.rename(columns=RENOMEAR)
-    df = df.sort_values(["cargo", "partido_sigla", "nome_urna"]).reset_index(drop=True)
+    df = df.sort_values(["cargo", "nome_urna"]).reset_index(drop=True)
 
     return df
 
