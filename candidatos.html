@@ -1,348 +1,477 @@
-# =============================================================================
-# COLETA DE CANDIDATOS - ELEIÇÕES GERAIS 2026 - ESTADO DE SÃO PAULO
-# Mural de Jornalismo das Periferias
-#
-# Fonte: Portal de Dados Abertos do TSE
-#   https://dadosabertos.tse.jus.br/dataset/candidatos-2026
-#   CDN direto: https://cdn.tse.jus.br/estatistica/sead/odsele/consulta_cand/
-#
-# ATENÇÃO: o prazo final de registro de candidatura é 15/08/2026 (19h).
-# Até lá (e mais uns dias, por causa do prazo de impugnação) esses dados
-# mudam diariamente. Rode este script periodicamente até a lista estabilizar.
-#
-# Cargos cobertos: Presidente, Governador, Senador, Deputado Federal,
-# Deputado Estadual — todos com abrangência SP.
-# =============================================================================
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Candidatos SP 2026 — Mural</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --vermelho: #E53F1A;
+    --azul: #2366B1;
+    --tinta: #1A1A1A;
+    --tinta-suave: #56534E;
+    --papel: #FAF8F4;
+    --linha: #E4DFD5;
+    --branco: #FFFFFF;
+    --font-titulo: 'Space Grotesk', sans-serif;
+    --font-corpo: 'Inter', sans-serif;
+  }
 
-import requests
-import zipfile
-import io
-import os
-import pandas as pd
-import json
-import time
-from datetime import datetime, timezone
-from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
+  * { box-sizing: border-box; }
 
-# O CDN do TSE bloqueia (403) requisições com o User-Agent padrão do
-# requests/urllib. Precisamos simular um navegador.
-HEADERS_NAVEGADOR = {
-    "User-Agent": (
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-        "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
-    ),
-    "Accept": "application/zip,application/octet-stream,*/*",
-    "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
-    "Referer": "https://dadosabertos.tse.jus.br/",
-}
+  body {
+    margin: 0;
+    background: var(--papel);
+    color: var(--tinta);
+    font-family: var(--font-corpo);
+    -webkit-font-smoothing: antialiased;
+  }
 
-ANO_ELEICAO = 2026
-UF = "SP"
-URL_ZIP = f"https://cdn.tse.jus.br/estatistica/sead/odsele/consulta_cand/consulta_cand_{ANO_ELEICAO}.zip"
+  a { color: inherit; }
 
-# Padrão descoberto a partir de anos anteriores (2024: foto_cand2024_PB_div.zip
-# em .../eleicoes/eleicoes2024/fotos/). Especulativo pra 2026 — se o nome
-# mudar, o erro 404/403 vai aparecer no download e a gente ajusta.
-URL_ZIP_FOTOS = (
-    f"https://cdn.tse.jus.br/estatistica/sead/eleicoes/eleicoes{ANO_ELEICAO}"
-    f"/fotos/foto_cand{ANO_ELEICAO}_{{uf}}_div.zip"
-)
-PASTA_FOTOS = "fotos"
+  /* ---------- Cabeçalho ---------- */
+  header {
+    padding: 48px 24px 32px;
+    max-width: 1100px;
+    margin: 0 auto;
+    border-bottom: 3px solid var(--tinta);
+  }
 
-# Cargos que entram na página (nomes exatamente como o TSE grava em DS_CARGO)
-CARGOS_DESEJADOS = [
-    "PRESIDENTE",
-    "GOVERNADOR",
-    "SENADOR",
-    "DEPUTADO FEDERAL",
-    "DEPUTADO ESTADUAL",
-]
+  .eyebrow {
+    display: inline-block;
+    font-family: var(--font-corpo);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--branco);
+    background: var(--vermelho);
+    padding: 6px 14px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+  }
 
-# Situações de registro que consideramos "candidatura válida por enquanto".
-# Como o processo ainda está rolando em agosto/2026, mantemos candidaturas
-# deferidas E as que ainda estão "sub judice" (em análise), e excluímos
-# só o que já foi indeferido/cancelado/renúncia confirmada.
-SITUACOES_EXCLUIR = [
-    "INDEFERIDO",
-    "INDEFERIDO COM RECURSO",
-    "CANCELADO",
-    "CASSADO",
-    "RENÚNCIA",
-    "FALECIDO",
-]
+  h1 {
+    font-family: var(--font-titulo);
+    font-weight: 700;
+    font-size: clamp(32px, 5vw, 52px);
+    line-height: 1.05;
+    margin: 0 0 16px;
+    letter-spacing: -0.01em;
+  }
 
-# Colunas que vamos manter do CSV original do TSE (nomes oficiais)
-COLUNAS_TSE = [
-    "SQ_CANDIDATO",
-    "NM_CANDIDATO",
-    "NM_URNA_CANDIDATO",
-    "NM_SOCIAL_CANDIDATO",
-    "NR_CANDIDATO",
-    "DS_CARGO",
-    "SG_PARTIDO",
-    "NM_PARTIDO",
-    "NM_COLIGACAO",
-    "DS_COMPOSICAO_COLIGACAO",
-    "DS_SIT_TOT_TURNO",
-    "DS_SITUACAO_CANDIDATURA",
-    "DS_GENERO",
-    "DS_GRAU_INSTRUCAO",
-    "DS_COR_RACA",
-    "SG_UF",
-    "SG_UE",
-    "NM_UE",
-]
+  h1 span {
+    color: var(--azul);
+  }
 
-# Renomeia pra algo mais amigável pro front-end consumir
-RENOMEAR = {
-    "SQ_CANDIDATO": "id",
-    "NM_CANDIDATO": "nome_completo",
-    "NM_URNA_CANDIDATO": "nome_urna",
-    "NM_SOCIAL_CANDIDATO": "nome_social",
-    "NR_CANDIDATO": "numero",
-    "DS_CARGO": "cargo",
-    "SG_PARTIDO": "partido_sigla",
-    "NM_PARTIDO": "partido_nome",
-    "NM_COLIGACAO": "coligacao",
-    "DS_COMPOSICAO_COLIGACAO": "coligacao_composicao",
-    "DS_SIT_TOT_TURNO": "situacao_eleitoral",
-    "DS_SITUACAO_CANDIDATURA": "situacao_candidatura",
-    "DS_GENERO": "genero",
-    "DS_GRAU_INSTRUCAO": "grau_instrucao",
-    "DS_COR_RACA": "cor_raca",
-    "SG_UF": "uf",
-    "SG_UE": "codigo_ue",
-    "NM_UE": "unidade_eleitoral",
-}
+  .subtitulo {
+    font-size: 16px;
+    color: var(--tinta-suave);
+    max-width: 640px;
+    line-height: 1.5;
+    margin: 0;
+  }
 
+  .meta-atualizacao {
+    font-size: 13px;
+    color: var(--tinta-suave);
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
 
-def _sessao_com_retry() -> requests.Session:
-    sessao = requests.Session()
-    sessao.headers.update(HEADERS_NAVEGADOR)
-    retry = Retry(
-        total=4,
-        backoff_factor=2,  # 2s, 4s, 8s, 16s entre tentativas
-        status_forcelist=[403, 429, 500, 502, 503, 504],
-        allowed_methods=["GET"],
-    )
-    sessao.mount("https://", HTTPAdapter(max_retries=retry))
-    return sessao
+  .ponto-vivo {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--vermelho);
+    display: inline-block;
+    animation: pulsar 2s ease-in-out infinite;
+  }
 
+  @keyframes pulsar {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
 
-def baixar_e_extrair_sp(url: str, uf: str) -> pd.DataFrame:
-    """Baixa o ZIP consolidado do TSE e extrai só o CSV da UF desejada."""
-    print(f"Baixando {url} ...")
-    sessao = _sessao_com_retry()
+  /* ---------- Controles ---------- */
+  .controles {
+    max-width: 1100px;
+    margin: 32px auto 0;
+    padding: 0 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+  }
 
-    # Primeiro um GET na página do dataset ajuda a "esquentar" cookies/sessão
-    # em alguns WAFs. Ignoramos erro aqui, é só best-effort.
-    try:
-        sessao.get("https://dadosabertos.tse.jus.br/dataset/candidatos-2026", timeout=30)
-    except requests.RequestException:
-        pass
+  .campo-busca {
+    flex: 1 1 280px;
+    position: relative;
+  }
 
-    resp = sessao.get(url, timeout=120)
+  .campo-busca input {
+    width: 100%;
+    padding: 12px 16px 12px 40px;
+    border: 2px solid var(--tinta);
+    border-radius: 8px;
+    font-family: var(--font-corpo);
+    font-size: 15px;
+    background: var(--branco);
+  }
 
-    if resp.status_code == 403:
-        raise PermissionError(
-            "Bloqueio 403 persistente no CDN do TSE. Possíveis causas:\n"
-            "1) O arquivo de 2026 ainda não foi publicado (registro de\n"
-            "   candidatura só fecha em 15/08/2026) — confira manualmente\n"
-            "   em https://dadosabertos.tse.jus.br/dataset/candidatos-2026\n"
-            "2) O CDN está bloqueando o IP do Colab (comum com provedores\n"
-            "   de nuvem) — tente rodar localmente ou via GitHub Actions.\n"
-        )
-    resp.raise_for_status()
+  .campo-busca input:focus {
+    outline: 3px solid var(--azul);
+    outline-offset: 1px;
+  }
 
-    with zipfile.ZipFile(io.BytesIO(resp.content)) as zf:
-        nomes = zf.namelist()
-        # O TSE distribui um CSV por UF dentro do ZIP, ex: consulta_cand_2026_SP.csv
-        candidatos_arquivo = [
-            n for n in nomes if n.upper().endswith(f"_{uf}.CSV")
-        ]
-        if not candidatos_arquivo:
-            raise FileNotFoundError(
-                f"Não encontrei um CSV de {uf} dentro do ZIP. "
-                f"Arquivos disponíveis: {nomes}"
-            )
-        arquivo = candidatos_arquivo[0]
-        print(f"Lendo {arquivo} ...")
-        with zf.open(arquivo) as f:
-            # TSE usa ; como separador e latin-1 como encoding
-            df = pd.read_csv(f, sep=";", encoding="latin-1", low_memory=False)
+  .campo-busca svg {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.5;
+  }
 
-        # Presidente/Vice-Presidente é candidatura nacional, não fica no
-        # arquivo de SP. Deve estar num arquivo à parte dentro do mesmo
-        # ZIP (algo como consulta_cand_2026_BR.csv ou _BRASIL.csv).
-        # Loga os candidatos pra confirmar o padrão certo na prática.
-        candidatos_nacional = [
-            n for n in nomes
-            if n.upper() != arquivo.upper() and "BR" in n.upper()
-        ]
-        print(f"[debug] arquivos candidatos a nível nacional (Presidente): {candidatos_nacional}")
+  select {
+    padding: 12px 14px;
+    border: 2px solid var(--tinta);
+    border-radius: 8px;
+    font-family: var(--font-corpo);
+    font-weight: 500;
+    font-size: 14px;
+    background: var(--branco);
+    cursor: pointer;
+    min-width: 160px;
+  }
 
-        df_presidente = pd.DataFrame()
-        if candidatos_nacional:
-            arquivo_nacional = candidatos_nacional[0]
-            print(f"Lendo {arquivo_nacional} (candidaturas nacionais) ...")
-            with zf.open(arquivo_nacional) as f:
-                df_nacional = pd.read_csv(f, sep=";", encoding="latin-1", low_memory=False)
-            df_nacional.columns = [c.strip().upper() for c in df_nacional.columns]
-            if "DS_CARGO" in df_nacional.columns:
-                df_presidente = df_nacional[
-                    df_nacional["DS_CARGO"].str.strip().str.upper() == "PRESIDENTE"
-                ]
-                print(f"[debug] {len(df_presidente)} candidato(s) a Presidente encontrado(s)")
+  select:focus {
+    outline: 3px solid var(--azul);
+    outline-offset: 1px;
+  }
 
-    if not df_presidente.empty:
-        df = pd.concat([df, df_presidente], ignore_index=True)
+  /* ---------- Contador de resultados ---------- */
+  .contador {
+    max-width: 1100px;
+    margin: 20px auto 0;
+    padding: 0 24px;
+    font-size: 14px;
+    color: var(--tinta-suave);
+    font-weight: 500;
+  }
 
-    return df
+  .contador strong {
+    color: var(--tinta);
+  }
 
+  /* ---------- Grid de candidatos ---------- */
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px 24px 80px;
+  }
 
-def filtrar_e_limpar(df: pd.DataFrame) -> pd.DataFrame:
-    """Filtra cargos desejados, remove situações inválidas e seleciona colunas."""
-    df = df.copy()
-    df.columns = [c.strip().upper() for c in df.columns]
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
 
-    faltando = [c for c in COLUNAS_TSE if c not in df.columns]
-    if faltando:
-        print(f"[aviso] colunas ausentes no CSV, seguindo sem elas: {faltando}")
+  .card {
+    background: var(--branco);
+    border: 1px solid var(--linha);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    transition: box-shadow 0.12s ease, border-color 0.12s ease;
+  }
 
-    colunas_disponiveis = [c for c in COLUNAS_TSE if c in df.columns]
-    df = df[colunas_disponiveis]
+  .card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.10);
+    border-color: var(--azul);
+  }
 
-    df["DS_CARGO"] = df["DS_CARGO"].str.strip().str.upper()
-    df = df[df["DS_CARGO"].isin(CARGOS_DESEJADOS)]
+  .foto-candidato {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: var(--linha);
+    border: 1px solid var(--linha);
+  }
 
-    if "DS_SITUACAO_CANDIDATURA" in df.columns:
-        situacao_upper = df["DS_SITUACAO_CANDIDATURA"].str.strip().str.upper()
-        df = df[~situacao_upper.isin(SITUACOES_EXCLUIR)]
+  .foto-placeholder {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: var(--linha);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--tinta-suave);
+    font-family: var(--font-titulo);
+    font-weight: 600;
+    font-size: 15px;
+  }
 
-    df = df.rename(columns=RENOMEAR)
-    df = df.sort_values(["cargo", "partido_sigla", "nome_urna"]).reset_index(drop=True)
+  .card-info {
+    flex: 1;
+    min-width: 0;
+  }
 
-    return df
+  .nome-urna {
+    font-family: var(--font-titulo);
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 1.25;
+    margin: 0 0 4px;
+  }
 
+  .numero-partido {
+    font-size: 13px;
+    color: var(--tinta);
+    margin: 0 0 2px;
+  }
 
-def exportar(df: pd.DataFrame, prefixo: str = "candidatos_sp_2026", pasta_fotos: str = PASTA_FOTOS):
-    """Gera JSON (pro site) e CSV (backup/conferência)."""
-    registros = df.to_dict(orient="records")
+  .numero-partido strong {
+    font-weight: 700;
+  }
 
-    # Se já rodamos baixar_fotos antes disso, aproveita e linka a foto de
-    # cada candidato no JSON (caminho relativo, pra funcionar direto no
-    # GitHub Pages). Se não achar arquivo, deixa null — o front-end trata.
-    for r in registros:
-        candidato_id = str(r.get("id", ""))
-        caminho_foto = None
-        if os.path.isdir(pasta_fotos):
-            for ext in (".jpg", ".jpeg", ".png"):
-                candidato_path = os.path.join(pasta_fotos, candidato_id + ext)
-                if os.path.isfile(candidato_path):
-                    caminho_foto = f"{pasta_fotos}/{candidato_id}{ext}"
-                    break
-        r["foto"] = caminho_foto
+  .cargo-uf {
+    font-size: 13px;
+    color: var(--azul);
+    font-weight: 500;
+    margin: 0 0 8px;
+  }
 
-    saida = {
-        "atualizado_em": datetime.now(timezone.utc).isoformat(),
-        "ano_eleicao": ANO_ELEICAO,
-        "uf": UF,
-        "total_candidatos": len(registros),
-        "cargos": CARGOS_DESEJADOS,
-        "candidatos": registros,
+  .badge-situacao {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    padding: 5px 10px;
+    border-radius: 20px;
+    background: #FDF3DC;
+    color: #8A6416;
+  }
+
+  .badge-situacao.deferido {
+    background: #E4F3E8;
+    color: #226A3E;
+  }
+
+  .badge-situacao.indeferido {
+    background: #FCE7E4;
+    color: var(--vermelho);
+  }
+
+  /* ---------- Estados vazios / carregando ---------- */
+  .estado-info {
+    text-align: center;
+    padding: 60px 24px;
+    color: var(--tinta-suave);
+    font-size: 15px;
+  }
+
+  .estado-info strong {
+    display: block;
+    font-family: var(--font-titulo);
+    font-size: 20px;
+    color: var(--tinta);
+    margin-bottom: 8px;
+  }
+
+  /* ---------- Responsivo ---------- */
+  @media (max-width: 560px) {
+    header { padding: 32px 16px 24px; }
+    .controles, .contador, main { padding-left: 16px; padding-right: 16px; }
+    select { min-width: 0; flex: 1 1 45%; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ponto-vivo { animation: none; }
+    .card { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Mural de candidatos</div>
+  <h1>Confira o nome e número dos candidatos na disputa das <span>eleições 2026</span> em São Paulo</h1>
+  <p class="subtitulo">
+    Para apoiar eleitores das periferias da Grande São Paulo, a Mural preparou
+    uma página para consultar os números da disputa eleitoral e outras informações.
+  </p>
+  <div class="meta-atualizacao">
+    <span class="ponto-vivo"></span>
+    <span id="texto-atualizacao">Carregando dados...</span>
+  </div>
+</header>
+
+<div class="controles">
+  <div class="campo-busca">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <circle cx="11" cy="11" r="7"></circle>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+    </svg>
+    <input type="text" id="busca" placeholder="Buscar por nome ou número...">
+  </div>
+  <select id="filtro-cargo">
+    <option value="">Todos os cargos</option>
+  </select>
+  <select id="filtro-partido">
+    <option value="">Todos os partidos</option>
+  </select>
+</div>
+
+<div class="contador" id="contador">Carregando...</div>
+
+<main>
+  <div class="grid" id="grid"></div>
+  <div class="estado-info" id="estado-vazio" style="display:none;">
+    <strong>Nenhum candidato encontrado</strong>
+    Tenta ajustar a busca ou os filtros acima.
+  </div>
+  <div class="estado-info" id="estado-erro" style="display:none;">
+    <strong>Não deu pra carregar os dados</strong>
+    Confere se o arquivo candidatos_sp_2026.json está no mesmo diretório desta página.
+  </div>
+</main>
+
+<script>
+(function () {
+  let candidatos = [];
+
+  const grid = document.getElementById('grid');
+  const contador = document.getElementById('contador');
+  const buscaInput = document.getElementById('busca');
+  const filtroCargo = document.getElementById('filtro-cargo');
+  const filtroPartido = document.getElementById('filtro-partido');
+  const estadoVazio = document.getElementById('estado-vazio');
+  const estadoErro = document.getElementById('estado-erro');
+  const textoAtualizacao = document.getElementById('texto-atualizacao');
+
+  function formatarData(isoString) {
+    try {
+      const data = new Date(isoString);
+      return data.toLocaleString('pt-BR', {
+        day: '2-digit', month: '2-digit', year: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+      });
+    } catch (e) {
+      return isoString;
     }
+  }
 
-    caminho_json = f"{prefixo}.json"
-    with open(caminho_json, "w", encoding="utf-8") as f:
-        json.dump(saida, f, ensure_ascii=False, indent=2)
-    print(f"JSON salvo em {caminho_json} ({len(registros)} candidatos)")
+  function popularSelect(select, valores) {
+    valores.sort().forEach(function (v) {
+      const opt = document.createElement('option');
+      opt.value = v;
+      opt.textContent = v;
+      select.appendChild(opt);
+    });
+  }
 
-    caminho_csv = f"{prefixo}.csv"
-    df.to_csv(caminho_csv, index=False, encoding="utf-8")
-    print(f"CSV salvo em {caminho_csv}")
+  function renderizar() {
+    const termoBusca = buscaInput.value.trim().toLowerCase();
+    const cargoSelecionado = filtroCargo.value;
+    const partidoSelecionado = filtroPartido.value;
 
-    # Resumo rápido por cargo, útil pra conferir se bateu com o esperado
-    print("\nResumo por cargo:")
-    print(df["cargo"].value_counts())
+    const filtrados = candidatos.filter(function (c) {
+      const bateCargo = !cargoSelecionado || c.cargo === cargoSelecionado;
+      const batePartido = !partidoSelecionado || c.partido_sigla === partidoSelecionado;
+      const bateBusca = !termoBusca ||
+        (c.nome_urna || '').toLowerCase().includes(termoBusca) ||
+        (c.nome_completo || '').toLowerCase().includes(termoBusca) ||
+        String(c.numero || '').includes(termoBusca);
+      return bateCargo && batePartido && bateBusca;
+    });
 
+    contador.innerHTML = '<strong>' + filtrados.length + '</strong> candidato' +
+      (filtrados.length === 1 ? '' : 's') +
+      (filtrados.length !== candidatos.length ? ' de ' + candidatos.length : '') +
+      ' encontrado' + (filtrados.length === 1 ? '' : 's');
 
-def baixar_fotos(uf: str, ids_candidatos: set, pasta_destino: str = PASTA_FOTOS) -> int:
-    """
-    Baixa o ZIP de fotos da UF e extrai só as imagens dos candidatos que
-    estão no nosso recorte (ids_candidatos = conjunto de SQ_CANDIDATO).
-    Retorna quantas fotos foram extraídas. Se o ZIP não existir ainda
-    (404) ou vier bloqueado (403), avisa e segue sem quebrar o pipeline
-    inteiro — fotos são um "nice to have", não podem travar a coleta.
-    """
-    url = URL_ZIP_FOTOS.format(uf=uf)
-    print(f"\nBaixando fotos de {uf}: {url}")
-    sessao = _sessao_com_retry()
+    grid.innerHTML = '';
+    estadoVazio.style.display = filtrados.length === 0 ? 'block' : 'none';
 
-    try:
-        resp = sessao.get(url, timeout=180)
-    except requests.RequestException as e:
-        print(f"[aviso] não deu pra baixar fotos ({e}). Seguindo sem fotos.")
-        return 0
+    filtrados.forEach(function (c) {
+      const card = document.createElement('div');
+      card.className = 'card';
 
-    if resp.status_code == 404:
-        print(f"[aviso] {url} não existe (404). O padrão de nome pode ter "
-              f"mudado pra {ANO_ELEICAO} — ainda não temos fotos.")
-        return 0
-    if resp.status_code != 200:
-        print(f"[aviso] status {resp.status_code} ao baixar fotos. "
-              f"Seguindo sem fotos por enquanto.")
-        return 0
+      const nomeExibicao = c.nome_urna || c.nome_completo || 'Nome não informado';
+      const iniciais = nomeExibicao.split(' ').slice(0, 2).map(function (p) { return p[0]; }).join('');
 
-    os.makedirs(pasta_destino, exist_ok=True)
-    extraidas = 0
+      const blocoFoto = c.foto
+        ? '<img class="foto-candidato" src="' + c.foto + '" alt="Foto de ' + nomeExibicao + '" loading="lazy">'
+        : '<div class="foto-placeholder">' + iniciais + '</div>';
 
-    with zipfile.ZipFile(io.BytesIO(resp.content)) as zf:
-        nomes_no_zip = zf.namelist()
-        print(f"[debug] {len(nomes_no_zip)} arquivo(s) dentro do zip. "
-              f"Primeiros 10 nomes: {nomes_no_zip[:10]}")
+      const situacao = (c.situacao_candidatura || '').trim();
+      let classeBadge = '';
+      if (/^DEFERID/i.test(situacao)) classeBadge = 'deferido';
+      else if (/^INDEFERID/i.test(situacao)) classeBadge = 'indeferido';
 
-        # Padrão real descoberto: "F{UF}{SQ_CANDIDATO}_div.jpg"
-        # (ex: FSP250002532324_div.jpg). Monta um índice nome-sem-extensão
-        # -> nome completo pra casar rápido com nosso recorte de ids.
-        indice_por_base = {}
-        for nome_arquivo in nomes_no_zip:
-            base = os.path.splitext(os.path.basename(nome_arquivo))[0]
-            indice_por_base[base] = nome_arquivo
+      const blocoBadge = situacao
+        ? '<span class="badge-situacao ' + classeBadge + '">' + situacao + '</span>'
+        : '';
 
-        for candidato_id in ids_candidatos:
-            base_esperada = f"F{uf}{candidato_id}_div"
-            nome_arquivo = indice_por_base.get(base_esperada)
-            if nome_arquivo is None:
-                continue
-            extensao = os.path.splitext(nome_arquivo)[1] or ".jpg"
-            destino = os.path.join(pasta_destino, f"{candidato_id}{extensao}")
-            with zf.open(nome_arquivo) as origem, open(destino, "wb") as saida:
-                saida.write(origem.read())
-            extraidas += 1
+      card.innerHTML =
+        blocoFoto +
+        '<div class="card-info">' +
+          '<p class="nome-urna">' + nomeExibicao + '</p>' +
+          '<p class="numero-partido"><strong>' + (c.numero || '—') + '</strong> · ' + (c.partido_sigla || '') + '</p>' +
+          '<p class="cargo-uf">' + (c.cargo || '') + ' · São Paulo</p>' +
+          blocoBadge +
+        '</div>';
+      grid.appendChild(card);
+    });
+  }
 
-    print(f"Fotos extraídas: {extraidas} de {len(ids_candidatos)} candidatos no recorte")
-    return extraidas
+  fetch('candidatos_sp_2026.json')
+    .then(function (resp) {
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      return resp.json();
+    })
+    .then(function (dados) {
+      candidatos = dados.candidatos || [];
 
+      textoAtualizacao.textContent = 'Atualizado em ' + formatarData(dados.atualizado_em) +
+        ' · ' + (dados.total_candidatos || candidatos.length) + ' candidaturas registradas';
 
-def main():
-    df_bruto = baixar_e_extrair_sp(URL_ZIP, UF)
-    df_limpo = filtrar_e_limpar(df_bruto)
+      const cargosUnicos = Array.from(new Set(candidatos.map(function (c) { return c.cargo; }).filter(Boolean)));
+      const partidosUnicos = Array.from(new Set(candidatos.map(function (c) { return c.partido_sigla; }).filter(Boolean)));
 
-    ids_candidatos = set(df_limpo["id"].astype(str))
-    baixar_fotos(UF, ids_candidatos)
+      popularSelect(filtroCargo, cargosUnicos);
+      popularSelect(filtroPartido, partidosUnicos);
 
-    # Presidente é candidatura nacional — a foto dele fica no ZIP de fotos
-    # "BR", não no de SP. Busca separado, só pra esse recorte.
-    ids_presidente = set(
-        df_limpo.loc[df_limpo["cargo"] == "PRESIDENTE", "id"].astype(str)
-    )
-    if ids_presidente:
-        print(f"\nBuscando fotos de Presidente separadamente (candidatura nacional)...")
-        baixar_fotos("BR", ids_presidente)
+      renderizar();
+    })
+    .catch(function (err) {
+      console.error(err);
+      textoAtualizacao.textContent = 'Erro ao carregar dados';
+      estadoErro.style.display = 'block';
+      contador.textContent = '';
+    });
 
-    exportar(df_limpo)
+  buscaInput.addEventListener('input', renderizar);
+  filtroCargo.addEventListener('change', renderizar);
+  filtroPartido.addEventListener('change', renderizar);
+})();
+</script>
 
-
-if __name__ == "__main__":
-    main()
+</body>
+</html>
