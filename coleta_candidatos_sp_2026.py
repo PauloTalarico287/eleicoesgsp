@@ -332,6 +332,15 @@ def main():
     ids_candidatos = set(df_limpo["id"].astype(str))
     baixar_fotos(UF, ids_candidatos)
 
+    # Presidente é candidatura nacional — a foto dele fica no ZIP de fotos
+    # "BR", não no de SP. Busca separado, só pra esse recorte.
+    ids_presidente = set(
+        df_limpo.loc[df_limpo["cargo"] == "PRESIDENTE", "id"].astype(str)
+    )
+    if ids_presidente:
+        print(f"\nBuscando fotos de Presidente separadamente (candidatura nacional)...")
+        baixar_fotos("BR", ids_presidente)
+
     exportar(df_limpo)
 
 
