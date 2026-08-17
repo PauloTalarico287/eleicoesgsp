@@ -1,8 +1,8 @@
 {
-  "atualizado_em": "2026-08-16T12:16:16.279809+00:00",
+  "atualizado_em": "2026-08-17T01:25:59.293571+00:00",
   "ano_eleicao": 2026,
   "uf": "SP",
-  "total_candidatos": 2512,
+  "total_candidatos": 2521,
   "cargos": [
     "PRESIDENTE",
     "GOVERNADOR",
@@ -52,6 +52,48 @@
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
       "foto": "fotos/250002548169.jpg"
+    },
+    {
+      "id": 250002552957,
+      "nome_completo": "CLAUDETE BIANCONI",
+      "nome_urna": "CLAUDETE BIANCONI",
+      "nome_social": "#NULO",
+      "numero": 36076,
+      "cargo": "DEPUTADO ESTADUAL",
+      "partido_sigla": "AGIR",
+      "partido_nome": "AGIR",
+      "coligacao": "PARTIDO ISOLADO",
+      "coligacao_composicao": "AGIR",
+      "situacao_eleitoral": "#NULO",
+      "situacao_candidatura": "#NE",
+      "genero": "FEMININO",
+      "grau_instrucao": "ENSINO MÉDIO COMPLETO",
+      "cor_raca": "PARDA",
+      "uf": "SP",
+      "codigo_ue": "SP",
+      "unidade_eleitoral": "SÃO PAULO",
+      "foto": null
+    },
+    {
+      "id": 250002553325,
+      "nome_completo": "MARIA DAS DORES SILVA",
+      "nome_urna": "DORINHA ROSA",
+      "nome_social": "#NULO",
+      "numero": 36056,
+      "cargo": "DEPUTADO ESTADUAL",
+      "partido_sigla": "AGIR",
+      "partido_nome": "AGIR",
+      "coligacao": "PARTIDO ISOLADO",
+      "coligacao_composicao": "AGIR",
+      "situacao_eleitoral": "#NULO",
+      "situacao_candidatura": "#NE",
+      "genero": "FEMININO",
+      "grau_instrucao": "ENSINO MÉDIO COMPLETO",
+      "cor_raca": "PARDA",
+      "uf": "SP",
+      "codigo_ue": "SP",
+      "unidade_eleitoral": "SÃO PAULO",
+      "foto": null
     },
     {
       "id": 250002548172,
@@ -157,6 +199,27 @@
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
       "foto": "fotos/250002548165.jpg"
+    },
+    {
+      "id": 250002553299,
+      "nome_completo": "GUILHERME HENRIQUE SILVA MORAIS",
+      "nome_urna": "GUILHERME HENRIQUE",
+      "nome_social": "#NULO",
+      "numero": 36888,
+      "cargo": "DEPUTADO ESTADUAL",
+      "partido_sigla": "AGIR",
+      "partido_nome": "AGIR",
+      "coligacao": "PARTIDO ISOLADO",
+      "coligacao_composicao": "AGIR",
+      "situacao_eleitoral": "#NULO",
+      "situacao_candidatura": "#NE",
+      "genero": "MASCULINO",
+      "grau_instrucao": "ENSINO MÉDIO COMPLETO",
+      "cor_raca": "PARDA",
+      "uf": "SP",
+      "codigo_ue": "SP",
+      "unidade_eleitoral": "SÃO PAULO",
+      "foto": null
     },
     {
       "id": 250002548162,
@@ -325,6 +388,27 @@
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
       "foto": "fotos/250002548170.jpg"
+    },
+    {
+      "id": 250002553339,
+      "nome_completo": "MARIA DE JESUS MENDES BARBOSA",
+      "nome_urna": "MARIA DE JESUS",
+      "nome_social": "#NULO",
+      "numero": 36555,
+      "cargo": "DEPUTADO ESTADUAL",
+      "partido_sigla": "AGIR",
+      "partido_nome": "AGIR",
+      "coligacao": "PARTIDO ISOLADO",
+      "coligacao_composicao": "AGIR",
+      "situacao_eleitoral": "#NULO",
+      "situacao_candidatura": "#NE",
+      "genero": "FEMININO",
+      "grau_instrucao": "SUPERIOR INCOMPLETO",
+      "cor_raca": "PARDA",
+      "uf": "SP",
+      "codigo_ue": "SP",
+      "unidade_eleitoral": "SÃO PAULO",
+      "foto": null
     },
     {
       "id": 250002548167,
@@ -2256,7 +2340,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553763.jpg"
     },
     {
       "id": 250002553781,
@@ -2277,7 +2361,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553781.jpg"
     },
     {
       "id": 250002553771,
@@ -2298,7 +2382,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553771.jpg"
     },
     {
       "id": 250002553794,
@@ -2319,7 +2403,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553794.jpg"
     },
     {
       "id": 250002553774,
@@ -2340,7 +2424,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553774.jpg"
     },
     {
       "id": 250002553761,
@@ -2361,7 +2445,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553761.jpg"
     },
     {
       "id": 250002553770,
@@ -2382,7 +2466,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553770.jpg"
     },
     {
       "id": 250002553815,
@@ -2403,7 +2487,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553815.jpg"
     },
     {
       "id": 250002553773,
@@ -2424,7 +2508,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553773.jpg"
     },
     {
       "id": 250002553772,
@@ -2445,7 +2529,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553772.jpg"
     },
     {
       "id": 250002553821,
@@ -2466,7 +2550,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553821.jpg"
     },
     {
       "id": 250002553816,
@@ -2487,7 +2571,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553816.jpg"
     },
     {
       "id": 250002553838,
@@ -2508,7 +2592,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553838.jpg"
     },
     {
       "id": 250002553806,
@@ -2529,7 +2613,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553806.jpg"
     },
     {
       "id": 250002553824,
@@ -2550,7 +2634,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553824.jpg"
     },
     {
       "id": 250002553810,
@@ -2571,7 +2655,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553810.jpg"
     },
     {
       "id": 250002553784,
@@ -2592,7 +2676,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553784.jpg"
     },
     {
       "id": 250002553757,
@@ -2613,7 +2697,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553757.jpg"
     },
     {
       "id": 250002553799,
@@ -2634,7 +2718,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553799.jpg"
     },
     {
       "id": 250002553845,
@@ -2655,7 +2739,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553845.jpg"
     },
     {
       "id": 250002553796,
@@ -2676,7 +2760,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553796.jpg"
     },
     {
       "id": 250002553798,
@@ -2697,7 +2781,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553798.jpg"
     },
     {
       "id": 250002553804,
@@ -2718,7 +2802,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553804.jpg"
     },
     {
       "id": 250002553828,
@@ -2739,7 +2823,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553828.jpg"
     },
     {
       "id": 250002553826,
@@ -2760,7 +2844,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553826.jpg"
     },
     {
       "id": 250002553789,
@@ -2781,7 +2865,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553789.jpg"
     },
     {
       "id": 250002553756,
@@ -2802,7 +2886,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553756.jpg"
     },
     {
       "id": 250002553833,
@@ -2823,7 +2907,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553833.jpg"
     },
     {
       "id": 250002553817,
@@ -2844,7 +2928,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553817.jpg"
     },
     {
       "id": 250002553811,
@@ -2865,7 +2949,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553811.jpg"
     },
     {
       "id": 250002553795,
@@ -2886,7 +2970,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553795.jpg"
     },
     {
       "id": 250002553780,
@@ -2907,7 +2991,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553780.jpg"
     },
     {
       "id": 250002553842,
@@ -2928,7 +3012,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553842.jpg"
     },
     {
       "id": 250002553814,
@@ -2949,7 +3033,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553814.jpg"
     },
     {
       "id": 250002553835,
@@ -2970,7 +3054,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553835.jpg"
     },
     {
       "id": 250002553802,
@@ -2991,7 +3075,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553802.jpg"
     },
     {
       "id": 250002553831,
@@ -3012,7 +3096,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553831.jpg"
     },
     {
       "id": 250002553765,
@@ -3033,7 +3117,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553765.jpg"
     },
     {
       "id": 250002553844,
@@ -3054,7 +3138,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553844.jpg"
     },
     {
       "id": 250002553788,
@@ -3075,7 +3159,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553788.jpg"
     },
     {
       "id": 250002553820,
@@ -3096,7 +3180,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553820.jpg"
     },
     {
       "id": 250002553834,
@@ -3117,7 +3201,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553834.jpg"
     },
     {
       "id": 250002553800,
@@ -3138,7 +3222,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553800.jpg"
     },
     {
       "id": 250002553797,
@@ -3159,7 +3243,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553797.jpg"
     },
     {
       "id": 250002553822,
@@ -3180,7 +3264,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553822.jpg"
     },
     {
       "id": 250002553837,
@@ -3201,7 +3285,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553837.jpg"
     },
     {
       "id": 250002553769,
@@ -3222,7 +3306,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553769.jpg"
     },
     {
       "id": 250002553818,
@@ -3243,7 +3327,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553818.jpg"
     },
     {
       "id": 250002553759,
@@ -3264,7 +3348,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553759.jpg"
     },
     {
       "id": 250002553760,
@@ -3285,7 +3369,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553760.jpg"
     },
     {
       "id": 250002553790,
@@ -3306,7 +3390,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553790.jpg"
     },
     {
       "id": 250002553823,
@@ -3327,7 +3411,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553823.jpg"
     },
     {
       "id": 250002553846,
@@ -3348,7 +3432,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553846.jpg"
     },
     {
       "id": 250002553775,
@@ -3369,7 +3453,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553775.jpg"
     },
     {
       "id": 250002553778,
@@ -3390,7 +3474,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553778.jpg"
     },
     {
       "id": 250002553850,
@@ -3411,7 +3495,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553850.jpg"
     },
     {
       "id": 250002553807,
@@ -3432,7 +3516,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553807.jpg"
     },
     {
       "id": 250002553766,
@@ -3453,7 +3537,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553766.jpg"
     },
     {
       "id": 250002553786,
@@ -3474,7 +3558,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553786.jpg"
     },
     {
       "id": 250002553847,
@@ -3495,7 +3579,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553847.jpg"
     },
     {
       "id": 250002553832,
@@ -3516,7 +3600,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553832.jpg"
     },
     {
       "id": 250002553793,
@@ -3537,7 +3621,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553793.jpg"
     },
     {
       "id": 250002553805,
@@ -3558,7 +3642,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553805.jpg"
     },
     {
       "id": 250002553836,
@@ -3579,7 +3663,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553836.jpg"
     },
     {
       "id": 250002553829,
@@ -3600,7 +3684,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553829.jpg"
     },
     {
       "id": 250002553801,
@@ -3621,7 +3705,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553801.jpg"
     },
     {
       "id": 250002553813,
@@ -3642,7 +3726,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553813.jpg"
     },
     {
       "id": 250002553808,
@@ -3663,7 +3747,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553808.jpg"
     },
     {
       "id": 250002553849,
@@ -3684,7 +3768,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553849.jpg"
     },
     {
       "id": 250002553777,
@@ -3705,7 +3789,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553777.jpg"
     },
     {
       "id": 250002553827,
@@ -3726,7 +3810,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553827.jpg"
     },
     {
       "id": 250002553782,
@@ -3747,7 +3831,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553782.jpg"
     },
     {
       "id": 250002553779,
@@ -3768,7 +3852,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553779.jpg"
     },
     {
       "id": 250002553764,
@@ -3789,7 +3873,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553764.jpg"
     },
     {
       "id": 250002553839,
@@ -3810,7 +3894,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553839.jpg"
     },
     {
       "id": 250002553783,
@@ -3831,7 +3915,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553783.jpg"
     },
     {
       "id": 250002553819,
@@ -3852,7 +3936,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553819.jpg"
     },
     {
       "id": 250002553803,
@@ -3873,7 +3957,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553803.jpg"
     },
     {
       "id": 250002553809,
@@ -3894,7 +3978,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553809.jpg"
     },
     {
       "id": 250002553767,
@@ -3915,7 +3999,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553767.jpg"
     },
     {
       "id": 250002553840,
@@ -3936,7 +4020,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553840.jpg"
     },
     {
       "id": 250002553785,
@@ -3957,7 +4041,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553785.jpg"
     },
     {
       "id": 250002553841,
@@ -3978,7 +4062,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553841.jpg"
     },
     {
       "id": 250002553791,
@@ -3999,7 +4083,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553791.jpg"
     },
     {
       "id": 250002553768,
@@ -4020,7 +4104,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553768.jpg"
     },
     {
       "id": 250002553843,
@@ -4041,7 +4125,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553843.jpg"
     },
     {
       "id": 250002553792,
@@ -4062,7 +4146,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553792.jpg"
     },
     {
       "id": 250002553830,
@@ -4083,7 +4167,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553830.jpg"
     },
     {
       "id": 250002553762,
@@ -4104,7 +4188,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553762.jpg"
     },
     {
       "id": 250002553787,
@@ -4125,7 +4209,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553787.jpg"
     },
     {
       "id": 250002553776,
@@ -4146,7 +4230,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553776.jpg"
     },
     {
       "id": 250002553848,
@@ -4167,7 +4251,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553848.jpg"
     },
     {
       "id": 250002553812,
@@ -4188,7 +4272,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553812.jpg"
     },
     {
       "id": 250002553825,
@@ -4209,7 +4293,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553825.jpg"
     },
     {
       "id": 250002553758,
@@ -4230,7 +4314,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553758.jpg"
     },
     {
       "id": 250002547838,
@@ -7527,7 +7611,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552906.jpg"
     },
     {
       "id": 250002552866,
@@ -7548,7 +7632,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552866.jpg"
     },
     {
       "id": 250002552885,
@@ -7569,7 +7653,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552885.jpg"
     },
     {
       "id": 250002552904,
@@ -7590,7 +7674,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552904.jpg"
     },
     {
       "id": 250002552914,
@@ -7611,7 +7695,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552914.jpg"
     },
     {
       "id": 250002552894,
@@ -7632,7 +7716,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552894.jpg"
     },
     {
       "id": 250002552892,
@@ -7653,7 +7737,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552892.jpg"
     },
     {
       "id": 250002552871,
@@ -7674,7 +7758,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552871.jpg"
     },
     {
       "id": 250002552884,
@@ -7695,7 +7779,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552884.jpg"
     },
     {
       "id": 250002552864,
@@ -7716,7 +7800,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552864.jpg"
     },
     {
       "id": 250002552877,
@@ -7737,7 +7821,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552877.jpg"
     },
     {
       "id": 250002552891,
@@ -7758,7 +7842,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552891.jpg"
     },
     {
       "id": 250002552893,
@@ -7779,7 +7863,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552893.jpg"
     },
     {
       "id": 250002552879,
@@ -7800,7 +7884,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552879.jpg"
     },
     {
       "id": 250002552911,
@@ -7821,7 +7905,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552911.jpg"
     },
     {
       "id": 250002552859,
@@ -7842,7 +7926,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552859.jpg"
     },
     {
       "id": 250002552886,
@@ -7863,7 +7947,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552886.jpg"
     },
     {
       "id": 250002552867,
@@ -7884,7 +7968,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552867.jpg"
     },
     {
       "id": 250002552912,
@@ -7905,7 +7989,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552912.jpg"
     },
     {
       "id": 250002552874,
@@ -7926,7 +8010,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552874.jpg"
     },
     {
       "id": 250002552897,
@@ -7947,7 +8031,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552897.jpg"
     },
     {
       "id": 250002552895,
@@ -7968,7 +8052,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552895.jpg"
     },
     {
       "id": 250002552872,
@@ -7989,7 +8073,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552872.jpg"
     },
     {
       "id": 250002552868,
@@ -8010,7 +8094,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552868.jpg"
     },
     {
       "id": 250002552919,
@@ -8031,7 +8115,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552919.jpg"
     },
     {
       "id": 250002552860,
@@ -8052,7 +8136,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552860.jpg"
     },
     {
       "id": 250002552881,
@@ -8073,7 +8157,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552881.jpg"
     },
     {
       "id": 250002552899,
@@ -8094,7 +8178,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552899.jpg"
     },
     {
       "id": 250002552870,
@@ -8115,7 +8199,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552870.jpg"
     },
     {
       "id": 250002552910,
@@ -8136,7 +8220,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552910.jpg"
     },
     {
       "id": 250002552907,
@@ -8157,7 +8241,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552907.jpg"
     },
     {
       "id": 250002552882,
@@ -8178,7 +8262,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552882.jpg"
     },
     {
       "id": 250002552915,
@@ -8199,7 +8283,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552915.jpg"
     },
     {
       "id": 250002552858,
@@ -8220,7 +8304,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552858.jpg"
     },
     {
       "id": 250002552875,
@@ -8241,7 +8325,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552875.jpg"
     },
     {
       "id": 250002552920,
@@ -8262,7 +8346,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552920.jpg"
     },
     {
       "id": 250002552917,
@@ -8283,7 +8367,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552917.jpg"
     },
     {
       "id": 250002552861,
@@ -8304,7 +8388,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552861.jpg"
     },
     {
       "id": 250002552898,
@@ -8325,7 +8409,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552898.jpg"
     },
     {
       "id": 250002552900,
@@ -8346,7 +8430,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552900.jpg"
     },
     {
       "id": 250002552873,
@@ -8367,7 +8451,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552873.jpg"
     },
     {
       "id": 250002552883,
@@ -8388,7 +8472,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552883.jpg"
     },
     {
       "id": 250002552909,
@@ -8409,7 +8493,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552909.jpg"
     },
     {
       "id": 250002552918,
@@ -8430,7 +8514,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552918.jpg"
     },
     {
       "id": 250002552880,
@@ -8451,7 +8535,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552880.jpg"
     },
     {
       "id": 250002552901,
@@ -8472,7 +8556,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552901.jpg"
     },
     {
       "id": 250002552896,
@@ -8493,7 +8577,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552896.jpg"
     },
     {
       "id": 250002552888,
@@ -8514,7 +8598,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552888.jpg"
     },
     {
       "id": 250002552887,
@@ -8535,7 +8619,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552887.jpg"
     },
     {
       "id": 250002552905,
@@ -8556,7 +8640,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552905.jpg"
     },
     {
       "id": 250002552902,
@@ -8577,7 +8661,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552902.jpg"
     },
     {
       "id": 250002552865,
@@ -8598,7 +8682,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552865.jpg"
     },
     {
       "id": 250002552903,
@@ -8619,7 +8703,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552903.jpg"
     },
     {
       "id": 250002552890,
@@ -8640,7 +8724,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552890.jpg"
     },
     {
       "id": 250002552878,
@@ -8661,7 +8745,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552878.jpg"
     },
     {
       "id": 250002552869,
@@ -8682,7 +8766,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552869.jpg"
     },
     {
       "id": 250002552889,
@@ -8703,7 +8787,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552889.jpg"
     },
     {
       "id": 250002552908,
@@ -8724,7 +8808,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552908.jpg"
     },
     {
       "id": 250002552863,
@@ -8745,7 +8829,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552863.jpg"
     },
     {
       "id": 250002552916,
@@ -8766,7 +8850,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552916.jpg"
     },
     {
       "id": 250002552876,
@@ -8787,7 +8871,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552876.jpg"
     },
     {
       "id": 250002552862,
@@ -8808,7 +8892,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552862.jpg"
     },
     {
       "id": 250002552913,
@@ -8829,7 +8913,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552913.jpg"
     },
     {
       "id": 250002530247,
@@ -11034,7 +11118,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553873.jpg"
     },
     {
       "id": 250002553871,
@@ -11055,7 +11139,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553871.jpg"
     },
     {
       "id": 250002553864,
@@ -11076,7 +11160,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553864.jpg"
     },
     {
       "id": 250002553867,
@@ -11097,7 +11181,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553867.jpg"
     },
     {
       "id": 250002553869,
@@ -11118,7 +11202,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553869.jpg"
     },
     {
       "id": 250002553870,
@@ -11139,7 +11223,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553870.jpg"
     },
     {
       "id": 250002553866,
@@ -11160,7 +11244,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553866.jpg"
     },
     {
       "id": 250002553868,
@@ -11181,7 +11265,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553868.jpg"
     },
     {
       "id": 250002553872,
@@ -11202,7 +11286,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553872.jpg"
     },
     {
       "id": 250002553874,
@@ -11223,7 +11307,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553874.jpg"
     },
     {
       "id": 250002553865,
@@ -11244,7 +11328,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553865.jpg"
     },
     {
       "id": 250002553875,
@@ -11265,7 +11349,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553875.jpg"
     },
     {
       "id": 250002553876,
@@ -11286,7 +11370,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553876.jpg"
     },
     {
       "id": 250002547996,
@@ -17040,7 +17124,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552782.jpg"
     },
     {
       "id": 250002534178,
@@ -17103,7 +17187,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552781.jpg"
     },
     {
       "id": 250002534185,
@@ -21537,6 +21621,27 @@
       "foto": "fotos/250002548868.jpg"
     },
     {
+      "id": 250002553717,
+      "nome_completo": "BAHIA DO LAVA RÁPIDO",
+      "nome_urna": "BAHIA DO LAVA RÁPIDO",
+      "nome_social": "#NULO",
+      "numero": 45222,
+      "cargo": "DEPUTADO ESTADUAL",
+      "partido_sigla": "PSDB",
+      "partido_nome": "PARTIDO DA SOCIAL DEMOCRACIA BRASILEIRA",
+      "coligacao": "FEDERAÇÃO",
+      "coligacao_composicao": "FEDERAÇÃO PSDB CIDADANIA(PSDB/CIDADANIA)",
+      "situacao_eleitoral": "#NULO",
+      "situacao_candidatura": "#NE",
+      "genero": "MASCULINO",
+      "grau_instrucao": "ENSINO MÉDIO COMPLETO",
+      "cor_raca": "BRANCA",
+      "uf": "SP",
+      "codigo_ue": "SP",
+      "unidade_eleitoral": "SÃO PAULO",
+      "foto": null
+    },
+    {
       "id": 250002548875,
       "nome_completo": "FABIANA CORREIA SOARES",
       "nome_urna": "BIA SOARES",
@@ -24806,7 +24911,7 @@
       "situacao_candidatura": "#NE",
       "genero": "MASCULINO",
       "grau_instrucao": "SUPERIOR COMPLETO",
-      "cor_raca": "INDÍGENA",
+      "cor_raca": "BRANCA",
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
@@ -29157,7 +29262,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552506.jpg"
     },
     {
       "id": 250002536890,
@@ -30145,6 +30250,27 @@
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
       "foto": "fotos/250002551642.jpg"
+    },
+    {
+      "id": 250002553909,
+      "nome_completo": "MARIA JOSE LOPES NASCIMENTO",
+      "nome_urna": "MARIA LOPES DA MICHELLE B",
+      "nome_social": "#NULO",
+      "numero": 3605,
+      "cargo": "DEPUTADO FEDERAL",
+      "partido_sigla": "AGIR",
+      "partido_nome": "AGIR",
+      "coligacao": "PARTIDO ISOLADO",
+      "coligacao_composicao": "AGIR",
+      "situacao_eleitoral": "#NULO",
+      "situacao_candidatura": "#NE",
+      "genero": "FEMININO",
+      "grau_instrucao": "SUPERIOR COMPLETO",
+      "cor_raca": "BRANCA",
+      "uf": "SP",
+      "codigo_ue": "SP",
+      "unidade_eleitoral": "SÃO PAULO",
+      "foto": null
     },
     {
       "id": 250002551616,
@@ -32160,7 +32286,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552661.jpg"
     },
     {
       "id": 250002552634,
@@ -32181,7 +32307,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552634.jpg"
     },
     {
       "id": 250002552657,
@@ -32202,7 +32328,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552657.jpg"
     },
     {
       "id": 250002552615,
@@ -32223,7 +32349,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552615.jpg"
     },
     {
       "id": 250002552658,
@@ -32244,7 +32370,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552658.jpg"
     },
     {
       "id": 250002552622,
@@ -32265,7 +32391,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552622.jpg"
     },
     {
       "id": 250002552644,
@@ -32286,7 +32412,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552644.jpg"
     },
     {
       "id": 250002552640,
@@ -32307,7 +32433,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552640.jpg"
     },
     {
       "id": 250002552632,
@@ -32328,7 +32454,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552632.jpg"
     },
     {
       "id": 250002552660,
@@ -32349,7 +32475,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552660.jpg"
     },
     {
       "id": 250002552679,
@@ -32370,7 +32496,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552679.jpg"
     },
     {
       "id": 250002552678,
@@ -32391,7 +32517,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552678.jpg"
     },
     {
       "id": 250002552619,
@@ -32412,7 +32538,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552619.jpg"
     },
     {
       "id": 250002552613,
@@ -32433,7 +32559,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552613.jpg"
     },
     {
       "id": 250002552666,
@@ -32454,7 +32580,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552666.jpg"
     },
     {
       "id": 250002552620,
@@ -32475,7 +32601,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552620.jpg"
     },
     {
       "id": 250002552670,
@@ -32496,7 +32622,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552670.jpg"
     },
     {
       "id": 250002552614,
@@ -32517,7 +32643,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552614.jpg"
     },
     {
       "id": 250002552635,
@@ -32538,7 +32664,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552635.jpg"
     },
     {
       "id": 250002552639,
@@ -32559,7 +32685,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552639.jpg"
     },
     {
       "id": 250002552643,
@@ -32580,7 +32706,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552643.jpg"
     },
     {
       "id": 250002552628,
@@ -32601,7 +32727,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552628.jpg"
     },
     {
       "id": 250002552633,
@@ -32622,7 +32748,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552633.jpg"
     },
     {
       "id": 250002552665,
@@ -32643,7 +32769,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552665.jpg"
     },
     {
       "id": 250002552672,
@@ -32664,7 +32790,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552672.jpg"
     },
     {
       "id": 250002552659,
@@ -32685,7 +32811,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552659.jpg"
     },
     {
       "id": 250002552655,
@@ -32706,7 +32832,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552655.jpg"
     },
     {
       "id": 250002552664,
@@ -32727,7 +32853,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552664.jpg"
     },
     {
       "id": 250002552677,
@@ -32748,7 +32874,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552677.jpg"
     },
     {
       "id": 250002552617,
@@ -32769,7 +32895,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552617.jpg"
     },
     {
       "id": 250002552662,
@@ -32790,7 +32916,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552662.jpg"
     },
     {
       "id": 250002552651,
@@ -32811,7 +32937,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552651.jpg"
     },
     {
       "id": 250002552626,
@@ -32832,7 +32958,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552626.jpg"
     },
     {
       "id": 250002552641,
@@ -32853,7 +32979,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552641.jpg"
     },
     {
       "id": 250002552616,
@@ -32874,7 +33000,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552616.jpg"
     },
     {
       "id": 250002552649,
@@ -32895,7 +33021,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552649.jpg"
     },
     {
       "id": 250002552647,
@@ -32916,7 +33042,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552647.jpg"
     },
     {
       "id": 250002552625,
@@ -32937,7 +33063,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552625.jpg"
     },
     {
       "id": 250002552624,
@@ -32958,7 +33084,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552624.jpg"
     },
     {
       "id": 250002552669,
@@ -32979,7 +33105,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552669.jpg"
     },
     {
       "id": 250002552681,
@@ -33000,7 +33126,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552681.jpg"
     },
     {
       "id": 250002552645,
@@ -33021,7 +33147,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552645.jpg"
     },
     {
       "id": 250002552646,
@@ -33042,7 +33168,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552646.jpg"
     },
     {
       "id": 250002552654,
@@ -33063,7 +33189,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552654.jpg"
     },
     {
       "id": 250002552642,
@@ -33084,7 +33210,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552642.jpg"
     },
     {
       "id": 250002552656,
@@ -33105,7 +33231,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552656.jpg"
     },
     {
       "id": 250002552680,
@@ -33126,7 +33252,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552680.jpg"
     },
     {
       "id": 250002552618,
@@ -33147,7 +33273,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552618.jpg"
     },
     {
       "id": 250002552621,
@@ -33168,7 +33294,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552621.jpg"
     },
     {
       "id": 250002552637,
@@ -33189,7 +33315,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552637.jpg"
     },
     {
       "id": 250002552663,
@@ -33210,7 +33336,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552663.jpg"
     },
     {
       "id": 250002552667,
@@ -33231,7 +33357,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552667.jpg"
     },
     {
       "id": 250002552648,
@@ -33252,7 +33378,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552648.jpg"
     },
     {
       "id": 250002552653,
@@ -33273,7 +33399,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552653.jpg"
     },
     {
       "id": 250002552671,
@@ -33294,7 +33420,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552671.jpg"
     },
     {
       "id": 250002552638,
@@ -33315,7 +33441,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552638.jpg"
     },
     {
       "id": 250002552676,
@@ -33336,7 +33462,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552676.jpg"
     },
     {
       "id": 250002552623,
@@ -33357,7 +33483,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552623.jpg"
     },
     {
       "id": 250002552636,
@@ -33378,7 +33504,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552636.jpg"
     },
     {
       "id": 250002552612,
@@ -33399,7 +33525,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552612.jpg"
     },
     {
       "id": 250002552675,
@@ -33420,7 +33546,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552675.jpg"
     },
     {
       "id": 250002552652,
@@ -33441,7 +33567,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552652.jpg"
     },
     {
       "id": 250002552627,
@@ -33462,7 +33588,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552627.jpg"
     },
     {
       "id": 250002552611,
@@ -33483,7 +33609,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552611.jpg"
     },
     {
       "id": 250002552674,
@@ -33504,7 +33630,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552674.jpg"
     },
     {
       "id": 250002552673,
@@ -33525,7 +33651,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552673.jpg"
     },
     {
       "id": 250002552630,
@@ -33546,7 +33672,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552630.jpg"
     },
     {
       "id": 250002552650,
@@ -33567,7 +33693,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552650.jpg"
     },
     {
       "id": 250002552668,
@@ -33588,7 +33714,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552668.jpg"
     },
     {
       "id": 250002552631,
@@ -33609,7 +33735,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552631.jpg"
     },
     {
       "id": 250002552629,
@@ -33630,7 +33756,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552629.jpg"
     },
     {
       "id": 250002547856,
@@ -37746,7 +37872,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553327.jpg"
     },
     {
       "id": 250002553335,
@@ -37767,7 +37893,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553335.jpg"
     },
     {
       "id": 250002553332,
@@ -37788,7 +37914,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553332.jpg"
     },
     {
       "id": 250002553331,
@@ -37809,7 +37935,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553331.jpg"
     },
     {
       "id": 250002553334,
@@ -37830,7 +37956,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553334.jpg"
     },
     {
       "id": 250002553329,
@@ -37851,7 +37977,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553329.jpg"
     },
     {
       "id": 250002553328,
@@ -37872,7 +37998,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553328.jpg"
     },
     {
       "id": 250002553333,
@@ -37893,7 +38019,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553333.jpg"
     },
     {
       "id": 250002553330,
@@ -37914,7 +38040,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553330.jpg"
     },
     {
       "id": 250002553326,
@@ -37935,7 +38061,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553326.jpg"
     },
     {
       "id": 250002548475,
@@ -43059,7 +43185,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552595.jpg"
     },
     {
       "id": 250002534931,
@@ -43248,7 +43374,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552594.jpg"
     },
     {
       "id": 250002534941,
@@ -46651,6 +46777,27 @@
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
       "foto": "fotos/250002550349.jpg"
+    },
+    {
+      "id": 250002552939,
+      "nome_completo": "FÁBIO NOVAIS MAGALHÃES",
+      "nome_urna": "FÁBIO MAGALHÃES",
+      "nome_social": "#NULO",
+      "numero": 4502,
+      "cargo": "DEPUTADO FEDERAL",
+      "partido_sigla": "PSDB",
+      "partido_nome": "PARTIDO DA SOCIAL DEMOCRACIA BRASILEIRA",
+      "coligacao": "FEDERAÇÃO",
+      "coligacao_composicao": "FEDERAÇÃO PSDB CIDADANIA(PSDB/CIDADANIA)",
+      "situacao_eleitoral": "#NULO",
+      "situacao_candidatura": "#NE",
+      "genero": "MASCULINO",
+      "grau_instrucao": "SUPERIOR INCOMPLETO",
+      "cor_raca": "PARDA",
+      "uf": "SP",
+      "codigo_ue": "SP",
+      "unidade_eleitoral": "SÃO PAULO",
+      "foto": null
     },
     {
       "id": 250002550350,
@@ -52131,7 +52278,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553062.jpg"
     },
     {
       "id": 250002536915,
@@ -52386,6 +52533,27 @@
       "foto": null
     },
     {
+      "id": 280002553884,
+      "nome_completo": "PABLO HENRIQUE COSTA MARCAL",
+      "nome_urna": "PABLO MARÇAL",
+      "nome_social": "#NULO",
+      "numero": 28,
+      "cargo": "PRESIDENTE",
+      "partido_sigla": "PRTB",
+      "partido_nome": "PARTIDO RENOVADOR TRABALHISTA BRASILEIRO",
+      "coligacao": "PARTIDO ISOLADO",
+      "coligacao_composicao": "PRTB",
+      "situacao_eleitoral": "#NULO",
+      "situacao_candidatura": "#NE",
+      "genero": "MASCULINO",
+      "grau_instrucao": "SUPERIOR COMPLETO",
+      "cor_raca": "BRANCA",
+      "uf": "BR",
+      "codigo_ue": "BR",
+      "unidade_eleitoral": "BRASIL",
+      "foto": null
+    },
+    {
       "id": 280002551932,
       "nome_completo": "RONALDO RAMOS CAIADO",
       "nome_urna": "RONALDO CAIADO",
@@ -52488,7 +52656,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002553252.jpg"
     },
     {
       "id": 250002552369,
@@ -52504,6 +52672,27 @@
       "situacao_eleitoral": "#NULO",
       "situacao_candidatura": "#NE",
       "genero": "FEMININO",
+      "grau_instrucao": "SUPERIOR COMPLETO",
+      "cor_raca": "BRANCA",
+      "uf": "SP",
+      "codigo_ue": "SP",
+      "unidade_eleitoral": "SÃO PAULO",
+      "foto": "fotos/250002552369.jpg"
+    },
+    {
+      "id": 250002553928,
+      "nome_completo": "RICARDO AUGUSTO MANGUE SCHIAVETTO",
+      "nome_urna": "GUTO SCHIAVETTO",
+      "nome_social": "#NULO",
+      "numero": 144,
+      "cargo": "SENADOR",
+      "partido_sigla": "MISSÃO",
+      "partido_nome": "PARTIDO MISSÃO",
+      "coligacao": "PARTIDO ISOLADO",
+      "coligacao_composicao": "MISSÃO",
+      "situacao_eleitoral": "#NULO",
+      "situacao_candidatura": "#NE",
+      "genero": "MASCULINO",
       "grau_instrucao": "SUPERIOR COMPLETO",
       "cor_raca": "BRANCA",
       "uf": "SP",
@@ -52572,7 +52761,7 @@
       "uf": "SP",
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
-      "foto": null
+      "foto": "fotos/250002552955.jpg"
     },
     {
       "id": 250002541308,
