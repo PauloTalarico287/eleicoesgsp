@@ -652,9 +652,13 @@ window.addEventListener("load", ppPostHeight);
 
 if(window.ResizeObserver){
   new ResizeObserver(function(){ ppPostHeight(); }).observe(document.body);
-} else {
-  setInterval(ppPostHeight, 500);
 }
+
+// Heartbeat: re-sends the current height continuously so any stale/out-of-order
+// message from mid-transition measurements self-corrects within a fraction of a second,
+// instead of leaving the parent iframe stuck at a wrong (usually too-tall) height.
+// Runs regardless of ResizeObserver support, since it's the main safety net.
+setInterval(ppPostHeight, 500);
 
 document.querySelectorAll(".pp-card-body").forEach(function(body){
   body.addEventListener("transitionend", ppPostHeight);
