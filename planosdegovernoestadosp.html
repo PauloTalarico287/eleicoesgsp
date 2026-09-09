@@ -533,7 +533,9 @@ renderBarChart("ppBarsFavela", ["favela","desfav"], function(d){ return (d.count
 
 var listEl = document.getElementById("ppList");
 
-DATA.forEach(function(d){
+var DATA_SORTED = DATA.slice().sort(function(a,b){ return total(b.counts) - total(a.counts); });
+
+DATA_SORTED.forEach(function(d){
   var card = document.createElement("div");
   card.className = "pp-card";
   card.id = "card-"+slug(d.name);
