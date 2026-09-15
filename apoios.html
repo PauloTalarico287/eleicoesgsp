@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apoios 2026 · Quem seu número apoia · Grande São Paulo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --vermelho:#E53F1A;
+    --azul:#2366B1;
+    --tinta:#171717;
+    --papel:#FAF8F5;
+    --linha:#E4E0D8;
+    --cinza:#6B675F;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--papel);
+    color:var(--tinta);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  header{
+    padding:2.5rem 1.5rem 1.5rem;
+    border-bottom:3px solid var(--tinta);
+    max-width:1000px;
+    margin:0 auto;
+  }
+  h1{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:clamp(1.6rem, 4vw, 2.4rem);
+    margin:0 0 .3rem;
+    letter-spacing:-.01em;
+  }
+  header p{
+    margin:0;
+    color:var(--cinza);
+    font-size:.95rem;
+  }
+  .faixa{
+    display:inline-block;
+    background:var(--vermelho);
+    color:#fff;
+    font-family:'Space Grotesk',sans-serif;
+    font-size:.7rem;
+    font-weight:700;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    padding:.2rem .55rem;
+    border-radius:3px;
+    margin-bottom:.7rem;
+  }
+
+  main{max-width:1000px; margin:0 auto; padding:1.5rem;}
+
+  .campo label{
+    display:block;
+    font-size:.72rem;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    color:var(--cinza);
+    margin-bottom:.3rem;
+  }
+  .busca{
+    display:flex;
+    gap:.6rem;
+    align-items:flex-end;
+    margin-bottom:.4rem;
+  }
+  .busca .campo{flex:1;}
+  input[type="text"]{
+    width:100%;
+    padding:.6rem .65rem;
+    border:1.5px solid var(--tinta);
+    border-radius:4px;
+    background:#fff;
+    font-family:'Inter',sans-serif;
+    font-size:1rem;
+    color:var(--tinta);
+  }
+  input:focus{
+    outline:3px solid var(--azul);
+    outline-offset:1px;
+  }
+  button{
+    padding:.6rem 1.1rem;
+    border:1.5px solid var(--tinta);
+    background:var(--tinta);
+    color:#fff;
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:.9rem;
+    cursor:pointer;
+    border-radius:4px;
+  }
+  button:active{opacity:.85;}
+  .dica{
+    font-size:.78rem;
+    color:var(--cinza);
+    margin:0 0 1.2rem;
+  }
+
+  .aviso{
+    display:none;
+    padding:.8rem 1rem;
+    border:1.5px solid var(--vermelho);
+    border-radius:4px;
+    color:var(--vermelho);
+    font-size:.88rem;
+    margin-bottom:1.2rem;
+    background:#fff;
+  }
+  .aviso.visivel{display:block;}
+
+  .resumo{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    flex-wrap:wrap;
+    gap:.5rem;
+    margin:1.2rem 0 .6rem;
+    padding-bottom:.5rem;
+    border-bottom:1.5px solid var(--linha);
+  }
+  .resumo h2{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:1.1rem;
+    margin:0;
+  }
+
+  .resultado{display:none;}
+  .resultado.visivel{display:block;}
+
+  .cards{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:1rem;
+  }
+  @media (max-width: 640px){
+    .cards{grid-template-columns:1fr;}
+  }
+  .card{
+    background:#fff;
+    border:1.5px solid var(--tinta);
+    border-radius:6px;
+    padding:1.1rem;
+    text-align:center;
+  }
+  .card h3{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:.68rem;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color:var(--cinza);
+    font-weight:700;
+    margin:0 0 .8rem;
+  }
+  .card img{
+    width:88px;
+    height:88px;
+    border-radius:50%;
+    object-fit:cover;
+    background:var(--linha);
+    margin-bottom:.6rem;
+  }
+  .card .sem-foto{
+    width:88px;
+    height:88px;
+    border-radius:50%;
+    background:var(--linha);
+    margin:0 auto .6rem;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:1.5rem;
+    color:var(--cinza);
+  }
+  .card .nome{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:.98rem;
+    margin-bottom:.15rem;
+  }
+  .card .partido{
+    color:var(--cinza);
+    font-size:.82rem;
+  }
+
+  footer{
+    max-width:1000px;
+    margin:0 auto;
+    padding:1.5rem;
+    font-size:.78rem;
+    color:var(--cinza);
+    border-top:1px solid var(--linha);
+  }
+  footer a{color:var(--azul);}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="faixa">Apoios 2026</div>
+  <h1>Pra quem seu número aponta?</h1>
+  <p>Digite o número do seu candidato a deputado federal ou estadual e veja quem o partido dele apoia para presidente e para governador de São Paulo.</p>
+</header>
+
+<main>
+  <div class="busca">
+    <div class="campo">
+      <label for="numero">Número do candidato</label>
+      <input type="text" id="numero" inputmode="numeric" maxlength="6" placeholder="Ex: 13123">
+    </div>
+    <button id="buscar">Ver apoio</button>
+  </div>
+  <p class="dica">Os dois primeiros números já identificam o partido — pode digitar o número completo do candidato.</p>
+
+  <div class="aviso" id="aviso"></div>
+
+  <div class="resultado" id="resultado">
+    <div class="resumo">
+      <h2 id="titulo-resultado">Resultado</h2>
+      <span id="subtitulo-resultado" style="font-size:.8rem; color:var(--cinza);"></span>
+    </div>
+    <div class="cards">
+      <div class="card" id="card-candidato">
+        <h3>Seu candidato</h3>
+      </div>
+      <div class="card" id="card-presidente">
+        <h3>Presidente</h3>
+      </div>
+      <div class="card" id="card-governador">
+        <h3>Governador (SP)</h3>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  Fonte: TSE — Cadastro de candidaturas e composição de coligações (2026).
+  <br>Construído por <strong>Agência Mural de Jornalismo das Periferias</strong>.
+</footer>
+
+<script>
+const ARQUIVO_APOIOS = "apoios.json";
+let baseDeApoios = null;
+let baseDeCandidatos = null;
+
+async function carregarApoios() {
+  try {
+    const resp = await fetch(ARQUIVO_APOIOS, { cache: "no-store" });
+    if (!resp.ok) throw new Error("HTTP " + resp.status);
+    const dados = await resp.json();
+    baseDeApoios = dados.apoios || {};
+    baseDeCandidatos = dados.candidatos || {};
+  } catch (erro) {
+    mostrarAviso(
+      "Não consegui carregar os dados de apoios agora. Tente recarregar a página em instantes."
+    );
+    console.error(erro);
+  }
+}
+
+function mostrarAviso(texto) {
+  const el = document.getElementById("aviso");
+  el.textContent = texto;
+  el.classList.add("visivel");
+}
+
+function esconderAviso() {
+  document.getElementById("aviso").classList.remove("visivel");
+}
+
+function preencherCard(idCard, registro) {
+  const card = document.getElementById(idCard);
+  const titulo = card.querySelector("h3").outerHTML;
+
+  if (!registro) {
+    card.innerHTML = titulo + `
+      <div class="sem-foto">?</div>
+      <div class="nome">Sem indicação</div>
+      <div class="partido">Candidatura solo ou não identificada</div>
+    `;
+    return;
+  }
+
+  const imagem = registro.foto
+    ? `<img src="${registro.foto}" alt="${registro.nome_urna}">`
+    : `<div class="sem-foto">&#128247;</div>`;
+
+  card.innerHTML = titulo + `
+    ${imagem}
+    <div class="nome">${registro.nome_urna || "—"}</div>
+    <div class="partido">${registro.partido_sigla || ""}</div>
+  `;
+}
+
+function preencherCardCandidato(idCard, registro, numeroDigitado) {
+  const card = document.getElementById(idCard);
+  const titulo = card.querySelector("h3").outerHTML;
+
+  if (!registro) {
+    card.innerHTML = titulo + `
+      <div class="sem-foto">?</div>
+      <div class="nome">Número ${numeroDigitado}</div>
+      <div class="partido">Não achei esse candidato — mas seguimos pelo partido</div>
+    `;
+    return;
+  }
+
+  const imagem = registro.foto
+    ? `<img src="${registro.foto}" alt="${registro.nome_urna}">`
+    : `<div class="sem-foto">&#128247;</div>`;
+
+  card.innerHTML = titulo + `
+    ${imagem}
+    <div class="nome">${registro.nome_urna || "—"}</div>
+    <div class="partido">${registro.partido_sigla || ""} · ${
+      registro.cargo === "DEPUTADO FEDERAL" ? "Dep. Federal" : "Dep. Estadual"
+    }</div>
+  `;
+}
+
+function buscar() {
+  esconderAviso();
+  const valor = document.getElementById("numero").value.trim();
+
+  if (valor.length < 2 || !/^\d+$/.test(valor)) {
+    mostrarAviso("Digite pelo menos os dois primeiros números do candidato.");
+    document.getElementById("resultado").classList.remove("visivel");
+    return;
+  }
+
+  if (!baseDeApoios || !baseDeCandidatos) {
+    mostrarAviso("Os dados ainda estão carregando, tente de novo em instantes.");
+    return;
+  }
+
+  const numeroPartido = valor.slice(0, 2);
+  const registroApoio = baseDeApoios[numeroPartido];
+  const registroCandidato = baseDeCandidatos[valor];
+
+  if (!registroApoio) {
+    mostrarAviso(
+      `Não encontrei o partido de número ${numeroPartido}. Confira se digitou certo.`
+    );
+    document.getElementById("resultado").classList.remove("visivel");
+    return;
+  }
+
+  document.getElementById("titulo-resultado").textContent =
+    registroCandidato ? registroCandidato.nome_urna : `Partido ${numeroPartido}`;
+  document.getElementById("subtitulo-resultado").textContent =
+    (registroCandidato ? registroCandidato.partido_sigla : "") +
+    (registroApoio.presidente ? ` · apoia ${registroApoio.presidente.nome_urna} pra presidente` : "");
+
+  preencherCardCandidato("card-candidato", registroCandidato, valor);
+  preencherCard("card-presidente", registroApoio.presidente);
+  preencherCard("card-governador", registroApoio.governador);
+
+  document.getElementById("resultado").classList.add("visivel");
+}
+
+document.getElementById("buscar").addEventListener("click", buscar);
+document.getElementById("numero").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") buscar();
+});
+
+carregarApoios();
+</script>
+
+</body>
+</html>
