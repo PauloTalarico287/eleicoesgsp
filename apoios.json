@@ -1,0 +1,40 @@
+{
+  "_aviso": "Arquivo DE TESTE, montado à mão com os dados de coligação presidencial/governador de SP já apurados na conversa. O apoios.json real deve ser gerado por gerar_apoios.py a partir do candidatos_sp_2026.json. Os três candidatos em 'candidatos' são FICTÍCIOS, só pra testar o card 'Seu candidato'.",
+  "gerado_em": "teste-manual",
+  "apoios": {
+    "10": { "governador": { "nome_urna": "TARCÍSIO DE FREITAS", "partido_sigla": "REPUBLICANOS", "numero_candidato": "10", "foto": null } },
+    "11": { "governador": { "nome_urna": "TARCÍSIO DE FREITAS", "partido_sigla": "REPUBLICANOS", "numero_candidato": "10", "foto": null } },
+    "12": { "presidente": { "nome_urna": "LULA", "partido_sigla": "PT", "numero_candidato": "13", "foto": null }, "governador": { "nome_urna": "FERNANDO HADDAD", "partido_sigla": "PT", "numero_candidato": "13", "foto": null } },
+    "13": { "presidente": { "nome_urna": "LULA", "partido_sigla": "PT", "numero_candidato": "13", "foto": null }, "governador": { "nome_urna": "FERNANDO HADDAD", "partido_sigla": "PT", "numero_candidato": "13", "foto": null } },
+    "14": { "presidente": { "nome_urna": "RENAN SANTOS", "partido_sigla": "MISSÃO", "numero_candidato": "14", "foto": null } },
+    "15": { "governador": { "nome_urna": "TARCÍSIO DE FREITAS", "partido_sigla": "REPUBLICANOS", "numero_candidato": "10", "foto": null } },
+    "16": { "presidente": { "nome_urna": "HERTZ DIAS", "partido_sigla": "PSTU", "numero_candidato": "16", "foto": null }, "governador": { "nome_urna": "VERA LÚCIA SALGADO", "partido_sigla": "PSTU", "numero_candidato": "16", "foto": null } },
+    "18": { "presidente": { "nome_urna": "LULA", "partido_sigla": "PT", "numero_candidato": "13", "foto": null }, "governador": { "nome_urna": "FERNANDO HADDAD", "partido_sigla": "PT", "numero_candidato": "13", "foto": null } },
+    "20": {},
+    "21": { "presidente": { "nome_urna": "EDMILSON COSTA", "partido_sigla": "PCB", "numero_candidato": "21", "foto": null }, "governador": { "nome_urna": "CARLOS MACHADO", "partido_sigla": "PCB", "numero_candidato": "21", "foto": null } },
+    "22": { "presidente": { "nome_urna": "FLÁVIO BOLSONARO", "partido_sigla": "PL", "numero_candidato": "22", "foto": null }, "governador": { "nome_urna": "TARCÍSIO DE FREITAS", "partido_sigla": "REPUBLICANOS", "numero_candidato": "10", "foto": null } },
+    "23": {},
+    "25": { "governador": { "nome_urna": "TARCÍSIO DE FREITAS", "partido_sigla": "REPUBLICANOS", "numero_candidato": "10", "foto": null } },
+    "27": { "presidente": { "nome_urna": "CLARIANA BARÃO", "partido_sigla": "DC", "numero_candidato": "27", "foto": null } },
+    "28": {},
+    "29": { "presidente": { "nome_urna": "RUI COSTA PIMENTA", "partido_sigla": "PCO", "numero_candidato": "29", "foto": null }, "governador": { "nome_urna": "IZADORA DIAS", "partido_sigla": "PCO", "numero_candidato": "29", "foto": null } },
+    "30": { "presidente": { "nome_urna": "ZEMA", "partido_sigla": "NOVO", "numero_candidato": "30", "foto": null } },
+    "33": {},
+    "35": { "presidente": { "nome_urna": "VETERINÁRIO WILSON GRASSI", "partido_sigla": "DEMOCRATA", "numero_candidato": "35", "foto": null }, "governador": { "nome_urna": "TARCÍSIO DE FREITAS", "partido_sigla": "REPUBLICANOS", "numero_candidato": "10", "foto": null } },
+    "36": { "governador": { "nome_urna": "POLICIAL EDJANE", "partido_sigla": "AGIR", "numero_candidato": "36", "foto": null } },
+    "40": { "presidente": { "nome_urna": "LULA", "partido_sigla": "PT", "numero_candidato": "13", "foto": null }, "governador": { "nome_urna": "FERNANDO HADDAD", "partido_sigla": "PT", "numero_candidato": "13", "foto": null } },
+    "43": { "presidente": { "nome_urna": "LULA", "partido_sigla": "PT", "numero_candidato": "13", "foto": null }, "governador": { "nome_urna": "FERNANDO HADDAD", "partido_sigla": "PT", "numero_candidato": "13", "foto": null } },
+    "44": { "governador": { "nome_urna": "TARCÍSIO DE FREITAS", "partido_sigla": "REPUBLICANOS", "numero_candidato": "10", "foto": null } },
+    "45": {},
+    "50": { "presidente": { "nome_urna": "LULA", "partido_sigla": "PT", "numero_candidato": "13", "foto": null }, "governador": { "nome_urna": "FERNANDO HADDAD", "partido_sigla": "PT", "numero_candidato": "13", "foto": null } },
+    "55": { "presidente": { "nome_urna": "RONALDO CAIADO", "partido_sigla": "PSD", "numero_candidato": "55", "foto": null }, "governador": { "nome_urna": "TARCÍSIO DE FREITAS", "partido_sigla": "REPUBLICANOS", "numero_candidato": "10", "foto": null } },
+    "65": { "presidente": { "nome_urna": "LULA", "partido_sigla": "PT", "numero_candidato": "13", "foto": null }, "governador": { "nome_urna": "FERNANDO HADDAD", "partido_sigla": "PT", "numero_candidato": "13", "foto": null } },
+    "70": { "presidente": { "nome_urna": "AUGUSTO CURY", "partido_sigla": "AVANTE", "numero_candidato": "70", "foto": null }, "governador": { "nome_urna": "TARCÍSIO DE FREITAS", "partido_sigla": "REPUBLICANOS", "numero_candidato": "10", "foto": null } },
+    "77": { "governador": { "nome_urna": "TARCÍSIO DE FREITAS", "partido_sigla": "REPUBLICANOS", "numero_candidato": "10", "foto": null } },
+    "80": { "presidente": { "nome_urna": "SAMARA MARTINS", "partido_sigla": "UP", "numero_candidato": "80", "foto": null }, "governador": { "nome_urna": "VIVIAN MENDES", "partido_sigla": "UP", "numero_candidato": "80", "foto": null } }
+  },
+  "candidatos": {
+    "13123": { "nome_urna": "CANDIDATO FICTÍCIO (teste)", "partido_sigla": "PT", "cargo": "DEPUTADO FEDERAL", "foto": null },
+    "2245": { "nome_urna": "CANDIDATA FICTÍCIA (teste)", "partido_sigla": "PL", "cargo": "DEPUTADO ESTADUAL", "foto": null }
+  }
+}
