@@ -450,15 +450,16 @@ function confirma(){
 
   var code = digits.slice(0, 2);
   var party = PARTY_DATA[code];
+  var deputado = DEPUTADOS[digits];
+
   if(!party){
-    errorEl.textContent = "Não encontramos esse número de partido. Confira se digitou certo.";
+    errorEl.textContent = "Esse número não tem nenhum candidato.";
     errorEl.style.display = "block";
     resultadoEl.style.display = "none";
     return;
   }
   errorEl.style.display = "none";
 
-  var deputado = DEPUTADOS[digits];
   if(deputado){
     youCardEl.style.display = "flex";
     youCardEl.className = "pp-you-card";
@@ -474,8 +475,9 @@ function confirma(){
     youCardEl.innerHTML = "";
   }
 
-  document.getElementById("ppPartyLine").innerHTML =
-    (deputado ? 'O partido desta candidatura' : 'Partido <b>'+code+' — '+party.name+'</b>') + ' apoia:';
+  document.getElementById("ppPartyLine").innerHTML = deputado
+    ? 'O partido desta candidatura apoia:'
+    : 'Esse número não é de nenhum candidato, mas o <b>'+code+'</b> é do partido <b>'+party.name+'</b>, que apoia:';
 
   personCard(
     "ppPresidenteBox",
