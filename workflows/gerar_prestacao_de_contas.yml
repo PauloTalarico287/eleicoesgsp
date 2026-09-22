@@ -1,0 +1,35 @@
+name: Prestação de contas SP — Deputados 2026
+
+on:
+  workflow_dispatch:
+    inputs:
+      modo:
+        description: "Deixe em branco para rodar normal, ou 'colunas' só pra inspecionar os nomes de coluna"
+        required: false
+        default: ""
+
+jobs:
+  gerar-planilha:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependências
+        run: pip install pandas requests openpyxl
+
+      - name: Baixar, filtrar e agregar
+        env:
+          MODO: ${{ github.event.inputs.modo }}
+        run: python scripts_github_actions/prestacao_contas_sp_deputados_actions.py
+
+      - name: Publicar planilha como artefato
+        if: ${{ github.event.inputs.modo == '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: prestacao-contas-sp-deputados-2026
+          path: resultados/prestacao_contas_sp_deputados_2026.xlsx
+          retention-days: 14
