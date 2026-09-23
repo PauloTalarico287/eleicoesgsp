@@ -14,6 +14,8 @@ import pandas as pd
 import requests
 from openpyxl.styles import Font
 from openpyxl.utils import get_column_letter
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 ANO = 2026
 UF_ALVO = "SP"
@@ -23,12 +25,19 @@ URL_ZIP_CANDIDATOS = (
     "https://cdn.tse.jus.br/estatistica/sead/odsele/prestacao_contas/"
     f"prestacao_de_contas_eleitorais_candidatos_{ANO}.zip"
 )
+URL_DATASET = "https://dadosabertos.tse.jus.br/dataset/prestacao-de-contas-eleitorais-2026"
 
+# Mesmo padrão usado em coleta_candidatos_sp_2026.py, que já funciona contra
+# o CDN do TSE pelo Actions: navegador simulado + Referer + aquecimento de
+# sessão na página do dataset antes de bater na CDN.
 HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
         "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
-    )
+    ),
+    "Accept": "application/zip,application/octet-stream,*/*",
+    "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
+    "Referer": "https://dadosabertos.tse.jus.br/",
 }
 
 PASTA_DADOS = "dados_tse"
@@ -48,13 +57,43 @@ COL_VALOR_DESPESA_CONTRATADA = "VR_DESPESA_CONTRATADA"
 COL_VALOR_DESPESA_PAGA = "VR_PAGTO_DESPESA"
 
 
+def _sessao_com_retry() -> requests.Session:
+    sessao = requests.Session()
+    sessao.headers.update(HEADERS)
+    retry = Retry(
+        total=4,
+        backoff_factor=2,  # 2s, 4s, 8s, 16s entre tentativas
+        status_forcelist=[403, 429, 500, 502, 503, 504],
+        allowed_methods=["GET"],
+    )
+    sessao.mount("https://", HTTPAdapter(max_retries=retry))
+    return sessao
+
+
 def baixar_e_extrair(url: str, pasta_destino: str = PASTA_DADOS) -> str:
     import zipfile
 
     os.makedirs(pasta_destino, exist_ok=True)
     caminho_zip = os.path.join(pasta_destino, "prestacao_contas.zip")
     print(f"Baixando {url} ...")
-    with requests.get(url, headers=HEADERS, timeout=600, stream=True) as resp:
+
+    sessao = _sessao_com_retry()
+
+    # "Esquenta" cookies/sessão visitando a página do dataset antes da CDN —
+    # best-effort, ignora erro aqui.
+    try:
+        sessao.get(URL_DATASET, timeout=30)
+    except requests.RequestException:
+        pass
+
+    with sessao.get(url, timeout=600, stream=True) as resp:
+        if resp.status_code == 403:
+            raise PermissionError(
+                "Bloqueio 403 persistente no CDN do TSE mesmo com sessão "
+                "aquecida e retry. Pode ser que este arquivo específico "
+                "tenha proteção adicional (alta demanda na prestação "
+                "parcial) — vale tentar de novo mais tarde."
+            )
         resp.raise_for_status()
         total = int(resp.headers.get("content-length", 0))
         baixado = 0
