@@ -313,10 +313,38 @@
 
   .linha-topo {
     display: flex;
-    justify-content: space-between;
     align-items: flex-start;
-    gap: 12px;
-    flex-wrap: wrap;
+    gap: 14px;
+  }
+
+  .foto-candidato {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: var(--linha);
+    border: 1px solid var(--linha);
+  }
+
+  .foto-placeholder {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: var(--linha);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--tinta-suave);
+    font-family: var(--font-titulo);
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  .linha-info {
+    flex: 1;
+    min-width: 0;
   }
 
   .nome-candidato {
@@ -369,21 +397,23 @@
 
   .bloco-valor .rotulo {
     font-size: 11px;
-    font-weight: 600;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.03em;
     color: var(--tinta-suave);
-    margin: 0 0 3px;
+    margin: 0 0 4px;
   }
 
   .bloco-valor .numero {
     font-family: var(--font-titulo);
-    font-weight: 600;
-    font-size: 15px;
+    font-weight: 700;
+    font-size: 19px;
     margin: 0;
     font-variant-numeric: tabular-nums;
+    color: var(--tinta);
   }
 
+  .bloco-valor .numero.arrecadado { color: var(--azul); }
   .bloco-valor .numero.alerta { color: var(--vermelho); }
   .bloco-valor .numero.ok { color: var(--verde); }
 
@@ -659,29 +689,35 @@
 
       var classeAberto = c.aberto > 0 ? 'alerta' : 'ok';
 
+      var iniciais = c.candidato.split(' ').slice(0, 2).map(function (p) { return p[0] || ''; }).join('');
+      var blocoFoto = c.foto
+        ? '<img class="foto-candidato" src="' + c.foto + '" alt="Foto de ' + c.candidato + '" loading="lazy">'
+        : '<div class="foto-placeholder">' + iniciais + '</div>';
+
       linha.innerHTML =
         '<div class="linha-topo">' +
-          '<div>' +
+          blocoFoto +
+          '<div class="linha-info">' +
             '<p class="nome-candidato">' + c.candidato + '</p>' +
             '<p class="numero-partido"><strong>' + c.numero + '</strong> · ' + c.partido + '</p>' +
             '<p class="cargo-tags">' + c.cargo +
               (c.genero ? ' <span class="tag">' + c.genero + '</span>' : '') +
               (c.cor_raca ? ' <span class="tag">' + c.cor_raca + '</span>' : '') +
             '</p>' +
-          '</div>' +
-        '</div>' +
-        '<div class="valores">' +
-          '<div class="bloco-valor">' +
-            '<p class="rotulo">Arrecadado</p>' +
-            '<p class="numero">' + formatadorMoeda.format(c.arrecadado) + '</p>' +
-          '</div>' +
-          '<div class="bloco-valor">' +
-            '<p class="rotulo">Pago</p>' +
-            '<p class="numero">' + formatadorMoeda.format(c.pago) + '</p>' +
-          '</div>' +
-          '<div class="bloco-valor">' +
-            '<p class="rotulo">Em aberto</p>' +
-            '<p class="numero ' + classeAberto + '">' + formatadorMoeda.format(Math.max(0, c.aberto)) + '</p>' +
+            '<div class="valores">' +
+              '<div class="bloco-valor">' +
+                '<p class="rotulo">Arrecadado</p>' +
+                '<p class="numero arrecadado">' + formatadorMoeda.format(c.arrecadado) + '</p>' +
+              '</div>' +
+              '<div class="bloco-valor">' +
+                '<p class="rotulo">Pago</p>' +
+                '<p class="numero">' + formatadorMoeda.format(c.pago) + '</p>' +
+              '</div>' +
+              '<div class="bloco-valor">' +
+                '<p class="rotulo">Em aberto</p>' +
+                '<p class="numero ' + classeAberto + '">' + formatadorMoeda.format(Math.max(0, c.aberto)) + '</p>' +
+              '</div>' +
+            '</div>' +
           '</div>' +
         '</div>';
       elLista.appendChild(linha);
@@ -690,52 +726,82 @@
 
   document.getElementById('url-usada').textContent = URL_PLANILHA;
 
-  Papa.parse(URL_PLANILHA, {
-    download: true,
-    header: true,
-    skipEmptyLines: true,
-    complete: function (resultado) {
-      if (!resultado.data || !resultado.data.length) {
-        throw new Error('Planilha vazia ou formato inesperado.');
-      }
+  function carregarCSV(url) {
+    return new Promise(function (resolve, reject) {
+      Papa.parse(url, {
+        download: true,
+        header: true,
+        skipEmptyLines: true,
+        complete: resolve,
+        error: reject
+      });
+    });
+  }
 
-      candidatos = resultado.data.map(function (linha) {
-        return {
-          candidato: (linha.candidato || '').trim(),
-          numero: (linha.numero || '').trim(),
-          partido: (linha.partido || '').trim(),
-          cargo: (linha.cargo || '').trim(),
-          genero: (linha.genero || '').trim(),
-          cor_raca: (linha.cor_raca || '').trim(),
-          arrecadado: parseMoeda(linha.total_arrecadado),
-          contratado: parseMoeda(linha.total_contratado),
-          pago: parseMoeda(linha.total_pago),
-          aberto: parseMoeda(linha.diferenca_contratado_menos_pago)
-        };
-      }).filter(function (c) { return c.candidato; });
+  // Fotos já existentes no repositório (mesmo arquivo que o candidatos.html
+  // usa). Se não existir ou não carregar, a página segue normal, só sem
+  // foto — isso não pode travar os dados financeiros.
+  function carregarFotos() {
+    return fetch('candidatos_sp_2026.json')
+      .then(function (resp) { if (!resp.ok) throw new Error('HTTP ' + resp.status); return resp.json(); })
+      .then(function (dados) { return dados.candidatos || []; })
+      .catch(function () { return []; });
+  }
 
-      elTextoAtualizacao.textContent = candidatos.length.toLocaleString('pt-BR') +
-        ' candidaturas carregadas · dados da prestação de contas parcial';
+  Promise.all([carregarCSV(URL_PLANILHA), carregarFotos()]).then(function (resultados) {
+    var resultadoCSV = resultados[0];
+    var candidatosComFoto = resultados[1];
 
-      var cargos = Array.from(new Set(candidatos.map(function (c) { return c.cargo; }).filter(Boolean)));
-      var partidos = Array.from(new Set(candidatos.map(function (c) { return c.partido; }).filter(Boolean)));
-      var generos = Array.from(new Set(candidatos.map(function (c) { return c.genero; }).filter(Boolean)));
-      var racas = Array.from(new Set(candidatos.map(function (c) { return c.cor_raca; }).filter(Boolean)));
-
-      popularSelect(elFiltroCargo, cargos);
-      popularSelect(elFiltroPartido, partidos);
-      popularSelect(elFiltroGenero, generos);
-      popularSelect(elFiltroRaca, racas);
-
-      renderizarResumo();
-      renderizarLista();
-    },
-    error: function (erro) {
-      console.error(erro);
-      elTextoAtualizacao.textContent = 'Erro ao carregar dados';
-      elEstadoErro.style.display = 'block';
-      elContador.textContent = '';
+    if (!resultadoCSV.data || !resultadoCSV.data.length) {
+      throw new Error('Planilha vazia ou formato inesperado.');
     }
+
+    var fotoPorChave = {};
+    candidatosComFoto.forEach(function (c) {
+      if (!c.foto) return;
+      var chave = String(c.numero).trim() + '|' + String(c.cargo || '').trim().toUpperCase();
+      fotoPorChave[chave] = c.foto;
+    });
+
+    candidatos = resultadoCSV.data.map(function (linha) {
+      var numero = (linha.numero || '').trim();
+      var cargo = (linha.cargo || '').trim();
+      var chaveFoto = numero + '|' + cargo.toUpperCase();
+      return {
+        candidato: (linha.candidato || '').trim(),
+        numero: numero,
+        partido: (linha.partido || '').trim(),
+        cargo: cargo,
+        genero: (linha.genero || '').trim(),
+        cor_raca: (linha.cor_raca || '').trim(),
+        arrecadado: parseMoeda(linha.total_arrecadado),
+        contratado: parseMoeda(linha.total_contratado),
+        pago: parseMoeda(linha.total_pago),
+        aberto: parseMoeda(linha.diferenca_contratado_menos_pago),
+        foto: fotoPorChave[chaveFoto] || null
+      };
+    }).filter(function (c) { return c.candidato; });
+
+    elTextoAtualizacao.textContent = candidatos.length.toLocaleString('pt-BR') +
+      ' candidaturas carregadas · dados da prestação de contas parcial';
+
+    var cargos = Array.from(new Set(candidatos.map(function (c) { return c.cargo; }).filter(Boolean)));
+    var partidos = Array.from(new Set(candidatos.map(function (c) { return c.partido; }).filter(Boolean)));
+    var generos = Array.from(new Set(candidatos.map(function (c) { return c.genero; }).filter(Boolean)));
+    var racas = Array.from(new Set(candidatos.map(function (c) { return c.cor_raca; }).filter(Boolean)));
+
+    popularSelect(elFiltroCargo, cargos);
+    popularSelect(elFiltroPartido, partidos);
+    popularSelect(elFiltroGenero, generos);
+    popularSelect(elFiltroRaca, racas);
+
+    renderizarResumo();
+    renderizarLista();
+  }).catch(function (erro) {
+    console.error(erro);
+    elTextoAtualizacao.textContent = 'Erro ao carregar dados';
+    elEstadoErro.style.display = 'block';
+    elContador.textContent = '';
   });
 
   elBusca.addEventListener('input', renderizarLista);
