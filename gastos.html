@@ -202,6 +202,10 @@
     border-radius: 6px 0 0 6px;
   }
 
+  .barra-preenchimento.despesa {
+    background: var(--vermelho);
+  }
+
   /* ---------- Controles ---------- */
   .controles {
     max-width: 1100px;
@@ -417,6 +421,54 @@
   .bloco-valor .numero.alerta { color: var(--vermelho); }
   .bloco-valor .numero.ok { color: var(--verde); }
 
+  /* ---------- Botão e painel de detalhe por candidato ---------- */
+  .botao-detalhe {
+    margin-top: 14px;
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: var(--font-corpo);
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--azul);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .botao-detalhe:hover { text-decoration: underline; }
+
+  .botao-detalhe .seta { font-size: 10px; }
+
+  .painel-detalhe {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--linha);
+  }
+
+  .colunas-detalhe {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+  }
+
+  .coluna-detalhe h3 {
+    font-family: var(--font-titulo);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin: 0 0 12px;
+    color: var(--tinta-suave);
+  }
+
+  .detalhe-vazio {
+    font-size: 13px;
+    color: var(--tinta-suave);
+    margin: 0;
+  }
+
   /* ---------- Estados vazios / carregando ---------- */
   .estado-info {
     text-align: center;
@@ -554,7 +606,15 @@
   // se a planilha publicada mudar de endereço.
   var URL_PLANILHA = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR3Do420SMF-FmHUpcYSsFSCqaE8HsW1SIiSxbBvkR7GEbwzr9wIJEwirIIQjoUWfQKBHcPIwX6K9Aa/pub?output=csv';
 
+  // Abas "Detalhe receitas" e "Detalhe despesas" publicadas separadamente —
+  // alimentam o clique de "ver de onde veio / com o que gastou" por candidato.
+  var URL_DETALHE_RECEITAS = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR3Do420SMF-FmHUpcYSsFSCqaE8HsW1SIiSxbBvkR7GEbwzr9wIJEwirIIQjoUWfQKBHcPIwX6K9Aa/pub?gid=570241860&single=true&output=csv';
+  var URL_DETALHE_DESPESAS = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR3Do420SMF-FmHUpcYSsFSCqaE8HsW1SIiSxbBvkR7GEbwzr9wIJEwirIIQjoUWfQKBHcPIwX6K9Aa/pub?gid=309868348&single=true&output=csv';
+
   var candidatos = [];
+  // chave "numero|CARGO" -> lista de { fonte, valor } / { categoria, contratado, pago }
+  var mapaDetalheReceitas = {};
+  var mapaDetalheDespesas = {};
 
   var elLista = document.getElementById('lista');
   var elContador = document.getElementById('contador');
@@ -647,6 +707,52 @@
     elReparticoes.style.display = 'grid';
   }
 
+  // Monta o conteúdo do painel de detalhe (receitas por fonte + despesas por
+  // categoria) de um candidato. Só é chamado na hora do clique — com +2 mil
+  // candidaturas, não compensa gerar isso tudo de antemão pra cada linha.
+  function construirPainelDetalheHtml(chave) {
+    var receitas = mapaDetalheReceitas[chave] || [];
+    var despesas = mapaDetalheDespesas[chave] || [];
+
+    var htmlReceitas;
+    if (receitas.length) {
+      var totalReceitas = receitas.reduce(function (s, r) { return s + r.valor; }, 0);
+      htmlReceitas = receitas.map(function (r) {
+        var pct = totalReceitas > 0 ? (r.valor / totalReceitas * 100) : 0;
+        return '<div class="linha-barra">' +
+          '<div class="topo">' +
+            '<span class="rotulo-categoria">' + r.fonte + '</span>' +
+            '<span class="valor-categoria">' + formatadorMoeda.format(r.valor) + ' · ' + pct.toFixed(1) + '%</span>' +
+          '</div>' +
+          '<div class="barra-trilha"><div class="barra-preenchimento" style="width:' + pct.toFixed(1) + '%"></div></div>' +
+        '</div>';
+      }).join('');
+    } else {
+      htmlReceitas = '<p class="detalhe-vazio">Detalhamento por fonte ainda não publicado.</p>';
+    }
+
+    var htmlDespesas;
+    if (despesas.length) {
+      htmlDespesas = despesas.map(function (d) {
+        var pct = d.contratado > 0 ? Math.min(100, (d.pago / d.contratado) * 100) : (d.pago > 0 ? 100 : 0);
+        return '<div class="linha-barra">' +
+          '<div class="topo">' +
+            '<span class="rotulo-categoria">' + d.categoria + '</span>' +
+            '<span class="valor-categoria">Pago ' + formatadorMoeda.format(d.pago) + ' de ' + formatadorMoeda.format(d.contratado) + ' contratado</span>' +
+          '</div>' +
+          '<div class="barra-trilha"><div class="barra-preenchimento despesa" style="width:' + pct.toFixed(1) + '%"></div></div>' +
+        '</div>';
+      }).join('');
+    } else {
+      htmlDespesas = '<p class="detalhe-vazio">Detalhamento por categoria ainda não publicado.</p>';
+    }
+
+    return '<div class="colunas-detalhe">' +
+      '<div class="coluna-detalhe"><h3>De onde veio o dinheiro</h3>' + htmlReceitas + '</div>' +
+      '<div class="coluna-detalhe"><h3>Com o que já gastou</h3>' + htmlDespesas + '</div>' +
+    '</div>';
+  }
+
   function renderizarLista() {
     var termoBusca = elBusca.value.trim().toLowerCase();
     var cargoSel = elFiltroCargo.value;
@@ -719,10 +825,37 @@
               '</div>' +
             '</div>' +
           '</div>' +
-        '</div>';
+        '</div>' +
+        '<button class="botao-detalhe" type="button" data-chave="' + c.chave + '" aria-expanded="false">' +
+          'Ver de onde veio e com o que já gastou <span class="seta">▾</span>' +
+        '</button>' +
+        '<div class="painel-detalhe" hidden></div>';
       elLista.appendChild(linha);
     });
   }
+
+  // Delegação de clique: um único listener no container cobre todos os
+  // botões, inclusive os recriados a cada filtro/ordenação. O conteúdo do
+  // painel só é montado na primeira vez que aquele candidato é aberto.
+  elLista.addEventListener('click', function (evento) {
+    var botao = evento.target.closest('.botao-detalhe');
+    if (!botao) return;
+    var painel = botao.nextElementSibling;
+    var estaAberto = !painel.hasAttribute('hidden');
+    if (estaAberto) {
+      painel.setAttribute('hidden', '');
+      botao.setAttribute('aria-expanded', 'false');
+      botao.querySelector('.seta').textContent = '▾';
+    } else {
+      if (!painel.dataset.carregado) {
+        painel.innerHTML = construirPainelDetalheHtml(botao.getAttribute('data-chave'));
+        painel.dataset.carregado = '1';
+      }
+      painel.removeAttribute('hidden');
+      botao.setAttribute('aria-expanded', 'true');
+      botao.querySelector('.seta').textContent = '▴';
+    }
+  });
 
   document.getElementById('url-usada').textContent = URL_PLANILHA;
 
@@ -748,9 +881,25 @@
       .catch(function () { return []; });
   }
 
-  Promise.all([carregarCSV(URL_PLANILHA), carregarFotos()]).then(function (resultados) {
+  // As duas abas de detalhe são um extra sobre os dados principais: se
+  // falharem ou ainda não existirem, a página segue normal, só sem o botão
+  // de detalhe funcionando — isso não pode travar o painel inteiro.
+  function carregarDetalheCSV(url) {
+    return carregarCSV(url)
+      .then(function (resultado) { return (resultado && resultado.data) || []; })
+      .catch(function () { return []; });
+  }
+
+  Promise.all([
+    carregarCSV(URL_PLANILHA),
+    carregarFotos(),
+    carregarDetalheCSV(URL_DETALHE_RECEITAS),
+    carregarDetalheCSV(URL_DETALHE_DESPESAS)
+  ]).then(function (resultados) {
     var resultadoCSV = resultados[0];
     var candidatosComFoto = resultados[1];
+    var linhasDetalheReceitas = resultados[2];
+    var linhasDetalheDespesas = resultados[3];
 
     if (!resultadoCSV.data || !resultadoCSV.data.length) {
       throw new Error('Planilha vazia ou formato inesperado.');
@@ -778,9 +927,45 @@
         contratado: parseMoeda(linha.total_contratado),
         pago: parseMoeda(linha.total_pago),
         aberto: parseMoeda(linha.diferenca_contratado_menos_pago),
-        foto: fotoPorChave[chaveFoto] || null
+        foto: fotoPorChave[chaveFoto] || null,
+        chave: chaveFoto
       };
     }).filter(function (c) { return c.candidato; });
+
+    // Monta os mapas chave -> detalhe a partir das duas abas extras (se
+    // ainda não publicadas, as listas vêm vazias e o botão só mostra o
+    // aviso de "sem detalhamento disponível").
+    linhasDetalheReceitas.forEach(function (linha) {
+      var numero = (linha.numero || '').trim();
+      var cargo = (linha.cargo || '').trim().toUpperCase();
+      var fonte = (linha.fonte || '').trim();
+      var valor = parseMoeda(linha.valor);
+      if (!numero || !fonte) return;
+      var chave = numero + '|' + cargo;
+      if (!mapaDetalheReceitas[chave]) mapaDetalheReceitas[chave] = [];
+      mapaDetalheReceitas[chave].push({ fonte: fonte, valor: valor });
+    });
+
+    linhasDetalheDespesas.forEach(function (linha) {
+      var numero = (linha.numero || '').trim();
+      var cargo = (linha.cargo || '').trim().toUpperCase();
+      var categoria = (linha.categoria || '').trim();
+      if (!numero || !categoria) return;
+      var chave = numero + '|' + cargo;
+      if (!mapaDetalheDespesas[chave]) mapaDetalheDespesas[chave] = [];
+      mapaDetalheDespesas[chave].push({
+        categoria: categoria,
+        contratado: parseMoeda(linha.total_contratado),
+        pago: parseMoeda(linha.total_pago)
+      });
+    });
+
+    Object.keys(mapaDetalheReceitas).forEach(function (chave) {
+      mapaDetalheReceitas[chave].sort(function (a, b) { return b.valor - a.valor; });
+    });
+    Object.keys(mapaDetalheDespesas).forEach(function (chave) {
+      mapaDetalheDespesas[chave].sort(function (a, b) { return b.contratado - a.contratado; });
+    });
 
     elTextoAtualizacao.textContent = candidatos.length.toLocaleString('pt-BR') +
       ' candidaturas carregadas · dados da prestação de contas parcial';
