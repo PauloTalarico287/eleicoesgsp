@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Financiamento de campanha SP 2026 — Mural</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<style>
+  :root {
+    --vermelho: #E53F1A;
+    --azul: #2366B1;
+    --verde: #226A3E;
+    --tinta: #1A1A1A;
+    --tinta-suave: #56534E;
+    --papel: #FAF8F4;
+    --linha: #E4DFD5;
+    --branco: #FFFFFF;
+    --font-titulo: 'Space Grotesk', sans-serif;
+    --font-corpo: 'Inter', sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--papel);
+    color: var(--tinta);
+    font-family: var(--font-corpo);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: inherit; }
+
+  /* ---------- Cabeçalho ---------- */
+  header {
+    padding: 48px 24px 32px;
+    max-width: 1100px;
+    margin: 0 auto;
+    border-bottom: 3px solid var(--tinta);
+  }
+
+  .eyebrow {
+    display: inline-block;
+    font-family: var(--font-corpo);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--branco);
+    background: var(--vermelho);
+    padding: 6px 14px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+  }
+
+  h1 {
+    font-family: var(--font-titulo);
+    font-weight: 700;
+    font-size: clamp(32px, 5vw, 52px);
+    line-height: 1.05;
+    margin: 0 0 16px;
+    letter-spacing: -0.01em;
+  }
+
+  h1 span {
+    color: var(--azul);
+  }
+
+  .subtitulo {
+    font-size: 16px;
+    color: var(--tinta-suave);
+    max-width: 680px;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .fonte-dados {
+    font-size: 13px;
+    color: var(--tinta-suave);
+    margin-top: 12px;
+  }
+
+  .meta-atualizacao {
+    font-size: 13px;
+    color: var(--tinta-suave);
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .ponto-vivo {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--vermelho);
+    display: inline-block;
+    animation: pulsar 2s ease-in-out infinite;
+  }
+
+  @keyframes pulsar {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+
+  /* ---------- Resumo (KPIs) ---------- */
+  .resumo {
+    max-width: 1100px;
+    margin: 32px auto 0;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+  }
+
+  .stat-tile {
+    background: var(--branco);
+    border: 1px solid var(--linha);
+    border-radius: 12px;
+    padding: 16px 18px;
+  }
+
+  .stat-tile .rotulo {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--tinta-suave);
+    margin: 0 0 6px;
+  }
+
+  .stat-tile .valor-grande {
+    font-family: var(--font-titulo);
+    font-weight: 700;
+    font-size: 24px;
+    margin: 0;
+    line-height: 1.1;
+  }
+
+  .stat-tile.destaque .valor-grande { color: var(--vermelho); }
+
+  /* ---------- Repartição por gênero / raça ---------- */
+  .reparticoes {
+    max-width: 1100px;
+    margin: 12px auto 0;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 12px;
+  }
+
+  .bloco-reparticao {
+    background: var(--branco);
+    border: 1px solid var(--linha);
+    border-radius: 12px;
+    padding: 18px 20px;
+  }
+
+  .bloco-reparticao h2 {
+    font-family: var(--font-titulo);
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0 0 14px;
+  }
+
+  .linha-barra {
+    margin-bottom: 10px;
+  }
+
+  .linha-barra:last-child { margin-bottom: 0; }
+
+  .linha-barra .topo {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+
+  .linha-barra .rotulo-categoria {
+    font-weight: 500;
+  }
+
+  .linha-barra .valor-categoria {
+    color: var(--tinta-suave);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .barra-trilha {
+    height: 8px;
+    background: var(--papel);
+    border: 1px solid var(--linha);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .barra-preenchimento {
+    height: 100%;
+    background: var(--azul);
+    border-radius: 6px 0 0 6px;
+  }
+
+  /* ---------- Controles ---------- */
+  .controles {
+    max-width: 1100px;
+    margin: 32px auto 0;
+    padding: 0 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .campo-busca {
+    flex: 1 1 240px;
+    position: relative;
+  }
+
+  .campo-busca input {
+    width: 100%;
+    padding: 12px 16px 12px 40px;
+    border: 2px solid var(--tinta);
+    border-radius: 8px;
+    font-family: var(--font-corpo);
+    font-size: 15px;
+    background: var(--branco);
+  }
+
+  .campo-busca input:focus {
+    outline: 3px solid var(--azul);
+    outline-offset: 1px;
+  }
+
+  .campo-busca svg {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.5;
+  }
+
+  select {
+    padding: 12px 14px;
+    border: 2px solid var(--tinta);
+    border-radius: 8px;
+    font-family: var(--font-corpo);
+    font-weight: 500;
+    font-size: 14px;
+    background: var(--branco);
+    cursor: pointer;
+    min-width: 150px;
+  }
+
+  select:focus {
+    outline: 3px solid var(--azul);
+    outline-offset: 1px;
+  }
+
+  /* ---------- Contador de resultados ---------- */
+  .contador {
+    max-width: 1100px;
+    margin: 20px auto 0;
+    padding: 0 24px;
+    font-size: 14px;
+    color: var(--tinta-suave);
+    font-weight: 500;
+  }
+
+  .contador strong {
+    color: var(--tinta);
+  }
+
+  /* ---------- Lista de candidatos ---------- */
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px 24px 80px;
+  }
+
+  .cabecalho-colunas {
+    display: none;
+    padding: 0 20px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--tinta-suave);
+    margin-top: 16px;
+  }
+
+  .lista {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .linha-candidato {
+    background: var(--branco);
+    border: 1px solid var(--linha);
+    border-radius: 12px;
+    padding: 16px 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    transition: box-shadow 0.12s ease, border-color 0.12s ease;
+  }
+
+  .linha-candidato:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.10);
+    border-color: var(--azul);
+  }
+
+  .linha-topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .nome-candidato {
+    font-family: var(--font-titulo);
+    font-weight: 600;
+    font-size: 16px;
+    margin: 0 0 4px;
+  }
+
+  .numero-partido {
+    font-size: 13px;
+    color: var(--tinta);
+    margin: 0 0 2px;
+  }
+
+  .numero-partido strong { font-weight: 700; }
+
+  .cargo-tags {
+    font-size: 13px;
+    color: var(--azul);
+    font-weight: 500;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    padding: 3px 9px;
+    border-radius: 20px;
+    background: var(--papel);
+    color: var(--tinta-suave);
+    border: 1px solid var(--linha);
+  }
+
+  .valores {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--linha);
+  }
+
+  .bloco-valor .rotulo {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: var(--tinta-suave);
+    margin: 0 0 3px;
+  }
+
+  .bloco-valor .numero {
+    font-family: var(--font-titulo);
+    font-weight: 600;
+    font-size: 15px;
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .bloco-valor .numero.alerta { color: var(--vermelho); }
+  .bloco-valor .numero.ok { color: var(--verde); }
+
+  /* ---------- Estados vazios / carregando ---------- */
+  .estado-info {
+    text-align: center;
+    padding: 60px 24px;
+    color: var(--tinta-suave);
+    font-size: 15px;
+  }
+
+  .estado-info strong {
+    display: block;
+    font-family: var(--font-titulo);
+    font-size: 20px;
+    color: var(--tinta);
+    margin-bottom: 8px;
+  }
+
+  .estado-info code {
+    display: block;
+    margin-top: 10px;
+    font-size: 12px;
+    background: var(--linha);
+    padding: 8px 12px;
+    border-radius: 6px;
+    word-break: break-all;
+  }
+
+  /* ---------- Responsivo ---------- */
+  @media (max-width: 560px) {
+    header { padding: 32px 16px 24px; }
+    .controles, .contador, main, .resumo, .reparticoes { padding-left: 16px; padding-right: 16px; }
+    select { min-width: 0; flex: 1 1 45%; }
+    .valores { grid-template-columns: 1fr; gap: 8px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ponto-vivo { animation: none; }
+    .linha-candidato { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Dinheiro na política</div>
+  <h1>Veja quanto cada candidato a deputado arrecadou e gastou nas <span>eleições 2026</span> em São Paulo</h1>
+  <p class="subtitulo">
+    Levantamento da Mural com os dados de prestação de contas de campanha enviados
+    por candidatas e candidatos a deputado estadual e federal por São Paulo à Justiça
+    Eleitoral. Mostra quanto cada um arrecadou, quanto já contratou e pagou a
+    fornecedores, e o que ainda está em aberto.
+  </p>
+  <p class="fonte-dados">Fonte: Portal de Dados Abertos do TSE — prestação de contas parcial, Eleições 2026.</p>
+  <div class="meta-atualizacao">
+    <span class="ponto-vivo"></span>
+    <span id="texto-atualizacao">Carregando dados...</span>
+  </div>
+</header>
+
+<div class="resumo" id="resumo" style="display:none;">
+  <div class="stat-tile">
+    <p class="rotulo">Candidaturas</p>
+    <p class="valor-grande" id="stat-total-candidatos">—</p>
+  </div>
+  <div class="stat-tile">
+    <p class="rotulo">Total arrecadado</p>
+    <p class="valor-grande" id="stat-total-arrecadado">—</p>
+  </div>
+  <div class="stat-tile">
+    <p class="rotulo">Total já pago</p>
+    <p class="valor-grande" id="stat-total-pago">—</p>
+  </div>
+  <div class="stat-tile destaque">
+    <p class="rotulo">Ainda em aberto com fornecedores</p>
+    <p class="valor-grande" id="stat-total-aberto">—</p>
+  </div>
+</div>
+
+<div class="reparticoes" id="reparticoes" style="display:none;">
+  <div class="bloco-reparticao">
+    <h2>Arrecadação por gênero</h2>
+    <div id="reparticao-genero"></div>
+  </div>
+  <div class="bloco-reparticao">
+    <h2>Arrecadação por cor/raça autodeclarada</h2>
+    <div id="reparticao-raca"></div>
+  </div>
+</div>
+
+<div class="controles">
+  <div class="campo-busca">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <circle cx="11" cy="11" r="7"></circle>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+    </svg>
+    <input type="text" id="busca" placeholder="Buscar por nome ou número...">
+  </div>
+  <select id="filtro-cargo">
+    <option value="">Todos os cargos</option>
+  </select>
+  <select id="filtro-partido">
+    <option value="">Todos os partidos</option>
+  </select>
+  <select id="filtro-genero">
+    <option value="">Todos os gêneros</option>
+  </select>
+  <select id="filtro-raca">
+    <option value="">Todas as cores/raças</option>
+  </select>
+  <select id="ordenar-por">
+    <option value="arrecadado-desc">Maior arrecadação</option>
+    <option value="pago-desc">Maior valor pago</option>
+    <option value="aberto-desc">Maior valor em aberto</option>
+    <option value="arrecadado-asc">Menor arrecadação</option>
+  </select>
+</div>
+
+<div class="contador" id="contador">Carregando...</div>
+
+<main>
+  <div class="lista" id="lista"></div>
+  <div class="estado-info" id="estado-vazio" style="display:none;">
+    <strong>Nenhum candidato encontrado</strong>
+    Tenta ajustar a busca ou os filtros acima.
+  </div>
+  <div class="estado-info" id="estado-erro" style="display:none;">
+    <strong>Não deu pra carregar os dados</strong>
+    Confere se a planilha publicada ainda está no ar e com o link certo.
+    <code id="url-usada"></code>
+  </div>
+</main>
+
+<script>
+(function () {
+  // Troque por outra URL de "Publicar na web" (formato .../pub?output=csv)
+  // se a planilha publicada mudar de endereço.
+  var URL_PLANILHA = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR3Do420SMF-FmHUpcYSsFSCqaE8HsW1SIiSxbBvkR7GEbwzr9wIJEwirIIQjoUWfQKBHcPIwX6K9Aa/pub?output=csv';
+
+  var candidatos = [];
+
+  var elLista = document.getElementById('lista');
+  var elContador = document.getElementById('contador');
+  var elBusca = document.getElementById('busca');
+  var elFiltroCargo = document.getElementById('filtro-cargo');
+  var elFiltroPartido = document.getElementById('filtro-partido');
+  var elFiltroGenero = document.getElementById('filtro-genero');
+  var elFiltroRaca = document.getElementById('filtro-raca');
+  var elOrdenarPor = document.getElementById('ordenar-por');
+  var elEstadoVazio = document.getElementById('estado-vazio');
+  var elEstadoErro = document.getElementById('estado-erro');
+  var elTextoAtualizacao = document.getElementById('texto-atualizacao');
+  var elResumo = document.getElementById('resumo');
+  var elReparticoes = document.getElementById('reparticoes');
+
+  var formatadorMoeda = new Intl.NumberFormat('pt-BR', {
+    style: 'currency', currency: 'BRL', maximumFractionDigits: 0
+  });
+
+  // A planilha publicada mistura dois formatos de número numa mesma
+  // exportação: "R$ 3.340.784,12" (texto formatado) e "1694320,6" (número
+  // cru só com vírgula decimal). Essa função normaliza os dois.
+  function parseMoeda(valor) {
+    if (valor === null || valor === undefined || valor === '') return 0;
+    if (typeof valor === 'number') return valor;
+    var s = String(valor).trim().replace(/^R\$\s?/, '').replace(/\s/g, '');
+    if (s.indexOf('.') !== -1 && s.indexOf(',') !== -1) {
+      s = s.replace(/\./g, '').replace(',', '.');
+    } else if (s.indexOf(',') !== -1) {
+      s = s.replace(',', '.');
+    }
+    var n = parseFloat(s);
+    return isNaN(n) ? 0 : n;
+  }
+
+  function popularSelect(select, valores) {
+    valores.sort().forEach(function (v) {
+      var opt = document.createElement('option');
+      opt.value = v;
+      opt.textContent = v;
+      select.appendChild(opt);
+    });
+  }
+
+  function renderizarReparticao(container, mapaValores, totalGeral) {
+    container.innerHTML = '';
+    var entradas = Object.keys(mapaValores).map(function (chave) {
+      return { chave: chave, valor: mapaValores[chave] };
+    }).sort(function (a, b) { return b.valor - a.valor; });
+
+    entradas.forEach(function (item) {
+      var pct = totalGeral > 0 ? (item.valor / totalGeral * 100) : 0;
+      var linha = document.createElement('div');
+      linha.className = 'linha-barra';
+      linha.innerHTML =
+        '<div class="topo">' +
+          '<span class="rotulo-categoria">' + item.chave + '</span>' +
+          '<span class="valor-categoria">' + formatadorMoeda.format(item.valor) + ' · ' + pct.toFixed(1) + '%</span>' +
+        '</div>' +
+        '<div class="barra-trilha"><div class="barra-preenchimento" style="width:' + pct.toFixed(1) + '%"></div></div>';
+      container.appendChild(linha);
+    });
+  }
+
+  function renderizarResumo() {
+    var totalArrecadado = 0, totalPago = 0, totalAberto = 0;
+    var porGenero = {}, porRaca = {};
+
+    candidatos.forEach(function (c) {
+      totalArrecadado += c.arrecadado;
+      totalPago += c.pago;
+      totalAberto += Math.max(0, c.aberto);
+
+      var genero = c.genero || 'Não informado';
+      porGenero[genero] = (porGenero[genero] || 0) + c.arrecadado;
+
+      var raca = c.cor_raca || 'Não informado';
+      porRaca[raca] = (porRaca[raca] || 0) + c.arrecadado;
+    });
+
+    document.getElementById('stat-total-candidatos').textContent = candidatos.length.toLocaleString('pt-BR');
+    document.getElementById('stat-total-arrecadado').textContent = formatadorMoeda.format(totalArrecadado);
+    document.getElementById('stat-total-pago').textContent = formatadorMoeda.format(totalPago);
+    document.getElementById('stat-total-aberto').textContent = formatadorMoeda.format(totalAberto);
+
+    renderizarReparticao(document.getElementById('reparticao-genero'), porGenero, totalArrecadado);
+    renderizarReparticao(document.getElementById('reparticao-raca'), porRaca, totalArrecadado);
+
+    elResumo.style.display = 'grid';
+    elReparticoes.style.display = 'grid';
+  }
+
+  function renderizarLista() {
+    var termoBusca = elBusca.value.trim().toLowerCase();
+    var cargoSel = elFiltroCargo.value;
+    var partidoSel = elFiltroPartido.value;
+    var generoSel = elFiltroGenero.value;
+    var racaSel = elFiltroRaca.value;
+    var ordenacao = elOrdenarPor.value;
+
+    var filtrados = candidatos.filter(function (c) {
+      var bateCargo = !cargoSel || c.cargo === cargoSel;
+      var batePartido = !partidoSel || c.partido === partidoSel;
+      var bateGenero = !generoSel || c.genero === generoSel;
+      var bateRaca = !racaSel || c.cor_raca === racaSel;
+      var bateBusca = !termoBusca ||
+        c.candidato.toLowerCase().indexOf(termoBusca) !== -1 ||
+        String(c.numero).indexOf(termoBusca) !== -1;
+      return bateCargo && batePartido && bateGenero && bateRaca && bateBusca;
+    });
+
+    filtrados.sort(function (a, b) {
+      switch (ordenacao) {
+        case 'pago-desc': return b.pago - a.pago;
+        case 'aberto-desc': return b.aberto - a.aberto;
+        case 'arrecadado-asc': return a.arrecadado - b.arrecadado;
+        default: return b.arrecadado - a.arrecadado;
+      }
+    });
+
+    elContador.innerHTML = '<strong>' + filtrados.length + '</strong> candidato' +
+      (filtrados.length === 1 ? '' : 's') +
+      (filtrados.length !== candidatos.length ? ' de ' + candidatos.length : '') +
+      ' encontrado' + (filtrados.length === 1 ? '' : 's');
+
+    elLista.innerHTML = '';
+    elEstadoVazio.style.display = filtrados.length === 0 ? 'block' : 'none';
+
+    filtrados.forEach(function (c) {
+      var linha = document.createElement('div');
+      linha.className = 'linha-candidato';
+
+      var classeAberto = c.aberto > 0 ? 'alerta' : 'ok';
+
+      linha.innerHTML =
+        '<div class="linha-topo">' +
+          '<div>' +
+            '<p class="nome-candidato">' + c.candidato + '</p>' +
+            '<p class="numero-partido"><strong>' + c.numero + '</strong> · ' + c.partido + '</p>' +
+            '<p class="cargo-tags">' + c.cargo +
+              (c.genero ? ' <span class="tag">' + c.genero + '</span>' : '') +
+              (c.cor_raca ? ' <span class="tag">' + c.cor_raca + '</span>' : '') +
+            '</p>' +
+          '</div>' +
+        '</div>' +
+        '<div class="valores">' +
+          '<div class="bloco-valor">' +
+            '<p class="rotulo">Arrecadado</p>' +
+            '<p class="numero">' + formatadorMoeda.format(c.arrecadado) + '</p>' +
+          '</div>' +
+          '<div class="bloco-valor">' +
+            '<p class="rotulo">Pago</p>' +
+            '<p class="numero">' + formatadorMoeda.format(c.pago) + '</p>' +
+          '</div>' +
+          '<div class="bloco-valor">' +
+            '<p class="rotulo">Em aberto</p>' +
+            '<p class="numero ' + classeAberto + '">' + formatadorMoeda.format(Math.max(0, c.aberto)) + '</p>' +
+          '</div>' +
+        '</div>';
+      elLista.appendChild(linha);
+    });
+  }
+
+  document.getElementById('url-usada').textContent = URL_PLANILHA;
+
+  Papa.parse(URL_PLANILHA, {
+    download: true,
+    header: true,
+    skipEmptyLines: true,
+    complete: function (resultado) {
+      if (!resultado.data || !resultado.data.length) {
+        throw new Error('Planilha vazia ou formato inesperado.');
+      }
+
+      candidatos = resultado.data.map(function (linha) {
+        return {
+          candidato: (linha.candidato || '').trim(),
+          numero: (linha.numero || '').trim(),
+          partido: (linha.partido || '').trim(),
+          cargo: (linha.cargo || '').trim(),
+          genero: (linha.genero || '').trim(),
+          cor_raca: (linha.cor_raca || '').trim(),
+          arrecadado: parseMoeda(linha.total_arrecadado),
+          contratado: parseMoeda(linha.total_contratado),
+          pago: parseMoeda(linha.total_pago),
+          aberto: parseMoeda(linha.diferenca_contratado_menos_pago)
+        };
+      }).filter(function (c) { return c.candidato; });
+
+      elTextoAtualizacao.textContent = candidatos.length.toLocaleString('pt-BR') +
+        ' candidaturas carregadas · dados da prestação de contas parcial';
+
+      var cargos = Array.from(new Set(candidatos.map(function (c) { return c.cargo; }).filter(Boolean)));
+      var partidos = Array.from(new Set(candidatos.map(function (c) { return c.partido; }).filter(Boolean)));
+      var generos = Array.from(new Set(candidatos.map(function (c) { return c.genero; }).filter(Boolean)));
+      var racas = Array.from(new Set(candidatos.map(function (c) { return c.cor_raca; }).filter(Boolean)));
+
+      popularSelect(elFiltroCargo, cargos);
+      popularSelect(elFiltroPartido, partidos);
+      popularSelect(elFiltroGenero, generos);
+      popularSelect(elFiltroRaca, racas);
+
+      renderizarResumo();
+      renderizarLista();
+    },
+    error: function (erro) {
+      console.error(erro);
+      elTextoAtualizacao.textContent = 'Erro ao carregar dados';
+      elEstadoErro.style.display = 'block';
+      elContador.textContent = '';
+    }
+  });
+
+  elBusca.addEventListener('input', renderizarLista);
+  elFiltroCargo.addEventListener('change', renderizarLista);
+  elFiltroPartido.addEventListener('change', renderizarLista);
+  elFiltroGenero.addEventListener('change', renderizarLista);
+  elFiltroRaca.addEventListener('change', renderizarLista);
+  elOrdenarPor.addEventListener('change', renderizarLista);
+})();
+</script>
+
+</body>
+</html>
