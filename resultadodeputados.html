@@ -133,7 +133,7 @@ const CONFIG = {
   base: 'https://resultados.tse.jus.br/oficial',
   ciclo: 'ele2026',          // pasta do ciclo eleitoral
   uf: 'sp',
-  eleicao: null,             // código da eleição; null = descobrir no ele-c.json (forçar com ?ele=546)
+  eleicao: '6259',           // código da eleição 2026 visto no site do TSE (forçar outro com ?ele=)
   cargos: { 'deputado-federal': '0006', 'deputado-estadual': '0007' },
   nomes:  { 'deputado-federal': 'Deputado federal', 'deputado-estadual': 'Deputado estadual' },
   refreshMs: 60000,
@@ -188,33 +188,92 @@ async function listEleicoes(){
   return state.candidatos;
 }
 
-const PASTAS = ['dados-simplificados', 'dados'];
-const fileUrl = (ele, pasta) => `${CONFIG.base}/${CONFIG.ciclo}/${ele}/${pasta}/${CONFIG.uf}/${CONFIG.uf}-c${CONFIG.cargos[cargo]}-e${pad(ele,6)}-r.json`;
+/* Formatos possíveis: 2026 usa .jws assinado (-u.jws); 2022 usava -r.json */
+const FORMATOS = [
+  {pasta:'dados', suf:'u.jws'},
+  {pasta:'dados', suf:'r.jws'},
+  {pasta:'dados-simplificados', suf:'r.json'},
+  {pasta:'dados', suf:'r.json'}
+];
+const fileUrl = (ele, f) => `${CONFIG.base}/${CONFIG.ciclo}/${ele}/${f.pasta}/${CONFIG.uf}/${CONFIG.uf}-c${CONFIG.cargos[cargo]}-e${pad(ele,6)}-${f.suf}`;
 const photoUrl = sq => `${CONFIG.base}/${CONFIG.ciclo}/${CONFIG.eleicao}/fotos/${CONFIG.uf}/${sq}.jpeg`;
+
+/* Lê JSON puro ou JWS (header.payload.assinatura, em base64url) */
+function b64urlDecode(str){
+  str = str.replace(/-/g,'+').replace(/_/g,'/');
+  while (str.length % 4) str += '=';
+  const bin = atob(str);
+  const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
+  return new TextDecoder('utf-8').decode(bytes);
+}
+function parseBody(txt){
+  txt = txt.trim();
+  if (txt.startsWith('{') || txt.startsWith('[')) return JSON.parse(txt);
+  const partes = txt.split('.');
+  if (partes.length >= 2){
+    let payload = b64urlDecode(partes[1]);
+    try { return JSON.parse(payload); }
+    catch(e){
+      // às vezes o payload vem com outra camada em base64
+      try { return JSON.parse(b64urlDecode(payload.trim())); } catch(_){}
+      console.warn('[Mural] Payload JWS não é JSON. Início:', payload.slice(0,300));
+      throw e;
+    }
+  }
+  throw new Error('formato desconhecido: ' + txt.slice(0,80));
+}
+
+async function getJson(url){
+  const r = await fetch(url + (url.includes('?')?'&':'?') + 'nocache=' + Date.now(), {cache:'no-store'});
+  if (!r.ok) return {status:r.status};
+  return {status:r.status, data: parseBody(await r.text())};
+}
 
 /* Testa as combinações até achar o arquivo com candidatos; depois fixa a que funcionou */
 async function fetchResultado(){
   if (state.okUrl && state.okCargo === cargo){
-    const r = await fetch(state.okUrl + '?t=' + Date.now(), {cache:'no-store'});
-    if (r.ok) return r.json();
+    const res = await getJson(state.okUrl);
+    if (res.data) return res.data;
   }
   const eles = await listEleicoes();
   const tentativas = [];
-  for (const ele of eles) for (const pasta of PASTAS){
-    const url = fileUrl(ele, pasta);
+  for (const ele of eles) for (const f of FORMATOS){
+    const url = fileUrl(ele, f);
     try{
-      const r = await fetch(url + '?t=' + Date.now(), {cache:'no-store'});
-      tentativas.push(`${r.status} ${url}`);
-      if (!r.ok) continue;
-      const d = await r.json();
-      if (!Array.isArray(d.cand) || !d.cand.length) continue;
+      const res = await getJson(url);
+      tentativas.push(`${res.status} ${url}`);
+      if (!res.data) continue;
+      window.__muralData = res.data;
+      if (!findCands(res.data).length){ console.info('[Mural] Sem candidatos em', url, Object.keys(res.data)); continue; }
       CONFIG.eleicao = ele; state.okUrl = url; state.okCargo = cargo;
       console.info('[Mural] Usando', url);
-      return d;
+      return res.data;
     }catch(e){ tentativas.push(`ERRO ${url} ${e.message}`); }
   }
   console.warn('[Mural] Nenhum arquivo com candidatos. Tentativas:\n' + tentativas.join('\n'));
   return null;
+}
+
+/* Procura, em qualquer nível do JSON, a lista de candidatos (objetos com nome e votos) */
+function findCands(o, depth=0){
+  if (!o || depth > 8) return [];
+  if (Array.isArray(o)){
+    if (o.length && o.every(x => x && typeof x === 'object' && ('nm' in x || 'nmu' in x) && ('vap' in x || 'n' in x))) return o;
+    for (const x of o){ const r = findCands(x, depth+1); if (r.length) return r; }
+    return [];
+  }
+  if (typeof o === 'object'){
+    if (Array.isArray(o.cand) && o.cand.length) return o.cand;
+    for (const k in o){ const r = findCands(o[k], depth+1); if (r.length) return r; }
+  }
+  return [];
+}
+/* Procura um campo de totais em qualquer nível */
+function findField(o, key, depth=0){
+  if (!o || typeof o !== 'object' || depth > 8) return undefined;
+  if (!Array.isArray(o) && key in o && typeof o[key] !== 'object') return o[key];
+  for (const k in o){ const r = findField(o[k], key, depth+1); if (r !== undefined) return r; }
+  return undefined;
 }
 
 async function load(){
@@ -240,18 +299,20 @@ async function load(){
 }
 
 function normalize(d){
-  const cands = (d.cand || []).map(c => ({
-    sq: c.sqcand, n: String(c.n || ''), nm: c.nm || '', partido: (c.cc || '').trim(),
+  const F = k => findField(d, k);
+  const cands = findCands(d).map(c => ({
+    sq: c.sqcand ?? c.sq, n: String(c.n ?? ''), nm: c.nmu || c.nm || '',
+    partido: String(c.cc ?? c.sgp ?? c.p ?? '').trim(),
     eleito: String(c.e).toLowerCase() === 's',
     st: c.st || '', valido: !c.dvt || /v[aá]lid/i.test(c.dvt),
     votos: brNum(c.vap), pct: brNum(c.pvap)
   })).filter(c => c.valido).sort((a,b) => b.votos - a.votos);
   return {
     cands, eleitos: cands.filter(c => c.eleito).length,
-    pst: brNum(d.pst),
-    hora: [d.dg, d.hg].filter(Boolean).join(' às ') || [d.dt, d.ht].filter(Boolean).join(' às '),
-    tv: brNum(d.tv), vv: brNum(d.vv), pvv: brNum(d.pvv),
-    vb: brNum(d.vb), pvb: brNum(d.pvb), vn: brNum(d.vn), pvn: brNum(d.ptvn ?? d.pvn)
+    pst: brNum(F('pst')),
+    hora: [F('dg'), F('hg')].filter(Boolean).join(' às ') || [F('dt'), F('ht')].filter(Boolean).join(' às '),
+    tv: brNum(F('tv')), vv: brNum(F('vv')), pvv: brNum(F('pvv')),
+    vb: brNum(F('vb')), pvb: brNum(F('pvb')), vn: brNum(F('vn')), pvn: brNum(F('ptvn') ?? F('pvn'))
   };
 }
 
