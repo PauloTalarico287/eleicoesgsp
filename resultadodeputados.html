@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Resultado deputados SP 2026 | Agência Mural</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#cce3e3;        /* verde-água do fundo */
+    --teal:#00736e;      /* petróleo: títulos, botões, rótulos */
+    --teal-soft:#9dc8c5; /* barras */
+    --ink:#1a1a1a; --ink-2:#555; --line:#2a3b3b;
+    --card:#ffffff;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 "Space Grotesk",system-ui,sans-serif}
+  .wrap{max-width:950px;margin:0 auto;padding:32px 16px 40px}
+
+  header{text-align:center;margin-bottom:34px}
+  h1{display:inline-block;margin:0 0 18px;background:var(--teal);color:#fff;
+     font:500 clamp(20px,3.6vw,26px)/1.2 "Space Grotesk",sans-serif;text-transform:uppercase;padding:4px 10px}
+  .lead{color:var(--teal);margin:0 auto;max-width:800px;font-size:clamp(15px,2.4vw,18px)}
+
+  .tabs{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-bottom:28px}
+  .tab{font:500 17px "Space Grotesk",sans-serif;text-transform:uppercase;background:transparent;color:var(--teal);
+       border:1px solid var(--teal);padding:7px 26px;cursor:pointer;border-radius:0}
+  .tab[aria-selected=true]{background:var(--teal);color:#fff}
+  .tab:hover:not([aria-selected=true]){background:rgba(0,115,110,.08)}
+
+  .filters{display:flex;justify-content:center;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-bottom:36px;color:var(--teal);font-size:18px}
+  .filters input,.filters select{font:16px "Space Grotesk",sans-serif;color:var(--ink);background:#fff;border:1px solid var(--teal);padding:7px 10px;border-radius:0}
+  .filters input{width:min(100%,260px)}
+  .filters label{display:flex;align-items:center;gap:8px;cursor:pointer}
+  .filters input[type=checkbox]{width:18px;height:18px;accent-color:var(--teal)}
+
+  h2{color:var(--teal);font:400 clamp(22px,3.4vw,26px) "Space Grotesk",sans-serif;margin:0 0 10px}
+  .status{margin:0 0 10px;font-size:16px}
+  .progress{height:10px;background:var(--teal-soft);margin-bottom:20px}
+  .progress i{display:block;height:100%;width:0;background:var(--teal);transition:width .6s}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:40px}
+  .stat{background:var(--card);padding:12px 10px 14px;min-height:96px}
+  .stat small{display:block;color:var(--teal);text-transform:uppercase;font-size:15px;margin-bottom:6px}
+  .stat b{display:block;font-size:17px;font-weight:700}
+  .stat span{display:block;margin-top:8px;font-size:15px}
+
+  .count{color:var(--teal);font-size:15px;margin:0 0 4px}
+  ol.list{list-style:none;margin:0;padding:0}
+  .row{display:grid;grid-template-columns:92px 1fr 180px;gap:18px;align-items:center;padding:18px 14px;border-bottom:1px solid var(--line)}
+  .photo{width:92px;height:92px;border-radius:50%;background:#b8d6d5 center top/cover no-repeat}
+  .nm{font-weight:700;font-size:18px;text-transform:uppercase;line-height:1.2}
+  .meta{color:var(--ink-2);font-size:14px;margin-top:6px}
+  .tag{display:inline-block;margin-top:8px;font-size:12.5px;text-transform:uppercase;padding:2px 8px}
+  .tag.eleito{background:var(--teal);color:#fff}
+  .tag.sup{border:1px solid var(--teal);color:var(--teal)}
+  .votes{text-align:right}
+  .votes b{display:block;font-size:20px;font-weight:700}
+  .votes span{display:block;font-size:14px;color:var(--ink-2);margin-top:4px}
+  .bar{height:10px;background:var(--teal-soft);margin-top:12px;margin-left:auto;width:100%}
+  .bar i{display:block;height:100%;background:var(--teal);margin-left:auto}
+
+  .more{display:block;margin:28px auto 0;font:500 16px "Space Grotesk",sans-serif;text-transform:uppercase;background:transparent;
+        color:var(--teal);border:1px solid var(--teal);padding:8px 28px;cursor:pointer;border-radius:0}
+  .more:hover{background:var(--teal);color:#fff}
+  .msg{background:var(--card);border-left:4px solid var(--teal);padding:12px 14px;margin:0 0 20px;font-size:15px}
+  .foot{font-size:13px;color:var(--teal);margin-top:26px;text-align:center}
+  .foot a{color:inherit}
+  .demo-flag{display:inline-block;background:#1a1a1a;color:#fff;font-size:12px;padding:2px 8px;margin-left:8px;vertical-align:4px}
+
+  @media (max-width:640px){
+    .wrap{padding-top:22px}
+    .tab{padding:7px 10px;font-size:14px;flex:1 1 0}
+    .tabs{flex-wrap:nowrap}
+    .filters{display:grid;grid-template-columns:1fr auto;justify-content:stretch;font-size:16px}
+    .filters input[type=search]{grid-column:1/-1;width:100%}
+    .filters label[for=partido]{display:none}
+    .filters select{width:100%}
+    .stats{grid-template-columns:repeat(2,1fr)}
+    .row{grid-template-columns:64px 1fr;gap:6px 14px;padding:16px 4px}
+    .photo{width:64px;height:64px;grid-row:span 2}
+    .nm{font-size:16px}
+    .votes{grid-column:2;text-align:left;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+    .votes b{font-size:18px}
+    .votes span{margin:0}
+    .bar{width:100%;margin-left:0}
+    .bar i{margin-left:0}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Resultado das eleições 2026</h1>
+    <p class="lead">Acompanhe em tempo real os resultados para deputado estadual e federal em São Paulo.<br>Os dados são do Tribunal Superior Eleitoral (TSE).</p>
+  </header>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" data-cargo="deputado-estadual">Deputado estadual</button>
+    <button class="tab" role="tab" data-cargo="deputado-federal">Deputado federal</button>
+  </div>
+
+  <div class="filters">
+    <input id="q" type="search" placeholder="Buscar nome ou número" aria-label="Buscar candidato">
+    <label for="partido">Partido</label>
+    <select id="partido"><option value="">Todos</option></select>
+    <label><input type="checkbox" id="soEleitos"> Só eleitos</label>
+  </div>
+
+  <h2 id="titulo">Deputado estadual · São Paulo<span id="demoFlag"></span></h2>
+  <p class="status" id="status">Carregando…</p>
+  <div class="progress"><i id="pbar"></i></div>
+
+  <div class="stats">
+    <div class="stat"><small>Total</small><b id="sTotal">0</b></div>
+    <div class="stat"><small>Válidos</small><b id="sValidos">0</b><span id="pValidos">0,00%</span></div>
+    <div class="stat"><small>Brancos</small><b id="sBrancos">0</b><span id="pBrancos">0,00%</span></div>
+    <div class="stat"><small>Nulos</small><b id="sNulos">0</b><span id="pNulos">0,00%</span></div>
+  </div>
+
+  <div id="msg"></div>
+  <p class="count" id="count"></p>
+  <ol class="list" id="list"></ol>
+  <button class="more" id="more" hidden>Mostrar mais</button>
+
+  <p class="foot">Fonte: <a href="https://resultados.tse.jus.br" target="_blank" rel="noopener">TSE – Portal Resultados</a> · atualização automática a cada 2 minutos · Agência Mural</p>
+</div>
+
+<script>
+/* ===================== CONFIGURAÇÃO ===================== */
+const CONFIG = {
+  base: 'https://resultados.tse.jus.br/oficial',
+  ciclo: 'ele2026',          // pasta do ciclo eleitoral
+  uf: 'sp',
+  eleicao: null,             // código da eleição; null = descobrir no ele-c.json (forçar com ?ele=546)
+  cargos: { 'deputado-federal': '0006', 'deputado-estadual': '0007' },
+  nomes:  { 'deputado-federal': 'Deputado federal', 'deputado-estadual': 'Deputado estadual' },
+  refreshMs: 120000,
+  pageSize: 30
+};
+/* ======================================================== */
+
+const params = new URLSearchParams(location.search);
+const DEMO = params.has('demo');
+if (params.get('ele')) CONFIG.eleicao = params.get('ele').replace(/\D/g,'');
+if (params.get('ciclo')) CONFIG.ciclo = params.get('ciclo');
+let cargo = CONFIG.cargos[params.get('cargo')] ? params.get('cargo') : 'deputado-estadual';
+
+const $ = id => document.getElementById(id);
+const state = { data:null, shown:CONFIG.pageSize };
+const brNum = s => Number(String(s ?? '0').replace(/\./g,'').replace(',', '.')) || 0;
+const fmtInt = n => n.toLocaleString('pt-BR');
+const fmtPct = n => n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}) + '%';
+const pad = (s,n) => String(s).padStart(n,'0');
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fold = s => String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+
+function showMsg(t){ $('msg').innerHTML = t ? `<div class="msg">${t}</div>` : ''; }
+
+/* Descobre o código da eleição (1º turno, cargos estaduais) no arquivo de configuração do TSE */
+async function discoverEleicao(){
+  if (CONFIG.eleicao) return CONFIG.eleicao;
+  const r = await fetch(`${CONFIG.base}/comum/config/ele-c.json`, {cache:'no-store'});
+  if (!r.ok) throw new Error('config ' + r.status);
+  const cfg = await r.json();
+  const eleicoes = (cfg.pl || []).flatMap(p => p.e || []);
+  const hasDep = e => /deputado/i.test(JSON.stringify(e)) || /estadua/i.test(e.nm || '');
+  const pick = eleicoes.find(e => String(e.t) === '1' && hasDep(e)) || eleicoes.find(hasDep);
+  if (!pick) throw new Error('eleição não encontrada no ele-c.json');
+  CONFIG.eleicao = String(pick.cd);
+  return CONFIG.eleicao;
+}
+
+const fileUrl = ele => `${CONFIG.base}/${CONFIG.ciclo}/${ele}/dados-simplificados/${CONFIG.uf}/${CONFIG.uf}-c${CONFIG.cargos[cargo]}-e${pad(ele,6)}-r.json`;
+const photoUrl = sq => `${CONFIG.base}/${CONFIG.ciclo}/${CONFIG.eleicao}/fotos/${CONFIG.uf}/${sq}.jpeg`;
+
+async function load(){
+  try{
+    let d;
+    if (DEMO) d = demoData();
+    else {
+      const ele = await discoverEleicao();
+      const r = await fetch(fileUrl(ele) + '?t=' + Date.now(), {cache:'no-store'});
+      if (r.status === 404 || r.status === 403) {
+        $('status').textContent = 'Apuração ainda não iniciada · 0,00% das seções totalizadas';
+        showMsg('Os resultados começam a ser divulgados pelo TSE após o fechamento das urnas, às 17h. Esta página se atualiza sozinha.');
+        return;
+      }
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      d = await r.json();
+    }
+    showMsg('');
+    state.data = normalize(d);
+    fillPartidos();
+    render();
+  }catch(err){
+    console.error(err);
+    showMsg('Não foi possível carregar os dados do TSE agora. Tentaremos de novo automaticamente em instantes.');
+  }
+}
+
+function normalize(d){
+  const cands = (d.cand || []).map(c => ({
+    sq: c.sqcand, n: String(c.n || ''), nm: c.nm || '', partido: (c.cc || '').trim(),
+    eleito: String(c.e).toLowerCase() === 's',
+    st: c.st || '', valido: !c.dvt || /v[aá]lid/i.test(c.dvt),
+    votos: brNum(c.vap), pct: brNum(c.pvap)
+  })).filter(c => c.valido).sort((a,b) => b.votos - a.votos);
+  return {
+    cands, eleitos: cands.filter(c => c.eleito).length,
+    pst: brNum(d.pst),
+    hora: [d.dg, d.hg].filter(Boolean).join(' às ') || [d.dt, d.ht].filter(Boolean).join(' às '),
+    tv: brNum(d.tv), vv: brNum(d.vv), pvv: brNum(d.pvv),
+    vb: brNum(d.vb), pvb: brNum(d.pvb), vn: brNum(d.vn), pvn: brNum(d.ptvn ?? d.pvn)
+  };
+}
+
+function fillPartidos(){
+  const sel = $('partido'), cur = sel.value;
+  const parts = [...new Set(state.data.cands.map(c => c.partido).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt'));
+  sel.innerHTML = '<option value="">Todos</option>' + parts.map(p => `<option${p===cur?' selected':''}>${esc(p)}</option>`).join('');
+}
+
+function render(){
+  const d = state.data; if (!d) return;
+  const fase = d.pst <= 0 ? 'Apuração ainda não iniciada' : d.pst >= 100 ? 'Apuração encerrada' : 'Apuração em andamento';
+  $('status').textContent = `${fase} · ${fmtPct(d.pst)} das seções totalizadas` +
+    (d.eleitos ? ` · ${fmtInt(d.eleitos)} eleitos` : '') + (d.hora && d.pst > 0 ? ` · atualizado em ${d.hora}` : '');
+  $('pbar').style.width = Math.min(100, d.pst) + '%';
+  $('sTotal').textContent = fmtInt(d.tv);
+  $('sValidos').textContent = fmtInt(d.vv);  $('pValidos').textContent = fmtPct(d.pvv);
+  $('sBrancos').textContent = fmtInt(d.vb);  $('pBrancos').textContent = fmtPct(d.pvb);
+  $('sNulos').textContent = fmtInt(d.vn);    $('pNulos').textContent = fmtPct(d.pvn);
+
+  const q = fold($('q').value.trim()), p = $('partido').value, so = $('soEleitos').checked;
+  const top = d.cands[0]?.votos || 1;
+  const rows = d.cands.filter(c => (!p || c.partido === p) && (!so || c.eleito) &&
+    (!q || c.n.includes(q) || fold(c.nm).includes(q)));
+
+  $('count').textContent = `${fmtInt(rows.length)} candidato${rows.length===1?'':'s'}`;
+  $('list').innerHTML = rows.slice(0, state.shown).map(c => {
+    const tag = c.eleito ? `<span class="tag eleito">${esc(c.st || 'Eleito')}</span>`
+              : /suplente/i.test(c.st) ? `<span class="tag sup">Suplente</span>` : '';
+    const img = DEMO ? '' : ` style="background-image:url('${photoUrl(c.sq)}')"`;
+    return `<li class="row">
+      <div class="photo"${img} aria-hidden="true"></div>
+      <div><div class="nm">${esc(c.nm)}</div>
+        <div class="meta">${esc(c.partido)} · ${esc(c.n)}</div>${tag}</div>
+      <div class="votes"><b>${fmtPct(c.pct)}</b><span>${fmtInt(c.votos)} votos</span>
+        <div class="bar"><i style="width:${(c.votos/top*100).toFixed(1)}%"></i></div></div>
+    </li>`;
+  }).join('');
+  $('more').hidden = rows.length <= state.shown;
+  postHeight();
+}
+
+/* Altura automática para iframe: o site pode ouvir a mensagem 'mural-deputados-height' */
+function postHeight(){
+  try{ parent.postMessage({type:'mural-deputados-height', height:document.documentElement.scrollHeight}, '*'); }catch(e){}
+}
+
+function setCargo(c){
+  cargo = c; state.shown = CONFIG.pageSize; state.data = null;
+  document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', t.dataset.cargo === c));
+  $('titulo').firstChild.textContent = `${CONFIG.nomes[c]} · São Paulo`;
+  const u = new URL(location); u.searchParams.set('cargo', c); history.replaceState(null,'',u);
+  $('partido').value = ''; $('list').innerHTML = ''; $('count').textContent = '';
+  load();
+}
+
+document.querySelectorAll('.tab').forEach(t => t.onclick = () => setCargo(t.dataset.cargo));
+['q','partido','soEleitos'].forEach(id => $(id).addEventListener('input', () => { state.shown = CONFIG.pageSize; render(); }));
+$('more').onclick = () => { state.shown += CONFIG.pageSize; render(); };
+window.addEventListener('resize', postHeight);
+if (DEMO) $('demoFlag').innerHTML = '<span class="demo-flag">DEMO</span>';
+setCargo(cargo);
+setInterval(load, CONFIG.refreshMs);
+
+/* Dados fictícios para pré-visualização (?demo=1) */
+function demoData(){
+  const partidos = ['PT','PL','PSOL','REPUBLICANOS','PSD','MDB','UNIÃO','PSB','PODE','PSDB','NOVO','PDT'];
+  const nomes = ['Maria Aparecida','João Batista','Ana Clara','Carlos Eduardo','Juliana Santos','Rafael Lima','Fernanda Souza','Lucas Oliveira','Patrícia Alves','Marcos Pereira','Camila Rocha','Diego Ferreira','Beatriz Gomes','Thiago Martins','Larissa Ribeiro','André Carvalho','Vanessa Costa','Bruno Araújo','Priscila Nunes','Felipe Barbosa'];
+  const vagas = cargo === 'deputado-federal' ? 70 : 94, dig = cargo === 'deputado-federal' ? 4 : 5;
+  const cand = Array.from({length:180}, (_,i) => {
+    const v = Math.round(420000 * Math.pow(0.965, i));
+    const el = i < vagas * 0.6;
+    return { sqcand:'25000'+i, n:String(10000 + i*37).slice(0,dig), nm:(nomes[i%20]+' '+String.fromCharCode(65+i%26)+'.').toUpperCase(),
+      cc:partidos[i%partidos.length], e:el?'s':'n', st:el?(i%5?'Eleito por QP':'Eleito por média'):(i<vagas?'Suplente':'Não eleito'),
+      dvt:'Válido', vap:String(v), pvap:(v/250000).toFixed(2).replace('.',',') };
+  });
+  return { pst:'63,41', dg:'04/10/2026', hg:'19:42:10', tv:'15832410', vv:'13912004', pvv:'87,87',
+           vb:'986221', pvb:'6,23', vn:'934185', ptvn:'5,90', cand };
+}
+</script>
+</body>
+</html>
