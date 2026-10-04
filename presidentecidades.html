@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CSV presidente Grande SP | Agência Mural</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#cce3e3;--teal:#00736e;--teal-soft:#9dc8c5;--ink:#1a1a1a;--ink-2:#555}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 "Space Grotesk",system-ui,sans-serif}
+  .wrap{max-width:1000px;margin:0 auto;padding:28px 16px 40px}
+  h1{display:inline-block;background:var(--teal);color:#fff;font-weight:500;font-size:22px;text-transform:uppercase;padding:4px 10px;margin:0 0 12px}
+  p{margin:0 0 14px}
+  .bar{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0}
+  button{font:500 15px "Space Grotesk",sans-serif;text-transform:uppercase;border:1px solid var(--teal);background:transparent;color:var(--teal);padding:8px 18px;cursor:pointer}
+  button.primary{background:var(--teal);color:#fff}
+  button:disabled{opacity:.45;cursor:default}
+  .prog{height:10px;background:var(--teal-soft);margin:8px 0 6px}
+  .prog i{display:block;height:100%;width:0;background:var(--teal);transition:width .3s}
+  #log{font-size:13px;color:var(--ink-2);min-height:20px}
+  .err{color:#a00}
+  .tablewrap{overflow-x:auto;background:#fff;margin-top:18px}
+  table{border-collapse:collapse;width:100%;font-size:13.5px}
+  th,td{padding:7px 10px;border-bottom:1px solid #e3e3e3;text-align:right;white-space:nowrap}
+  th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:#fff}
+  th{color:var(--teal);font-weight:500;text-transform:uppercase;font-size:12px}
+  details{margin-top:18px;font-size:13px}
+  textarea{width:100%;height:90px;font:12px monospace}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Presidente · Grande SP</h1>
+  <p>Busca no TSE o resultado parcial para presidente nas 39 cidades da Região Metropolitana de São Paulo e gera o CSV. Clique de novo a qualquer momento para atualizar os números.</p>
+
+  <div class="bar">
+    <button class="primary" id="go">Buscar resultados</button>
+    <button id="dlLong" disabled>Baixar CSV (uma linha por candidato)</button>
+    <button id="dlWide" disabled>Baixar CSV (uma linha por cidade)</button>
+  </div>
+  <div class="prog"><i id="pbar"></i></div>
+  <div id="log">Pronto para buscar.</div>
+
+  <div class="tablewrap"><table id="tbl"></table></div>
+
+  <details>
+    <summary>Se alguma cidade não for encontrada</summary>
+    <p>Cole aqui códigos do TSE no formato <code>NOME=código</code>, um por linha (ex.: <code>GUARULHOS=64777</code>), e clique em Buscar de novo.</p>
+    <textarea id="manual" placeholder="GUARULHOS=64777"></textarea>
+  </details>
+</div>
+
+<script>
+const CFG = {
+  base: 'https://resultados.tse.jus.br/oficial/ele2026',
+  elePres: '6257',
+  cargo: '0001',
+  configMun: 'https://resultados.tse.jus.br/oficial/ele2026/arquivo-urna/3220/config/sp/sp-p003220-cs.jws',
+  paralelo: 4
+};
+const RMSP = ['Arujá','Barueri','Biritiba-Mirim','Caieiras','Cajamar','Carapicuíba','Cotia','Diadema','Embu das Artes',
+  'Embu-Guaçu','Ferraz de Vasconcelos','Francisco Morato','Franco da Rocha','Guararema','Guarulhos','Itapecerica da Serra',
+  'Itapevi','Itaquaquecetuba','Jandira','Juquitiba','Mairiporã','Mauá','Mogi das Cruzes','Osasco','Pirapora do Bom Jesus',
+  'Poá','Ribeirão Pires','Rio Grande da Serra','Salesópolis','Santa Isabel','Santana de Parnaíba','Santo André',
+  'São Bernardo do Campo','São Caetano do Sul','São Lourenço da Serra','São Paulo','Suzano','Taboão da Serra','Vargem Grande Paulista'];
+
+const $ = id => document.getElementById(id);
+const key = s => String(s).toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^A-Z]/g,'');
+const brNum = s => Number(String(s ?? '0').replace(/\./g,'').replace(',', '.')) || 0;
+const pad = (s,n) => String(s).padStart(n,'0');
+let RESULT = null;
+
+function log(t, err){ $('log').innerHTML = err ? `<span class="err">${t}</span>` : t; }
+
+function b64urlDecode(str){
+  str = str.replace(/-/g,'+').replace(/_/g,'/'); while (str.length % 4) str += '=';
+  return new TextDecoder('utf-8').decode(Uint8Array.from(atob(str), c => c.charCodeAt(0)));
+}
+function parseBody(txt){
+  txt = txt.trim();
+  if (txt.startsWith('{') || txt.startsWith('[')) return JSON.parse(txt);
+  const p = txt.split('.');
+  const payload = b64urlDecode(p[1] ?? p[0]);
+  try { return JSON.parse(payload); } catch(e){ return JSON.parse(b64urlDecode(payload.trim())); }
+}
+async function getJws(url){
+  const r = await fetch(url + '?nocache=' + Date.now(), {cache:'no-store'});
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return parseBody(await r.text());
+}
+
+/* Acha códigos do TSE das cidades no arquivo de configuração (objetos com código + nome) */
+function mapMunicipios(cfg){
+  const map = {};
+  (function walk(o, d){
+    if (!o || typeof o !== 'object' || d > 12) return;
+    if (Array.isArray(o)) return o.forEach(x => walk(x, d+1));
+    const nome = o.nm || o.ds || o.nmm || o.n;
+    const cod = o.cd || o.c || o.cdm;
+    if (typeof nome === 'string' && /^\d{4,5}$/.test(String(cod ?? ''))) map[key(nome)] = pad(cod, 5);
+    for (const k in o) walk(o[k], d+1);
+  })(cfg, 0);
+  return map;
+}
+
+/* Candidatos em qualquer nível (diretos em .cand ou dentro de partidos) */
+function findCands(root){
+  const out = [];
+  (function walk(o, d){
+    if (!o || typeof o !== 'object' || d > 10) return;
+    if (Array.isArray(o)) return o.forEach(x => walk(x, d+1));
+    if (Array.isArray(o.cand)){ const part = o.sg || o.sgp || o.nm || ''; o.cand.forEach(c => out.push({...c, _partido: part})); }
+    for (const k in o) if (k !== 'cand') walk(o[k], d+1);
+  })(root, 0);
+  return out;
+}
+function findField(o, k, d=0){
+  if (!o || typeof o !== 'object' || d > 8) return undefined;
+  if (!Array.isArray(o) && k in o && typeof o[k] !== 'object') return o[k];
+  for (const x in o){ const r = findField(o[x], k, d+1); if (r !== undefined) return r; }
+}
+
+async function run(){
+  $('go').disabled = true; $('dlLong').disabled = $('dlWide').disabled = true;
+  try{
+    log('Lendo a lista de municípios do TSE…');
+    let map = {};
+    try { map = mapMunicipios(await getJws(CFG.configMun)); }
+    catch(e){ console.warn('[Mural] config municípios', e); }
+    $('manual').value.split('\n').forEach(l => { const m = l.match(/^(.+?)\s*=\s*(\d{4,5})/); if (m) map[key(m[1])] = pad(m[2],5); });
+    if (!map[key('Guarulhos')]) map[key('Guarulhos')] = '64777';
+
+    const cidades = RMSP.map(nm => ({nm, cd: map[key(nm)]}));
+    const faltando = cidades.filter(c => !c.cd).map(c => c.nm);
+    const linhas = [], porCidade = [];
+    let feitas = 0;
+    const fila = cidades.filter(c => c.cd);
+
+    async function worker(){
+      while (fila.length){
+        const c = fila.shift();
+        const url = `${CFG.base}/${CFG.elePres}/dados/sp/sp${c.cd}-c${CFG.cargo}-e${pad(CFG.elePres,6)}-u.jws`;
+        try{
+          const d = await getJws(url);
+          const pst = brNum(findField(d, 'pst'));
+          const hora = [findField(d,'dg'), findField(d,'hg')].filter(Boolean).join(' ');
+          const cands = findCands(d).map(x => ({
+            numero: String(x.n ?? ''), nome: x.nmu || x.nm || '', partido: String(x._partido || x.cc || '').trim(),
+            votos: brNum(x.vap), pct: brNum(x.pvap)
+          })).sort((a,b) => b.votos - a.votos);
+          cands.forEach(k => linhas.push({municipio:c.nm, cod_tse:c.cd, pst, hora, ...k}));
+          porCidade.push({municipio:c.nm, cod_tse:c.cd, pst, hora, cands});
+        }catch(e){ faltando.push(`${c.nm} (${e.message})`); console.warn('[Mural]', c.nm, url, e); }
+        feitas++; $('pbar').style.width = (feitas / cidades.length * 100) + '%';
+        log(`Buscando… ${feitas} de ${cidades.length} cidades`);
+      }
+    }
+    await Promise.all(Array.from({length: CFG.paralelo}, worker));
+    $('pbar').style.width = '100%';
+
+    porCidade.sort((a,b) => RMSP.indexOf(a.municipio) - RMSP.indexOf(b.municipio));
+    RESULT = {linhas, porCidade};
+    renderTable();
+    $('dlLong').disabled = $('dlWide').disabled = !linhas.length;
+    log(`${porCidade.length} de 39 cidades carregadas às ${new Date().toLocaleTimeString('pt-BR')}.` +
+        (faltando.length ? ` <span class="err">Não encontradas: ${faltando.join(', ')}.</span>` : ''));
+  }catch(e){ console.error(e); log('Erro: ' + e.message, true); }
+  $('go').disabled = false;
+}
+
+function candidatosOrdenados(){
+  const tot = {};
+  RESULT.linhas.forEach(l => { const k = `${l.nome}|${l.numero}`; tot[k] = (tot[k]||0) + l.votos; });
+  return Object.entries(tot).sort((a,b) => b[1]-a[1]).map(([k]) => k);
+}
+
+function renderTable(){
+  const cs = candidatosOrdenados();
+  const nomeCurto = k => k.split('|')[0];
+  let h = '<tr><th>Município</th><th>Seções %</th>' + cs.map(k => `<th>${nomeCurto(k)}</th>`).join('') + '</tr>';
+  RESULT.porCidade.forEach(c => {
+    const m = Object.fromEntries(c.cands.map(x => [`${x.nome}|${x.numero}`, x]));
+    h += `<tr><td>${c.municipio}</td><td>${c.pst.toLocaleString('pt-BR')}</td>` +
+         cs.map(k => `<td>${m[k] ? m[k].pct.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}) + '%' : '–'}</td>`).join('') + '</tr>';
+  });
+  $('tbl').innerHTML = h;
+}
+
+const num = n => String(n).replace('.', ',');
+const cell = v => { v = String(v ?? ''); return /[;"\n]/.test(v) ? `"${v.replace(/"/g,'""')}"` : v; };
+function download(nome, rows){
+  const csv = '﻿' + rows.map(r => r.map(cell).join(';')).join('\r\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8'}));
+  a.download = nome; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+const stamp = () => new Date().toISOString().slice(0,16).replace(/[-:T]/g,'');
+
+$('dlLong').onclick = () => download(`presidente_rmsp_${stamp()}.csv`,
+  [['municipio','cod_tse','pct_secoes_totalizadas','numero','candidato','partido','votos','pct_validos','atualizado_tse'],
+   ...RESULT.linhas.map(l => [l.municipio,l.cod_tse,num(l.pst),l.numero,l.nome,l.partido,l.votos,num(l.pct),l.hora])]);
+
+$('dlWide').onclick = () => {
+  const cs = candidatosOrdenados();
+  const head = ['municipio','cod_tse','pct_secoes_totalizadas'];
+  cs.forEach(k => { const n = k.split('|')[0]; head.push(`${n} (votos)`, `${n} (%)`); });
+  const rows = RESULT.porCidade.map(c => {
+    const m = Object.fromEntries(c.cands.map(x => [`${x.nome}|${x.numero}`, x]));
+    return [c.municipio, c.cod_tse, num(c.pst), ...cs.flatMap(k => m[k] ? [m[k].votos, num(m[k].pct)] : ['', ''])];
+  });
+  download(`presidente_rmsp_por_cidade_${stamp()}.csv`, [head, ...rows]);
+};
+$('go').onclick = run;
+</script>
+</body>
+</html>
