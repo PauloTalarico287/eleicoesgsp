@@ -254,19 +254,21 @@ async function fetchResultado(){
   return null;
 }
 
-/* Procura, em qualquer nível do JSON, a lista de candidatos (objetos com nome e votos) */
-function findCands(o, depth=0){
-  if (!o || depth > 8) return [];
-  if (Array.isArray(o)){
-    if (o.length && o.every(x => x && typeof x === 'object' && ('nm' in x || 'nmu' in x) && ('vap' in x || 'n' in x))) return o;
-    for (const x of o){ const r = findCands(x, depth+1); if (r.length) return r; }
-    return [];
-  }
-  if (typeof o === 'object'){
-    if (Array.isArray(o.cand) && o.cand.length) return o.cand;
-    for (const k in o){ const r = findCands(o[k], depth+1); if (r.length) return r; }
-  }
-  return [];
+/* Junta os candidatos de qualquer nível do JSON. No formato completo do TSE eles ficam dentro
+   de cada partido/federação (obj.cand); o partido vem do objeto "pai". */
+function findCands(root){
+  const out = [];
+  (function walk(o, pai, depth){
+    if (!o || typeof o !== 'object' || depth > 10) return;
+    if (Array.isArray(o)) return o.forEach(x => walk(x, pai, depth+1));
+    if (Array.isArray(o.cand)){
+      const partido = o.sg || o.sgp || o.nm || '';
+      o.cand.forEach(c => { if (c && typeof c === 'object') out.push({...c, _partido: partido}); });
+    }
+    for (const k in o) if (k !== 'cand') walk(o[k], o, depth+1);
+  })(root, null, 0);
+  if (!out.length) console.info('[Mural] Nenhuma lista "cand" encontrada. Chaves do topo:', Object.keys(root || {}));
+  return out;
 }
 /* Procura um campo de totais em qualquer nível */
 function findField(o, key, depth=0){
@@ -302,8 +304,8 @@ function normalize(d){
   const F = k => findField(d, k);
   const cands = findCands(d).map(c => ({
     sq: c.sqcand ?? c.sq, n: String(c.n ?? ''), nm: c.nmu || c.nm || '',
-    partido: String(c.cc ?? c.sgp ?? c.p ?? '').trim(),
-    eleito: String(c.e).toLowerCase() === 's',
+    partido: String(c._partido || c.cc || c.sgp || '').trim(),
+    eleito: String(c.e).toLowerCase() === 's' || /^eleit/i.test(c.st || ''),
     st: c.st || '', valido: !c.dvt || /v[aá]lid/i.test(c.dvt),
     votos: brNum(c.vap), pct: brNum(c.pvap)
   })).filter(c => c.valido).sort((a,b) => b.votos - a.votos);
