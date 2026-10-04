@@ -124,7 +124,7 @@
   <ol class="list" id="list"></ol>
   <button class="more" id="more" hidden>Mostrar mais</button>
 
-  <p class="foot">Fonte: <a href="https://resultados.tse.jus.br" target="_blank" rel="noopener">TSE – Portal Resultados</a> · atualização automática a cada 2 minutos · Agência Mural</p>
+  <p class="foot">Fonte: <a href="https://resultados.tse.jus.br" target="_blank" rel="noopener">TSE – Portal Resultados</a> · atualização automática a cada minuto · Agência Mural</p>
 </div>
 
 <script>
@@ -136,7 +136,7 @@ const CONFIG = {
   eleicao: null,             // código da eleição; null = descobrir no ele-c.json (forçar com ?ele=546)
   cargos: { 'deputado-federal': '0006', 'deputado-estadual': '0007' },
   nomes:  { 'deputado-federal': 'Deputado federal', 'deputado-estadual': 'Deputado estadual' },
-  refreshMs: 120000,
+  refreshMs: 60000,
   pageSize: 30
 };
 /* ======================================================== */
@@ -148,7 +148,7 @@ if (params.get('ciclo')) CONFIG.ciclo = params.get('ciclo');
 let cargo = CONFIG.cargos[params.get('cargo')] ? params.get('cargo') : 'deputado-estadual';
 
 const $ = id => document.getElementById(id);
-const state = { data:null, shown:CONFIG.pageSize };
+const state = { data:null, shown:CONFIG.pageSize, candidatos:null, okUrl:null, okCargo:null };
 const brNum = s => Number(String(s ?? '0').replace(/\./g,'').replace(',', '.')) || 0;
 const fmtInt = n => n.toLocaleString('pt-BR');
 const fmtPct = n => n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}) + '%';
@@ -158,37 +158,76 @@ const fold = s => String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,''
 
 function showMsg(t){ $('msg').innerHTML = t ? `<div class="msg">${t}</div>` : ''; }
 
-/* Descobre o código da eleição (1º turno, cargos estaduais) no arquivo de configuração do TSE */
-async function discoverEleicao(){
-  if (CONFIG.eleicao) return CONFIG.eleicao;
-  const r = await fetch(`${CONFIG.base}/comum/config/ele-c.json`, {cache:'no-store'});
+/* Lista os códigos de eleição do arquivo de configuração do TSE, priorizando 1º turno / estaduais */
+async function listEleicoes(){
+  if (CONFIG.eleicao) return [CONFIG.eleicao];
+  if (state.candidatos) return state.candidatos;
+  const r = await fetch(`${CONFIG.base}/comum/config/ele-c.json?t=${Date.now()}`, {cache:'no-store'});
   if (!r.ok) throw new Error('config ' + r.status);
   const cfg = await r.json();
-  const eleicoes = (cfg.pl || []).flatMap(p => p.e || []);
-  const hasDep = e => /deputado/i.test(JSON.stringify(e)) || /estadua/i.test(e.nm || '');
-  const pick = eleicoes.find(e => String(e.t) === '1' && hasDep(e)) || eleicoes.find(hasDep);
-  if (!pick) throw new Error('eleição não encontrada no ele-c.json');
-  CONFIG.eleicao = String(pick.cd);
-  return CONFIG.eleicao;
+  const found = [];
+  (function walk(o){
+    if (Array.isArray(o)) return o.forEach(walk);
+    if (o && typeof o === 'object'){
+      const cd = String(o.cd ?? '');
+      if (/^\d{3,6}$/.test(cd) && (o.nm || o.e || o.abr || o.t)){
+        const txt = JSON.stringify(o).toLowerCase();
+        let score = 0;
+        if (/deputad/.test(txt)) score += 4;
+        if (/estadua/.test(txt)) score += 3;
+        if (String(o.t) === '1') score += 2;
+        if (/federal/.test(o.nm || '') && !/estadua/.test(txt)) score -= 1;
+        found.push({cd, score, nm:o.nm});
+      }
+      Object.values(o).forEach(walk);
+    }
+  })(cfg);
+  const uniq = [...new Map(found.sort((a,b)=>b.score-a.score).map(f=>[f.cd,f])).values()];
+  console.info('[Mural] Eleições no ele-c.json:', uniq.map(f=>`${f.cd} (${f.nm||'?'})`).join(', '));
+  state.candidatos = uniq.slice(0, 10).map(f => f.cd);
+  return state.candidatos;
 }
 
-const fileUrl = ele => `${CONFIG.base}/${CONFIG.ciclo}/${ele}/dados-simplificados/${CONFIG.uf}/${CONFIG.uf}-c${CONFIG.cargos[cargo]}-e${pad(ele,6)}-r.json`;
+const PASTAS = ['dados-simplificados', 'dados'];
+const fileUrl = (ele, pasta) => `${CONFIG.base}/${CONFIG.ciclo}/${ele}/${pasta}/${CONFIG.uf}/${CONFIG.uf}-c${CONFIG.cargos[cargo]}-e${pad(ele,6)}-r.json`;
 const photoUrl = sq => `${CONFIG.base}/${CONFIG.ciclo}/${CONFIG.eleicao}/fotos/${CONFIG.uf}/${sq}.jpeg`;
+
+/* Testa as combinações até achar o arquivo com candidatos; depois fixa a que funcionou */
+async function fetchResultado(){
+  if (state.okUrl && state.okCargo === cargo){
+    const r = await fetch(state.okUrl + '?t=' + Date.now(), {cache:'no-store'});
+    if (r.ok) return r.json();
+  }
+  const eles = await listEleicoes();
+  const tentativas = [];
+  for (const ele of eles) for (const pasta of PASTAS){
+    const url = fileUrl(ele, pasta);
+    try{
+      const r = await fetch(url + '?t=' + Date.now(), {cache:'no-store'});
+      tentativas.push(`${r.status} ${url}`);
+      if (!r.ok) continue;
+      const d = await r.json();
+      if (!Array.isArray(d.cand) || !d.cand.length) continue;
+      CONFIG.eleicao = ele; state.okUrl = url; state.okCargo = cargo;
+      console.info('[Mural] Usando', url);
+      return d;
+    }catch(e){ tentativas.push(`ERRO ${url} ${e.message}`); }
+  }
+  console.warn('[Mural] Nenhum arquivo com candidatos. Tentativas:\n' + tentativas.join('\n'));
+  return null;
+}
 
 async function load(){
   try{
     let d;
     if (DEMO) d = demoData();
     else {
-      const ele = await discoverEleicao();
-      const r = await fetch(fileUrl(ele) + '?t=' + Date.now(), {cache:'no-store'});
-      if (r.status === 404 || r.status === 403) {
+      d = await fetchResultado();
+      if (!d) {
         $('status').textContent = 'Apuração ainda não iniciada · 0,00% das seções totalizadas';
-        showMsg('Os resultados começam a ser divulgados pelo TSE após o fechamento das urnas, às 17h. Esta página se atualiza sozinha.');
+        showMsg('Os resultados para deputado ainda não foram publicados pelo TSE. Esta página se atualiza sozinha.');
         return;
       }
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      d = await r.json();
     }
     showMsg('');
     state.data = normalize(d);
