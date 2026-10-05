@@ -300,13 +300,24 @@ async function load(){
   }
 }
 
+/* Situação do candidato: procura em qualquer campo de texto algo como "Eleito por QP", "Suplente", "Não eleito" */
+function situacao(c){
+  if (c.st && /eleit|suplent/i.test(c.st)) return c.st;
+  for (const k in c){
+    const v = c[k];
+    if (typeof v === 'string' && /^(eleit|suplent|n[aã]o eleit|2[ºo°]? ?turno)/i.test(v.trim())) return v.trim();
+  }
+  return c.st || '';
+}
+
 function normalize(d){
   const F = k => findField(d, k);
   const cands = findCands(d).map(c => ({
     sq: c.sqcand ?? c.sq, n: String(c.n ?? ''), nm: c.nmu || c.nm || '',
     partido: String(c._partido || c.cc || c.sgp || '').trim(),
-    eleito: String(c.e).toLowerCase() === 's' || /^eleit/i.test(c.st || ''),
-    st: c.st || '', valido: !c.dvt || /v[aá]lid/i.test(c.dvt),
+    st: situacao(c),
+    eleito: /^eleit/i.test(situacao(c)) || ['s','sim','true','1'].includes(String(c.e ?? c.eleito ?? '').toLowerCase()),
+    valido: !c.dvt || /v[aá]lid/i.test(c.dvt),
     votos: brNum(c.vap), pct: brNum(c.pvap)
   })).filter(c => c.valido).sort((a,b) => b.votos - a.votos);
   return {
