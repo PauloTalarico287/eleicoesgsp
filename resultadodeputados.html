@@ -55,6 +55,9 @@
   .tag{display:inline-block;margin-top:8px;font-size:12.5px;text-transform:uppercase;padding:2px 8px}
   .tag.eleito{background:var(--teal);color:#fff}
   .tag.sup{border:1px solid var(--teal);color:var(--teal)}
+  .tag.eleito.proj{background:#fff;color:var(--teal);border:1px dashed var(--teal)}
+  .nota{background:#fff;border-left:4px solid var(--teal);padding:12px 14px;margin:0 0 20px;font-size:14.5px}
+  .nota b{color:var(--teal)}
   .votes{text-align:right}
   .votes b{display:block;font-size:20px;font-weight:700}
   .votes span{display:block;font-size:14px;color:var(--ink-2);margin-top:4px}
@@ -120,6 +123,7 @@
   </div>
 
   <div id="msg"></div>
+  <div id="nota"></div>
   <p class="count" id="count"></p>
   <ol class="list" id="list"></ol>
   <button class="more" id="more" hidden>Mostrar mais</button>
@@ -136,6 +140,8 @@ const CONFIG = {
   eleicao: '6259',           // código da eleição 2026 visto no site do TSE (forçar outro com ?ele=)
   cargos: { 'deputado-federal': '0006', 'deputado-estadual': '0007' },
   nomes:  { 'deputado-federal': 'Deputado federal', 'deputado-estadual': 'Deputado estadual' },
+  vagas: { 'deputado-federal': 70, 'deputado-estadual': 94 },
+  projecaoMin: 100,        // só projeta com 100% das seções totalizadas
   refreshMs: 60000,
   pageSize: 30
 };
@@ -255,18 +261,35 @@ async function fetchResultado(){
 }
 
 /* Junta os candidatos de qualquer nível do JSON. No formato completo do TSE eles ficam dentro
-   de cada partido/federação (obj.cand); o partido vem do objeto "pai". */
+   de partidos, que podem estar dentro de federações. Para cada candidato guardamos:
+   _partido  = sigla do partido (objeto mais próximo)
+   _agrem    = federação ou partido isolado (objeto mais externo com número e nome), unidade do quociente */
+const LEGENDA_KEYS = ['vl','vlg','vleg','tvl','tvlg','vlegenda','vlt','tvleg'];
 function findCands(root){
   const out = [];
-  (function walk(o, pai, depth){
-    if (!o || typeof o !== 'object' || depth > 10) return;
-    if (Array.isArray(o)) return o.forEach(x => walk(x, pai, depth+1));
+  state.legendas = new Map();      // agremiação -> votos de legenda
+  const vistos = new Set();
+  (function walk(o, anc, depth){
+    if (!o || typeof o !== 'object' || depth > 12) return;
+    if (Array.isArray(o)) return o.forEach(x => walk(x, anc, depth+1));
+    const isGrupo = ('n' in o) && (o.nm || o.sg) && !('vap' in o && !Array.isArray(o.cand));
+    const anc2 = isGrupo ? [...anc, o] : anc;
     if (Array.isArray(o.cand)){
-      const partido = o.sg || o.sgp || o.nm || '';
-      o.cand.forEach(c => { if (c && typeof c === 'object') out.push({...c, _partido: partido}); });
+      const partidoObj = anc2[anc2.length-1] || {};
+      const agremObj = anc2[0] || {};
+      const partido = partidoObj.sg || partidoObj.sgp || partidoObj.nm || '';
+      const agrem = anc2.length ? String(agremObj.n ?? '') + '|' + (agremObj.nm || agremObj.sg || '') : '';
+      // votos de legenda: soma no nível do partido; se não houver, usa o nível da federação
+      for (const obj of anc2.length ? [partidoObj, agremObj] : []){
+        if (vistos.has(obj)) break;
+        const k = LEGENDA_KEYS.find(k => k in obj && typeof obj[k] !== 'object');
+        if (k){ vistos.add(obj); state.legendas.set(agrem, (state.legendas.get(agrem)||0) + brNum(obj[k])); break; }
+      }
+      o.cand.forEach(c => { if (c && typeof c === 'object') out.push({...c, _partido: partido, _agrem: agrem,
+        _agremNome: agremObj.nm || agremObj.sg || partido}); });
     }
-    for (const k in o) if (k !== 'cand') walk(o[k], o, depth+1);
-  })(root, null, 0);
+    for (const k in o) if (k !== 'cand') walk(o[k], anc2, depth+1);
+  })(root, [], 0);
   if (!out.length) console.info('[Mural] Nenhuma lista "cand" encontrada. Chaves do topo:', Object.keys(root || {}));
   return out;
 }
@@ -312,21 +335,98 @@ function situacao(c){
 
 function normalize(d){
   const F = k => findField(d, k);
-  const cands = findCands(d).map(c => ({
+  const raw = findCands(d);
+  let cands = raw.map(c => ({
     sq: c.sqcand ?? c.sq, n: String(c.n ?? ''), nm: c.nmu || c.nm || '',
     partido: String(c._partido || c.cc || c.sgp || '').trim(),
-    st: situacao(c),
-    eleito: /^eleit/i.test(situacao(c)) || ['s','sim','true','1'].includes(String(c.e ?? c.eleito ?? '').toLowerCase()),
-    valido: !c.dvt || /v[aá]lid/i.test(c.dvt),
+    agrem: c._agrem || String(c.cc || c._partido || ''), agremNome: c._agremNome || String(c.cc || c._partido || ''),
+    stOficial: situacao(c), e: String(c.e ?? c.eleito ?? '').toLowerCase(),
+    dvt: c.dvt || '',
     votos: brNum(c.vap), pct: brNum(c.pvap)
-  })).filter(c => c.valido).sort((a,b) => b.votos - a.votos);
+  }));
+  // votos anulados não contam para o partido nem para o candidato
+  cands = cands.filter(c => !/anulad/i.test(c.dvt));
+  cands.forEach(c => { c.apto = !c.dvt || /^v[aá]lido$/i.test(c.dvt.trim()); });
+
+  // Situação oficial do TSE: texto "Eleito/Suplente" em algum candidato, ou flag e='s' (se plausível)
+  const nS = cands.filter(c => ['s','sim','true','1'].includes(c.e)).length;
+  const oficial = cands.some(c => /^(eleit|suplent)/i.test(c.stOficial)) || (nS > 0 && nS <= CONFIG.vagas[cargo]);
+  const pst = brNum(F('pst'));
+  let proj = null;
+  if (oficial){
+    cands.forEach(c => { c.eleito = /^eleit/i.test(c.stOficial) || (!c.stOficial && ['s','sim','true','1'].includes(c.e)); c.st = c.stOficial || (c.eleito ? 'Eleito' : ''); c.projecao = false; });
+  } else if (pst >= CONFIG.projecaoMin){
+    proj = projetar(cands, CONFIG.vagas[cargo]);
+  } else {
+    cands.forEach(c => { c.eleito = false; c.st = ''; });
+  }
+  cands = cands.filter(c => c.apto || c.eleito).sort((a,b) => b.votos - a.votos);
   return {
-    cands, eleitos: cands.filter(c => c.eleito).length,
-    pst: brNum(F('pst')),
+    cands, eleitos: cands.filter(c => c.eleito).length, oficial, proj,
+    pst,
     hora: [F('dg'), F('hg')].filter(Boolean).join(' às ') || [F('dt'), F('ht')].filter(Boolean).join(' às '),
     tv: brNum(F('tv')), vv: brNum(F('vv')), pvv: brNum(F('pvv')),
     vb: brNum(F('vb')), pvb: brNum(F('pvb')), vn: brNum(F('vn')), pvn: brNum(F('ptvn') ?? F('pvn'))
   };
+}
+
+/* ===== Projeção dos eleitos (sistema proporcional) =====
+   Código Eleitoral, arts. 106 a 109 (com Lei 14.211/2021) e decisão do STF de 2024 sobre as sobras:
+   1) QE = votos válidos / vagas (fração <= 0,5 desprezada; > 0,5 arredonda para cima)
+   2) QP = votos da agremiação / QE (fração desprezada); vaga exige candidato com >= 10% do QE
+   3) Sobras pela maior média (votos / (vagas obtidas + 1)): partidos com >= 80% do QE e candidatos com >= 20% do QE
+   4) Se ainda sobrarem vagas, todas as agremiações disputam pela maior média (sem os mínimos)
+   Desempates simplificados (maior votação). É uma projeção, não substitui a divulgação oficial. */
+function projetar(cands, vagas){
+  const ags = new Map();
+  cands.forEach(c => {
+    if (!ags.has(c.agrem)) ags.set(c.agrem, {id:c.agrem, nome:c.agremNome, nominal:0, legenda:state.legendas.get(c.agrem)||0, cands:[], vagas:0});
+    const g = ags.get(c.agrem); g.nominal += c.votos; g.cands.push(c);
+    c.eleito = false; c.st = ''; c.projecao = true;
+  });
+  const lista = [...ags.values()];
+  lista.forEach(g => { g.votos = g.nominal + g.legenda; g.cands.sort((a,b) => b.votos - a.votos); });
+  const V = lista.reduce((s,g) => s + g.votos, 0);
+  const bruto = V / vagas;
+  const QE = Math.floor(bruto) + ((bruto - Math.floor(bruto)) > 0.5 ? 1 : 0);
+  if (!QE) return null;
+
+  const proximo = (g, minimo) => g.cands.find(c => c.apto && !c.eleito && c.votos >= minimo);
+  const eleger = (g, c, como) => { c.eleito = true; c.st = como; g.vagas++; };
+  let restantes = vagas;
+
+  // 1ª etapa: quociente partidário
+  lista.forEach(g => {
+    g.qp = Math.floor(g.votos / QE);
+    for (let i = 0; i < g.qp && restantes > 0; i++){
+      const c = proximo(g, 0.10 * QE); if (!c) break;
+      eleger(g, c, 'Eleito por QP (projeção)'); restantes--;
+    }
+  });
+  // 2ª etapa: sobras com 80% / 20%
+  while (restantes > 0){
+    const aptos = lista.filter(g => g.votos >= 0.80 * QE && proximo(g, 0.20 * QE));
+    if (!aptos.length) break;
+    aptos.sort((a,b) => (b.votos/(b.vagas+1)) - (a.votos/(a.vagas+1)) || b.votos - a.votos);
+    eleger(aptos[0], proximo(aptos[0], 0.20 * QE), 'Eleito por média (projeção)'); restantes--;
+  }
+  // 3ª etapa: todas as agremiações
+  while (restantes > 0){
+    const aptos = lista.filter(g => proximo(g, 0));
+    if (!aptos.length) break;
+    aptos.sort((a,b) => (b.votos/(b.vagas+1)) - (a.votos/(a.vagas+1)) || b.votos - a.votos);
+    eleger(aptos[0], proximo(aptos[0], 0), 'Eleito por média (projeção)'); restantes--;
+  }
+  // suplentes: não eleitos das agremiações que elegeram alguém
+  lista.forEach(g => { if (g.vagas) g.cands.forEach(c => { if (!c.eleito && c.apto) c.st = 'Suplente (projeção)'; }); });
+
+  const resumo = lista.filter(g => g.votos).sort((a,b) => b.vagas - a.vagas || b.votos - a.votos)
+    .map(g => ({agremiacao:g.nome, votos:g.votos, nominais:g.nominal, legenda:g.legenda, QP:g.qp, vagas:g.vagas}));
+  const semLegenda = lista.every(g => !g.legenda);
+  console.info(`[Mural] Projeção ${cargo}: votos válidos ${V} · QE ${QE} · vagas ${vagas}` + (semLegenda ? ' · ATENÇÃO: votos de legenda não encontrados no arquivo' : ''));
+  console.table(resumo);
+  window.__muralProjecao = {QE, V, resumo};
+  return {QE, V, semLegenda};
 }
 
 function fillPartidos(){
@@ -339,13 +439,17 @@ function render(){
   const d = state.data; if (!d) return;
   const fase = d.pst <= 0 ? 'Apuração ainda não iniciada' : d.pst >= 100 ? 'Apuração encerrada' : 'Apuração em andamento';
   $('status').textContent = `${fase} · ${fmtPct(d.pst)} das seções totalizadas` +
-    (d.eleitos ? ` · ${fmtInt(d.eleitos)} eleitos` : '') + (d.hora && d.pst > 0 ? ` · atualizado em ${d.hora}` : '');
+    (d.eleitos ? ` · ${fmtInt(d.eleitos)} eleitos${d.oficial?'':' (projeção)'}` : '') + (d.hora && d.pst > 0 ? ` · atualizado em ${d.hora}` : '');
   $('pbar').style.width = Math.min(100, d.pst) + '%';
   $('sTotal').textContent = fmtInt(d.tv);
   $('sValidos').textContent = fmtInt(d.vv);  $('pValidos').textContent = fmtPct(d.pvv);
   $('sBrancos').textContent = fmtInt(d.vb);  $('pBrancos').textContent = fmtPct(d.pvb);
   $('sNulos').textContent = fmtInt(d.vn);    $('pNulos').textContent = fmtPct(d.pvn);
 
+  $('nota').innerHTML = d.oficial
+    ? `<div class="nota"><b>Resultado oficial.</b> A situação dos candidatos (eleito, suplente) é a divulgada pelo TSE.</div>`
+    : d.proj ? `<div class="nota"><b>Projeção da Agência Mural.</b> O TSE ainda não divulgou a lista oficial de eleitos. Os selos tracejados são uma projeção calculada com os votos totalizados, pelas regras do quociente eleitoral (${fmtInt(d.proj.QE)} votos) e da distribuição das sobras. A lista oficial pode mudar por candidaturas sub judice ou recontagens; esta página troca para o resultado oficial automaticamente quando o TSE divulgar.</div>`
+    : '';
   const q = fold($('q').value.trim()), p = $('partido').value, so = $('soEleitos').checked;
   const top = d.cands[0]?.votos || 1;
   const rows = d.cands.filter(c => (!p || c.partido === p) && (!so || c.eleito) &&
@@ -353,8 +457,8 @@ function render(){
 
   $('count').textContent = `${fmtInt(rows.length)} candidato${rows.length===1?'':'s'}`;
   $('list').innerHTML = rows.slice(0, state.shown).map(c => {
-    const tag = c.eleito ? `<span class="tag eleito">${esc(c.st || 'Eleito')}</span>`
-              : /suplente/i.test(c.st) ? `<span class="tag sup">Suplente</span>` : '';
+    const tag = c.eleito ? `<span class="tag eleito${c.projecao?' proj':''}">${esc(c.st || 'Eleito')}</span>`
+              : /suplente/i.test(c.st) ? `<span class="tag sup">${esc(c.st)}</span>` : '';
     const img = DEMO ? '' : ` style="background-image:url('${photoUrl(c.sq)}')"`;
     return `<li class="row">
       <div class="photo"${img} aria-hidden="true"></div>
