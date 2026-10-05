@@ -132,6 +132,10 @@
 </div>
 
 <script>
+/* Lista oficial de eleitos divulgada pelo TRE-SP em 04/10/2026 (totalização às 22:58:07).
+   Fonte: PDFs "Deputadas e deputados federais/estaduais eleitos" em tre-sp.jus.br. Chave = número do candidato. */
+const OFICIAL_TRE = {"deputado-federal":{"2211":"Eleito por QP","5070":"Eleito por QP","5000":"Eleito por QP","1414":"Eleito por QP","4040":"Eleito por QP","2222":"Eleito por QP","1110":"Eleito por QP","2000":"Eleito por QP","5005":"Eleito por QP","1111":"Eleito por QP","2299":"Eleito por QP","5089":"Eleito por QP","2026":"Eleito por QP","1515":"Eleito por QP","1302":"Eleito por QP","3007":"Eleito por QP","2011":"Eleito por QP","2227":"Eleito por QP","2020":"Eleito por QP","1010":"Eleito por QP","2225":"Eleito por QP","1011":"Eleito por QP","5500":"Eleito por QP","5533":"Eleito por QP","2007":"Eleito por QP","2280":"Eleito por QP","1358":"Eleito por QP","2200":"Eleito por QP","1380":"Eleito por QP","1000":"Eleito por QP","1399":"Eleito por QP","4545":"Eleito por QP","1502":"Eleito por QP","1550":"Eleito por QP","2234":"Eleito por QP","1322":"Eleito por QP","2270":"Eleito por QP","1023":"Eleito por QP","1370":"Eleito por QP","1316":"Eleito por QP","1353":"Eleito por QP","5010":"Eleito por QP","1301":"Eleito por m\u00e9dia","2244":"Eleito por QP","1333":"Eleito por m\u00e9dia","1325":"Eleito por m\u00e9dia","2077":"Eleito por m\u00e9dia","2255":"Eleito por QP","1536":"Eleito por m\u00e9dia","1100":"Eleito por QP","2233":"Eleito por QP","5570":"Eleito por QP","4000":"Eleito por QP","2277":"Eleito por QP","5515":"Eleito por QP","1033":"Eleito por m\u00e9dia","2274":"Eleito por QP","5585":"Eleito por m\u00e9dia","1022":"Eleito por m\u00e9dia","2208":"Eleito por QP","2247":"Eleito por QP","5512":"Eleito por m\u00e9dia","4410":"Eleito por QP","4425":"Eleito por QP","3030":"Eleito por m\u00e9dia","2212":"Eleito por QP","2278":"Eleito por QP","2220":"Eleito por QP","2525":"Eleito por QP","5088":"Eleito por QP"},"deputado-estadual":{"22011":"Eleito por QP","13133":"Eleito por QP","50700":"Eleito por QP","50789":"Eleito por QP","50000":"Eleito por QP","22800":"Eleito por QP","20200":"Eleito por QP","22444":"Eleito por QP","14014":"Eleito por QP","11111":"Eleito por QP","22111":"Eleito por QP","50110":"Eleito por QP","50555":"Eleito por QP","11777":"Eleito por QP","22000":"Eleito por QP","50900":"Eleito por QP","15300":"Eleito por QP","10010":"Eleito por QP","22222":"Eleito por QP","22322":"Eleito por QP","15115":"Eleito por QP","13180":"Eleito por QP","11911":"Eleito por QP","13123":"Eleito por QP","22138":"Eleito por QP","22110":"Eleito por QP","55555":"Eleito por QP","11190":"Eleito por QP","45045":"Eleito por QP","50100":"Eleito por QP","22888":"Eleito por QP","20007":"Eleito por QP","22777":"Eleito por QP","13633":"Eleito por QP","10222":"Eleito por QP","55855":"Eleito por QP","13131":"Eleito por QP","22422":"Eleito por QP","44077":"Eleito por QP","13644":"Eleito por QP","13114":"Eleito por QP","15363":"Eleito por QP","55400":"Eleito por QP","40640":"Eleito por QP","22001":"Eleito por QP","44555":"Eleito por QP","13613":"Eleito por QP","22007":"Eleito por QP","13134":"Eleito por QP","50500":"Eleito por QP","22522":"Eleito por QP","13700":"Eleito por QP","55155":"Eleito por QP","22123":"Eleito por QP","20000":"Eleito por QP","55014":"Eleito por QP","22999":"Eleito por QP","55455":"Eleito por QP","11000":"Eleito por QP","40211":"Eleito por QP","55000":"Eleito por QP","22100":"Eleito por QP","10023":"Eleito por QP","15123":"Eleito por QP","13016":"Eleito por QP","55125":"Eleito por QP","40444":"Eleito por m\u00e9dia","22190":"Eleito por QP","44044":"Eleito por QP","22345":"Eleito por QP","44123":"Eleito por m\u00e9dia","15000":"Eleito por m\u00e9dia","20777":"Eleito por QP","13110":"Eleito por QP","55055":"Eleito por QP","22411":"Eleito por QP","13789":"Eleito por QP","10100":"Eleito por QP","13310":"Eleito por QP","13622":"Eleito por m\u00e9dia","22500":"Eleito por QP","22022":"Eleito por QP","13121":"Eleito por m\u00e9dia","10321":"Eleito por QP","20520":"Eleito por QP","22300":"Eleito por QP","30123":"Eleito por QP","10123":"Eleito por QP","22122":"Eleito por QP","22051":"Eleito por m\u00e9dia","22343":"Eleito por m\u00e9dia","50300":"Eleito por QP","25000":"Eleito por QP","20100":"Eleito por m\u00e9dia"}};
+
 /* ===================== CONFIGURAÇÃO ===================== */
 const CONFIG = {
   base: 'https://resultados.tse.jus.br/oficial',
@@ -353,7 +357,20 @@ function normalize(d){
   const oficial = cands.some(c => /^(eleit|suplent)/i.test(c.stOficial)) || (nS > 0 && nS <= CONFIG.vagas[cargo]);
   const pst = brNum(F('pst'));
   let proj = null;
-  if (oficial){
+  const tre = OFICIAL_TRE[cargo];
+  if (tre){
+    cands.forEach(c => {
+      const st = tre[c.n];
+      c.eleito = !!st; c.st = st || ''; c.projecao = false;
+    });
+    // suplentes: não eleitos de partidos/federações que elegeram alguém
+    const agEleitas = new Set(cands.filter(c => c.eleito).map(c => c.agrem));
+    cands.forEach(c => { if (!c.eleito && c.apto && agEleitas.has(c.agrem)) c.st = 'Suplente'; });
+    const achados = new Set(cands.filter(c => c.eleito).map(c => c.n));
+    const faltam = Object.keys(tre).filter(n => !achados.has(n));
+    if (faltam.length) console.warn('[Mural] Eleitos do TRE-SP não encontrados nos dados do TSE:', faltam.join(', '));
+    else console.info(`[Mural] Lista oficial do TRE-SP aplicada: ${achados.size} eleitos.`);
+  } else if (oficial){
     cands.forEach(c => { c.eleito = /^eleit/i.test(c.stOficial) || (!c.stOficial && ['s','sim','true','1'].includes(c.e)); c.st = c.stOficial || (c.eleito ? 'Eleito' : ''); c.projecao = false; });
   } else if (pst >= CONFIG.projecaoMin){
     proj = projetar(cands, CONFIG.vagas[cargo]);
@@ -362,7 +379,7 @@ function normalize(d){
   }
   cands = cands.filter(c => c.apto || c.eleito).sort((a,b) => b.votos - a.votos);
   return {
-    cands, eleitos: cands.filter(c => c.eleito).length, oficial, proj,
+    cands, eleitos: cands.filter(c => c.eleito).length, oficial: oficial || !!tre, proj: tre ? null : proj,
     pst,
     hora: [F('dg'), F('hg')].filter(Boolean).join(' às ') || [F('dt'), F('ht')].filter(Boolean).join(' às '),
     tv: brNum(F('tv')), vv: brNum(F('vv')), pvv: brNum(F('pvv')),
@@ -447,7 +464,7 @@ function render(){
   $('sNulos').textContent = fmtInt(d.vn);    $('pNulos').textContent = fmtPct(d.pvn);
 
   $('nota').innerHTML = d.oficial
-    ? `<div class="nota"><b>Resultado oficial.</b> A situação dos candidatos (eleito, suplente) é a divulgada pelo TSE.</div>`
+    ? `<div class="nota"><b>Resultado oficial.</b> Eleitos conforme a lista divulgada pela Justiça Eleitoral (TRE-SP), com totalização de 4/10/2026.</div>`
     : d.proj ? `<div class="nota"><b>Projeção da Agência Mural.</b> O TSE ainda não divulgou a lista oficial de eleitos. Os selos tracejados são uma projeção calculada com os votos totalizados, pelas regras do quociente eleitoral (${fmtInt(d.proj.QE)} votos) e da distribuição das sobras. A lista oficial pode mudar por candidaturas sub judice ou recontagens; esta página troca para o resultado oficial automaticamente quando o TSE divulgar.</div>`
     : '';
   const q = fold($('q').value.trim()), p = $('partido').value, so = $('soEleitos').checked;
