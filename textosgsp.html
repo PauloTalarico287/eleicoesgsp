@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Textos por cidade | Agência Mural</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#cce3e3;--teal:#00736e;--teal-soft:#9dc8c5;--ink:#1a1a1a;--ink-2:#555}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Space Grotesk",system-ui,sans-serif}
+  .wrap{max-width:900px;margin:0 auto;padding:28px 16px 48px}
+  h1{display:inline-block;background:var(--teal);color:#fff;font-weight:500;font-size:22px;text-transform:uppercase;padding:4px 10px;margin:0 0 12px}
+  p{margin:0 0 12px}
+  .bar{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}
+  button{font:500 14px "Space Grotesk",sans-serif;text-transform:uppercase;border:1px solid var(--teal);background:transparent;color:var(--teal);padding:8px 16px;cursor:pointer}
+  button.primary{background:var(--teal);color:#fff}
+  button:disabled{opacity:.45;cursor:default}
+  .prog{height:10px;background:var(--teal-soft);margin:8px 0 6px}
+  .prog i{display:block;height:100%;width:0;background:var(--teal);transition:width .3s}
+  #log{font-size:13px;color:var(--ink-2);min-height:20px}
+  .err{color:#a00}
+  details.cfg{background:#fff;padding:10px 14px;margin:14px 0;font-size:14px}
+  details.cfg summary{cursor:pointer;color:var(--teal);font-weight:500}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px 14px;margin-top:10px}
+  .grid label{display:flex;flex-direction:column;font-size:12.5px;color:var(--ink-2)}
+  .grid input{font:14px "Space Grotesk",sans-serif;padding:5px 7px;border:1px solid #bbb}
+  .filtro{margin:10px 0 0}
+  .filtro select{font:15px "Space Grotesk",sans-serif;padding:6px 8px;border:1px solid var(--teal)}
+  article{background:#fff;padding:20px 22px;margin-top:16px}
+  article h2{font-size:22px;line-height:1.2;margin:0 0 6px}
+  article .fina{color:var(--ink-2);font-size:16px;margin:0 0 14px}
+  article h3{font-size:17px;margin:18px 0 8px}
+  article .acoes{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+  article .aviso{font-size:12.5px;color:#a35c00;margin-top:8px}
+  pre.dbg{font-size:11px;background:#f4f4f4;padding:8px;overflow:auto;max-height:220px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Textos por cidade · 1º turno</h1>
+  <p>Busca no TSE os resultados de presidente, governador e senado nas 39 cidades da Grande SP, compara com o Brasil, o estado e o 1º turno de 2022, e gera um texto por cidade. <b>Revise cada texto antes de publicar.</b></p>
+
+  <div class="bar">
+    <button class="primary" id="go">Buscar dados e gerar textos</button>
+    <button id="dlTxt" disabled>Baixar todos (.txt)</button>
+    <button id="dlCsv" disabled>Baixar todos (.csv)</button>
+    <button id="dlXlsx" disabled>Baixar planilha de dados (.xlsx)</button>
+  </div>
+  <div class="prog"><i id="pbar"></i></div>
+  <div id="log">Pronto.</div>
+
+  <details class="cfg">
+    <summary>Ajustes (data do 2º turno, nomes e descrições dos candidatos)</summary>
+    <p style="margin-top:10px">Os textos usam estes nomes curtos e descrições. Os campos vêm preenchidos; altere se precisar e clique em “Regerar textos”.</p>
+    <div class="grid" id="cfgGrid"></div>
+    <div class="bar"><button id="regen" disabled>Regerar textos</button></div>
+  </details>
+
+  <div class="filtro" hidden id="filtroBox">
+    <select id="filtro"><option value="">Todas as cidades</option></select>
+  </div>
+  <div id="out"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+/* ===================== CONFIGURAÇÃO ===================== */
+const CFG = {
+  base: 'https://resultados.tse.jus.br/oficial',
+  elePres: '6257', eleEst: '6259',
+  ele2022: '544',                 // 1º turno presidente 2022
+  dataSegundoTurno: '25 de outubro',
+  paralelo: 4,
+  munConfig: 'https://resultados.tse.jus.br/oficial/ele2026/6257/config/mun-e006257-cm.jws'
+};
+/* Siglas pelo número do candidato (2 primeiros dígitos) */
+const PARTIDOS = {10:'Republicanos',11:'PP',12:'PDT',13:'PT',14:'Missão',15:'MDB',16:'PSTU',18:'Rede',20:'Podemos',21:'PCB',
+  22:'PL',23:'Cidadania',25:'PRD',27:'DC',28:'PRTB',29:'PCO',30:'Novo',33:'Mobiliza',35:'PMB',36:'Agir',40:'PSB',43:'PV',
+  44:'União',45:'PSDB',50:'PSOL',55:'PSD',65:'PCdoB',70:'Avante',77:'Solidariedade',80:'UP'};
+/* Como cada presidenciável aparece no texto (chave = número). Os demais usam o nome de urna. */
+const PERFIS = {
+  '13': {curto:'Lula', completo:'o presidente Lula (PT)', ref:'o petista', desc:'presidente'},
+  '22': {curto:'Flávio', completo:'Flávio Bolsonaro (PL)', ref:'o senador', desc:'senador'}
+};
+const PERFIS_2022 = {
+  '13': {nome:'Lula', ref:'o petista'},
+  '22': {nome:'o ex-presidente Jair Bolsonaro (PL)', ref:'Jair Bolsonaro'}
+};
+/* Nome completo de candidatos a governador/senador quando o nome de urna é curto (chave = número) */
+const NOMES = { 'gov:10': 'Tarcísio de Freitas' };   // prefixos: gov: / sen: / pres:
+/* Governador que disputa a reeleição (número) */
+const GOV_INCUMBENTE = '10';
+const RMSP = ['Arujá','Barueri','Biritiba-Mirim','Caieiras','Cajamar','Carapicuíba','Cotia','Diadema','Embu das Artes',
+  'Embu-Guaçu','Ferraz de Vasconcelos','Francisco Morato','Franco da Rocha','Guararema','Guarulhos','Itapecerica da Serra',
+  'Itapevi','Itaquaquecetuba','Jandira','Juquitiba','Mairiporã','Mauá','Mogi das Cruzes','Osasco','Pirapora do Bom Jesus',
+  'Poá','Ribeirão Pires','Rio Grande da Serra','Salesópolis','Santa Isabel','Santana de Parnaíba','Santo André',
+  'São Bernardo do Campo','São Caetano do Sul','São Lourenço da Serra','São Paulo','Suzano','Taboão da Serra','Vargem Grande Paulista'];
+/* ======================================================== */
+
+const $ = id => document.getElementById(id);
+const key = s => String(s).toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^A-Z]/g,'');
+const brNum = s => (s === undefined || s === null || s === '') ? NaN : Number(String(s).replace(/\./g,'').replace(',', '.'));
+const pad = (s,n) => String(s).padStart(n,'0');
+const log = (t, err) => $('log').innerHTML = err ? `<span class="err">${t}</span>` : t;
+let DADOS = null, TEXTOS = [];
+
+/* ---------- leitura dos arquivos do TSE ---------- */
+function b64urlDecode(str){
+  str = str.replace(/-/g,'+').replace(/_/g,'/'); while (str.length % 4) str += '=';
+  return new TextDecoder('utf-8').decode(Uint8Array.from(atob(str), c => c.charCodeAt(0)));
+}
+function parseBody(txt){
+  txt = txt.trim();
+  if (txt.startsWith('{') || txt.startsWith('[')) return JSON.parse(txt);
+  const p = txt.split('.'); const payload = b64urlDecode(p[1] ?? p[0]);
+  try { return JSON.parse(payload); } catch(e){ return JSON.parse(b64urlDecode(payload.trim())); }
+}
+async function getData(url){
+  const r = await fetch(url + '?nocache=' + Date.now(), {cache:'no-store'});
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return parseBody(await r.text());
+}
+/* candidatos em qualquer nível, ordenados por votos */
+function cands(root){
+  const out = [];
+  (function walk(o, d){
+    if (!o || typeof o !== 'object' || d > 12) return;
+    if (Array.isArray(o)) return o.forEach(x => walk(x, d+1));
+    if (Array.isArray(o.cand)) o.cand.forEach(c => c && out.push(c));
+    for (const k in o) if (k !== 'cand') walk(o[k], d+1);
+  })(root, 0);
+  return out.filter(c => !/anulad/i.test(c.dvt || '')).map(c => {
+    const n = String(c.n ?? '');
+    return { n, nmUrna: c.nmu || c.nm || '', partido: PARTIDOS[n.slice(0,2)] || '',
+             votos: brNum(c.vap) || 0, pct: brNum(c.pvap) || 0 };
+  }).sort((a,b) => b.votos - a.votos);
+}
+/* totais: busca em largura (o nível mais raso ganha), ignorando listas de candidatos */
+function tot(root, ...keys){
+  let fila = [root];
+  while (fila.length){
+    const prox = [];
+    for (const o of fila){
+      if (!o || typeof o !== 'object') continue;
+      if (!Array.isArray(o)) for (const k of keys) if (k in o && typeof o[k] !== 'object'){ const v = brNum(o[k]); if (!isNaN(v)) return v; }
+      for (const k in o) if (k !== 'cand' && o[k] && typeof o[k] === 'object') prox.push(o[k]);
+    }
+    fila = prox;
+  }
+  return NaN;
+}
+function resumo(d){
+  if (!d) return null;
+  const c = cands(d);
+  const vv = c.reduce((s,x) => s + x.votos, 0);
+  c.forEach(x => { if (!x.pct && vv) x.pct = x.votos / vv * 100; });
+  return {
+    cands: c, validos: vv,
+    pst: tot(d,'pst'),
+    eleitorado: tot(d,'e','eapt','eaptos'), abst: tot(d,'a','abs'), pabst: tot(d,'pa','pabs'),
+    comp: tot(d,'c','tv'), brancos: tot(d,'vb'), nulos: tot(d,'tvn','vn'),
+    pbrancos: tot(d,'pvb'), pnulos: tot(d,'ptvn','pvn')
+  };
+}
+
+/* ---------- formatação ---------- */
+const PART = new Set(['DE','DA','DO','DAS','DOS','E']);
+const titulo = s => String(s).toLowerCase().split(/\s+/).map((w,i) => (i && PART.has(w.toUpperCase())) ? w : w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+const pctTxt = (x, dec=0) => x.toLocaleString('pt-BR',{minimumFractionDigits:dec,maximumFractionDigits:dec}) + '%';
+function par(a, b){ // dois percentuais; usa decimal se o arredondamento empatar
+  const dec = Math.round(a) === Math.round(b) && a !== b ? 1 : 0;
+  return [pctTxt(a,dec), pctTxt(b,dec)];
+}
+function milTxt(v){
+  if (v >= 1e6){ const m = (v/1e6).toLocaleString('pt-BR',{maximumFractionDigits:1}); return `${m} ${m === '1' ? 'milhão' : 'milhões'}`; }
+  if (v >= 10000) return `${Math.round(v/1000).toLocaleString('pt-BR')} mil`;
+  if (v >= 1000) return `${(v/1000).toLocaleString('pt-BR',{maximumFractionDigits:1})} mil`;
+  return v.toLocaleString('pt-BR');
+}
+const nomeComPartido = (c, cargo='pres') => `${NOMES[cargo + ':' + c.n] || titulo(c.nmUrna)}${c.partido ? ` (${c.partido})` : ''}`;
+const perfil = c => {
+  const p = PERFIS[c.n] || {};
+  return { curto: p.curto || titulo(c.nmUrna), completo: p.completo || nomeComPartido(c),
+           ref: p.ref || titulo(c.nmUrna), desc: p.desc || `o candidato ${c.partido ? 'do ' + c.partido : ''}`.trim() };
+};
+const deRef = r => /^o /.test(r) ? 'do ' + r.slice(2) : /^a /.test(r) ? 'da ' + r.slice(2) : 'de ' + r;
+const aRef = r => /^o /.test(r) ? 'ao ' + r.slice(2) : /^a /.test(r) ? 'à ' + r.slice(2) : 'a ' + r;
+const lista = arr => arr.length <= 1 ? arr.join('') : arr.slice(0,-1).join(', ') + ' e ' + arr[arr.length-1];
+
+/* ---------- texto ---------- */
+function gerar(cidade, P, G, S, BR, GSP, P22){
+  const avisos = [];
+  const [c1, c2] = P.cands, f1 = BR?.cands[0], f2 = BR?.cands[1];
+  const temSegundo = BR ? BR.cands[0].pct < 50 : true;
+  const p1 = perfil(c1), p2 = perfil(c2);
+  const [t1, t2] = par(c1.pct, c2.pct);
+
+  const tituloTxt = `${cidade} dá ${t1} dos votos a ${p1.curto} e ${t2} a ${p2.curto} no 1º turno`;
+  const fina = `Cidade deu vantagem ${aRef(/^o /.test(p1.desc) ? p1.desc : 'o ' + p1.desc)} na primeira rodada de votação` +
+               (temSegundo ? `; segundo turno será em ${CFG.dataSegundoTurno}` : '');
+
+  const pars = [];
+  // 1. abertura + comparação com 2022
+  let ab = `O primeiro turno em ${cidade} mostrou uma vantagem para ${p1.completo} em comparação ${aRef(p2.completo)}.`;
+  let w22 = null, r22 = null;
+  if (P22 && P22.cands.length >= 2){
+    w22 = P22.cands[0]; r22 = P22.cands[1];
+    const mesmoLado = (w22.n.slice(0,2) === c1.n.slice(0,2));
+    const ref22 = (PERFIS_2022[w22.n] || {}).ref || titulo(w22.nmUrna);
+    ab += mesmoLado
+      ? ` O resultado repete a primeira rodada de votação de quatro anos atrás, quando ${ref22} também saiu na frente.`
+      : ` O resultado foi diferente da primeira rodada de votação quatro anos atrás, quando ${ref22} saiu na frente.`;
+  } else avisos.push('Sem dados de 2022 para esta cidade: frase de comparação omitida.');
+  pars.push(ab);
+
+  // 2. cenário nacional
+  if (BR && f1 && f2){
+    const pf1 = perfil(f1), pf2 = perfil(f2);
+    const [n1, n2] = par(f1.pct, f2.pct);
+    let t = `${pf1.curto} e ${pf2.curto} vão para o segundo turno da disputa presidencial. No Brasil, ${pf1.ref} obteve ${n1} dos votos, contra ${n2} ${deRef(pf2.ref)}.`;
+    if (!temSegundo) t = `${pf1.curto} venceu a disputa presidencial já no primeiro turno, com ${n1} dos votos no Brasil, contra ${n2} de ${pf2.curto}.`;
+    else t += ` Como nenhum ultrapassou os 50%, haverá uma nova votação apenas entre eles no dia ${CFG.dataSegundoTurno}.`;
+    pars.push(t);
+  } else avisos.push('Resultado nacional indisponível: parágrafo nacional omitido.');
+
+  // 3. detalhe da cidade
+  let det;
+  if (BR && f1 && c1.n === f1.n){
+    const mCid = c1.pct - c2.pct, mBr = f1.pct - f2.pct;
+    det = `No caso de ${cidade}, ${p1.curto} teve uma vantagem ${mCid > mBr + 0.5 ? 'mais larga' : mCid < mBr - 0.5 ? 'mais apertada' : 'parecida com a nacional'}.`;
+  } else if (BR && f1){
+    det = `Em ${cidade}, o cenário foi diferente do nacional.`;
+  } else det = `Em ${cidade},`;
+  det += ` Foram ${t1} dos votos, com ${milTxt(c1.votos)} eleitores da cidade declarando apoio a ele. ${p2.curto} chegou a ${t2}, com ${milTxt(c2.votos)} votos na cidade.`;
+  if (w22 && r22){
+    const [a, b] = par(w22.pct, r22.pct);
+    const nW = (PERFIS_2022[w22.n] || {}).nome || nomeComPartido(w22);
+    const nR = (PERFIS_2022[r22.n] || {}).nome || nomeComPartido(r22);
+    det += ` Em 2022, ${nW} saiu do primeiro turno com ${a}, contra ${b} ${deRef(nR)}.`;
+  }
+  pars.push(det);
+
+  // 4. demais candidatos
+  const demais = P.cands.slice(2).filter(c => c.pct > 0);
+  if (demais.length){
+    const soma = demais.reduce((s,c) => s + c.pct, 0);
+    const top = demais.slice(0, 3).map(c => `${nomeComPartido(c)}, com ${pctTxt(c.pct, c.pct < 1 ? 1 : 0)}`);
+    pars.push(`Os demais candidatos somaram ${pctTxt(soma)} dos votos. Os destaques foram ${lista(top)}.`);
+  }
+
+  // 5. abstenção e brancos/nulos
+  let ab2 = '';
+  const pab = !isNaN(P.pabst) ? P.pabst : (P.abst && P.eleitorado ? P.abst / P.eleitorado * 100 : NaN);
+  if (!isNaN(pab) && !isNaN(P.abst)) ab2 = `A abstenção atingiu ${pctTxt(pab)}, com ${milTxt(P.abst)} eleitores não votando`;
+  let pbn = NaN;
+  if (!isNaN(P.brancos) && !isNaN(P.nulos) && P.comp) pbn = (P.brancos + P.nulos) / P.comp * 100;
+  else if (!isNaN(P.pbrancos) && !isNaN(P.pnulos)) pbn = P.pbrancos + P.pnulos;
+  if (!isNaN(pbn)) ab2 += (ab2 ? ', enquanto outros ' : 'Outros ') + `${pctTxt(pbn)} votaram em branco ou nulo`;
+  if (ab2) pars.push(ab2 + '.'); else avisos.push('Abstenção/brancos/nulos não encontrados no arquivo.');
+
+  // governador e senado
+  const sub = [];
+  if (G && G.cands.length >= 2){
+    const [g1, g2] = G.cands, gs1 = GSP?.cands[0];
+    let t = '';
+    const venceuEstado = gs1 && gs1.pct >= 50;
+    if (gs1 && venceuEstado){
+      const nomeG = nomeComPartido(gs1,'gov');
+      t = `${gs1.n === GOV_INCUMBENTE ? 'Reeleito' : 'Eleito'} no primeiro turno, ${nomeG}`;
+      if (g1.n === gs1.n){
+        const dif = g1.pct - gs1.pct;
+        t += Math.abs(dif) <= 3 ? ` repetiu a votação estadual em ${cidade}.` : dif > 0 ? ` teve em ${cidade} desempenho acima da média estadual.` : ` teve em ${cidade} desempenho abaixo da média estadual.`;
+        t += ` No município, ele foi escolhido por ${pctTxt(g1.pct)} dos eleitores, contra ${pctTxt(g2.pct)} de ${nomeComPartido(g2,'gov')}.`;
+      } else {
+        t += ` não venceu em ${cidade}: ${nomeComPartido(g1,'gov')} teve ${pctTxt(g1.pct)} dos votos no município, contra ${pctTxt(G.cands.find(c=>c.n===gs1.n)?.pct || 0)} de ${nomeComPartido(gs1,'gov')}.`;
+      }
+    } else {
+      t = `Na disputa pelo governo do estado, ${nomeComPartido(g1,'gov')} teve ${pctTxt(g1.pct)} dos votos em ${cidade}, contra ${pctTxt(g2.pct)} de ${nomeComPartido(g2,'gov')}.`;
+    }
+    sub.push(t);
+  } else avisos.push('Resultado de governador indisponível.');
+  if (S && S.cands.length >= 2){
+    const [s1, s2] = S.cands;
+    sub.push(`Para o Senado, ${nomeComPartido(s1,'sen')} e ${nomeComPartido(s2,'sen')} foram os mais votados da cidade, com ${pctTxt(s1.pct)} e ${pctTxt(s2.pct)} dos votos.`);
+  } else avisos.push('Resultado de senador indisponível.');
+  if (P.pst < 100) avisos.push(`Apuração na cidade em ${pctTxt(P.pst, 2)} — números parciais.`);
+
+  return {cidade, titulo: tituloTxt, fina, pars, sub, avisos};
+}
+
+/* ---------- busca ---------- */
+async function run(){
+  $('go').disabled = true;
+  try{
+    log('Lendo lista de municípios…');
+    const map = {};
+    (function walk(o, d){
+      if (!o || typeof o !== 'object' || d > 12) return;
+      if (Array.isArray(o)) return o.forEach(x => walk(x, d+1));
+      const nome = o.nm || o.ds, cod = o.cd || o.c;
+      if (typeof nome === 'string' && /^\d{4,5}$/.test(String(cod ?? ''))) map[key(nome)] = pad(cod,5);
+      for (const k in o) walk(o[k], d+1);
+    })(await getData(CFG.munConfig), 0);
+
+    log('Buscando resultados do Brasil e do estado…');
+    const u = (ele, abr, cargo) => `${CFG.base}/ele2026/${ele}/dados/${abr === 'br' ? 'br' : 'sp'}/${abr}-c${cargo}-e${pad(ele,6)}-u.jws`;
+    const safe = p => p.then(resumo).catch(e => { console.warn('[Mural]', e); return null; });
+    const [BR, GSP] = await Promise.all([ safe(getData(u(CFG.elePres,'br','0001'))), safe(getData(u(CFG.eleEst,'sp','0003'))) ]);
+    if (!BR) console.warn('[Mural] Nacional não encontrado em', u(CFG.elePres,'br','0001'));
+
+    const cidades = RMSP.map(nm => ({nm, cd: map[key(nm)]}));
+    const falt = cidades.filter(c => !c.cd).map(c => c.nm);
+    const fila = cidades.filter(c => c.cd), res = {};
+    let feitas = 0;
+    async function worker(){
+      while (fila.length){
+        const c = fila.shift();
+        const ab = 'sp' + c.cd;
+        const u22 = `${CFG.base}/ele2022/${CFG.ele2022}/dados-simplificados/sp/sp${c.cd}-c0001-e${pad(CFG.ele2022,6)}-r.json`;
+        const [P, G, S, P22] = await Promise.all([
+          safe(getData(u(CFG.elePres, ab, '0001'))), safe(getData(u(CFG.eleEst, ab, '0003'))),
+          safe(getData(u(CFG.eleEst, ab, '0005'))), safe(getData(u22))
+        ]);
+        res[c.nm] = {P, G, S, P22};
+        feitas++; $('pbar').style.width = (feitas / cidades.length * 100) + '%';
+        log(`Buscando cidades… ${feitas} de ${cidades.length}`);
+      }
+    }
+    await Promise.all(Array.from({length: CFG.paralelo}, worker));
+    DADOS = {BR, GSP, res, falt};
+    window.__muralTextos = DADOS;
+    montarCfg(); gerarTodos();
+    log(`${Object.keys(res).length} cidades processadas às ${new Date().toLocaleTimeString('pt-BR')}.` +
+        (falt.length ? ` <span class="err">Sem código do TSE: ${falt.join(', ')}.</span>` : '') +
+        (!BR ? ' <span class="err">Resultado nacional não encontrado (parágrafo nacional omitido).</span>' : ''));
+  }catch(e){ console.error(e); log('Erro: ' + e.message, true); }
+  $('go').disabled = false;
+}
+
+function gerarTodos(){
+  TEXTOS = [];
+  for (const nm of RMSP){
+    const r = DADOS.res[nm];
+    if (!r || !r.P || r.P.cands.length < 2) { TEXTOS.push({cidade:nm, erro:true}); continue; }
+    TEXTOS.push(gerar(nm, r.P, r.G, r.S, DADOS.BR, DADOS.GSP, r.P22));
+  }
+  render();
+  $('dlTxt').disabled = $('dlCsv').disabled = $('regen').disabled = $('dlXlsx').disabled = false;
+}
+
+const textoPlano = t => [t.titulo, '', t.fina, '', ...t.pars.flatMap(p => [p, '']), ...(t.sub.length ? ['Governador e Senado', '', ...t.sub.flatMap(p => [p, ''])] : [])].join('\n').trim();
+
+function render(){
+  const f = $('filtro').value;
+  $('filtroBox').hidden = false;
+  if ($('filtro').options.length === 1) $('filtro').innerHTML += RMSP.map(n => `<option>${n}</option>`).join('');
+  $('out').innerHTML = TEXTOS.filter(t => !f || t.cidade === f).map((t,i) => t.erro
+    ? `<article><h2>${t.cidade}</h2><p class="aviso">Não foi possível obter o resultado de presidente desta cidade.</p></article>`
+    : `<article>
+        <h2>${t.titulo}</h2><p class="fina">${t.fina}</p>
+        ${t.pars.map(p => `<p>${p}</p>`).join('')}
+        ${t.sub.length ? `<h3>Governador e Senado</h3>${t.sub.map(p => `<p>${p}</p>`).join('')}` : ''}
+        ${t.avisos.length ? `<p class="aviso">⚠ ${t.avisos.join(' · ')}</p>` : ''}
+        <div class="acoes"><button data-copy="${t.cidade}">Copiar texto</button><button data-dbg="${t.cidade}">Ver números</button></div>
+        <pre class="dbg" hidden id="dbg-${key(t.cidade)}"></pre>
+      </article>`).join('');
+}
+
+document.addEventListener('click', e => {
+  const c = e.target.dataset.copy, d = e.target.dataset.dbg;
+  if (c){ const t = TEXTOS.find(x => x.cidade === c); navigator.clipboard.writeText(textoPlano(t)); e.target.textContent = 'Copiado!'; setTimeout(() => e.target.textContent = 'Copiar texto', 1500); }
+  if (d){
+    const r = DADOS.res[d], el = $('dbg-' + key(d)); el.hidden = !el.hidden;
+    const top = x => x ? x.cands.slice(0,6).map(c => `${c.nmUrna} (${c.n}): ${c.votos} · ${c.pct.toFixed(2)}%`).join('\n') : '—';
+    el.textContent = `PRESIDENTE\n${top(r.P)}\nseções ${r.P?.pst}% · eleitorado ${r.P?.eleitorado} · abstenção ${r.P?.abst} (${r.P?.pabst}%) · comparecimento ${r.P?.comp} · brancos ${r.P?.brancos} · nulos ${r.P?.nulos}\n\nGOVERNADOR\n${top(r.G)}\n\nSENADO\n${top(r.S)}\n\nPRESIDENTE 2022\n${top(r.P22)}`;
+  }
+});
+
+function montarCfg(){
+  const BR = DADOS.BR;
+  const nums = new Set([...(BR?.cands.slice(0,2) || []).map(c => c.n), ...Object.keys(PERFIS)]);
+  let h = `<label>Data do 2º turno<input data-k="data" value="${CFG.dataSegundoTurno}"></label>`;
+  nums.forEach(n => {
+    const p = PERFIS[n] || {};
+    h += `<label>${n} · nome curto<input data-n="${n}" data-f="curto" value="${p.curto||''}"></label>
+          <label>${n} · nome completo<input data-n="${n}" data-f="completo" value="${p.completo||''}"></label>
+          <label>${n} · referência (ex.: o petista)<input data-n="${n}" data-f="ref" value="${p.ref||''}"></label>
+          <label>${n} · descrição (ex.: senador)<input data-n="${n}" data-f="desc" value="${p.desc||''}"></label>`;
+  });
+  $('cfgGrid').innerHTML = h;
+}
+$('regen').onclick = () => {
+  document.querySelectorAll('#cfgGrid input').forEach(i => {
+    if (i.dataset.k === 'data') CFG.dataSegundoTurno = i.value;
+    else { PERFIS[i.dataset.n] = PERFIS[i.dataset.n] || {}; if (i.value) PERFIS[i.dataset.n][i.dataset.f] = i.value; }
+  });
+  gerarTodos();
+};
+$('filtro').onchange = render;
+
+function download(nome, conteudo, tipo){
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([conteudo], {type: tipo}));
+  a.download = nome; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+$('dlTxt').onclick = () => download('textos_cidades_1turno.txt',
+  TEXTOS.filter(t => !t.erro).map(t => textoPlano(t)).join('\n\n==========\n\n'), 'text/plain;charset=utf-8');
+$('dlCsv').onclick = () => {
+  const cell = v => `"${String(v).replace(/"/g,'""')}"`;
+  const rows = [['cidade','titulo','linha_fina','texto','avisos'],
+    ...TEXTOS.filter(t => !t.erro).map(t => [t.cidade, t.titulo, t.fina, [...t.pars, ...(t.sub.length ? ['Governador e Senado', ...t.sub] : [])].join('\n\n'), t.avisos.join(' | ')])];
+  download('textos_cidades_1turno.csv', '﻿' + rows.map(r => r.map(cell).join(';')).join('\r\n'), 'text/csv;charset=utf-8');
+};
+
+/* ---------- planilha com os dados usados nos textos ---------- */
+const r1 = x => (x === undefined || x === null || isNaN(x)) ? null : Math.round(x * 100) / 100;
+function planilha(){
+  const {BR, GSP, res} = DADOS;
+  const resumo = [], pres = [], gov = [], sen = [], p22 = [], ref = [];
+  for (const nm of RMSP){
+    const r = res[nm]; if (!r) continue;
+    const P = r.P, G = r.G, S = r.S, A = r.P22;
+    const c = P?.cands || [], g = G?.cands || [], s = S?.cands || [], a = A?.cands || [];
+    const pab = P ? (!isNaN(P.pabst) ? P.pabst : (P.abst && P.eleitorado ? P.abst / P.eleitorado * 100 : NaN)) : NaN;
+    const pbn = P ? ((!isNaN(P.brancos) && !isNaN(P.nulos) && P.comp) ? (P.brancos + P.nulos) / P.comp * 100
+              : (!isNaN(P.pbrancos) && !isNaN(P.pnulos) ? P.pbrancos + P.pnulos : NaN)) : NaN;
+    const demais = c.slice(2);
+    resumo.push({
+      'Município': nm,
+      'Seções totalizadas (%)': r1(P?.pst),
+      'Pres. 1º colocado': c[0] ? titulo(c[0].nmUrna) : null, 'Pres. 1º partido': c[0]?.partido || null,
+      'Pres. 1º votos': c[0]?.votos ?? null, 'Pres. 1º (%)': r1(c[0]?.pct),
+      'Pres. 2º colocado': c[1] ? titulo(c[1].nmUrna) : null, 'Pres. 2º partido': c[1]?.partido || null,
+      'Pres. 2º votos': c[1]?.votos ?? null, 'Pres. 2º (%)': r1(c[1]?.pct),
+      'Pres. diferença (p.p.)': c[1] ? r1(c[0].pct - c[1].pct) : null,
+      'Pres. demais somados (%)': r1(demais.reduce((t,x) => t + x.pct, 0)),
+      'Pres. 3º': demais[0] ? `${titulo(demais[0].nmUrna)} (${demais[0].partido}) ${pctTxt(demais[0].pct, 1)}` : null,
+      'Pres. 4º': demais[1] ? `${titulo(demais[1].nmUrna)} (${demais[1].partido}) ${pctTxt(demais[1].pct, 1)}` : null,
+      'Pres. 5º': demais[2] ? `${titulo(demais[2].nmUrna)} (${demais[2].partido}) ${pctTxt(demais[2].pct, 1)}` : null,
+      'Eleitorado': isNaN(P?.eleitorado) ? null : P.eleitorado,
+      'Comparecimento': isNaN(P?.comp) ? null : P.comp,
+      'Abstenção': isNaN(P?.abst) ? null : P.abst, 'Abstenção (%)': r1(pab),
+      'Brancos': isNaN(P?.brancos) ? null : P.brancos, 'Nulos': isNaN(P?.nulos) ? null : P.nulos,
+      'Brancos + nulos (%)': r1(pbn),
+      '2022 1º colocado': a[0] ? titulo(a[0].nmUrna) : null, '2022 1º (%)': r1(a[0]?.pct),
+      '2022 2º colocado': a[1] ? titulo(a[1].nmUrna) : null, '2022 2º (%)': r1(a[1]?.pct),
+      'Gov. 1º colocado': g[0] ? nomeComPartido(g[0],'gov') : null, 'Gov. 1º (%)': r1(g[0]?.pct), 'Gov. 1º votos': g[0]?.votos ?? null,
+      'Gov. 2º colocado': g[1] ? nomeComPartido(g[1],'gov') : null, 'Gov. 2º (%)': r1(g[1]?.pct), 'Gov. 2º votos': g[1]?.votos ?? null,
+      'Gov. 1º no estado (%)': r1(GSP?.cands[0]?.pct),
+      'Sen. 1º colocado': s[0] ? nomeComPartido(s[0],'sen') : null, 'Sen. 1º (%)': r1(s[0]?.pct),
+      'Sen. 2º colocado': s[1] ? nomeComPartido(s[1],'sen') : null, 'Sen. 2º (%)': r1(s[1]?.pct)
+    });
+    const longo = (arr, dest) => arr.forEach((x,i) => dest.push({'Município': nm, 'Posição': i+1, 'Número': x.n,
+      'Candidato': titulo(x.nmUrna), 'Partido': x.partido, 'Votos': x.votos, '% válidos': r1(x.pct)}));
+    longo(c, pres); longo(g, gov); longo(s, sen); longo(a, p22);
+  }
+  const refs = [['Brasil · Presidente', BR], ['Estado de SP · Governador', GSP]];
+  refs.forEach(([abr, d]) => (d?.cands || []).forEach((x,i) => ref.push({'Abrangência': abr, 'Posição': i+1, 'Número': x.n,
+    'Candidato': titulo(x.nmUrna), 'Partido': x.partido, 'Votos': x.votos, '% válidos': r1(x.pct)})));
+
+  const wb = XLSX.utils.book_new();
+  const aba = (rows, nome) => {
+    const ws = XLSX.utils.json_to_sheet(rows.length ? rows : [{'Sem dados': ''}]);
+    const cols = Object.keys(rows[0] || {'Sem dados':''});
+    ws['!cols'] = cols.map(k => ({wch: Math.min(40, Math.max(k.length, ...rows.map(r => String(r[k] ?? '').length)) + 2)}));
+    ws['!freeze'] = {xSplit: 1, ySplit: 1};
+    XLSX.utils.book_append_sheet(wb, ws, nome);
+  };
+  aba(resumo, 'Resumo por cidade'); aba(pres, 'Presidente'); aba(gov, 'Governador'); aba(sen, 'Senado');
+  aba(p22, 'Presidente 2022'); aba(ref, 'Brasil e Estado');
+  aba([{'Fonte': 'TSE – Portal Resultados (resultados.tse.jus.br)', 'Gerado em': new Date().toLocaleString('pt-BR'),
+        'Observação': 'Percentuais sobre votos válidos. Abstenção = % do eleitorado; brancos + nulos = % do comparecimento. Conferir com o site do TSE antes de publicar.'}], 'Fonte');
+  XLSX.writeFile(wb, `dados_cidades_1turno_${new Date().toISOString().slice(0,10)}.xlsx`);
+}
+$('dlXlsx').onclick = () => { if (typeof XLSX === 'undefined') return alert('Não foi possível carregar a biblioteca da planilha. Recarregue a página.'); planilha(); };
+$('go').onclick = run;
+</script>
+</body>
+</html>
