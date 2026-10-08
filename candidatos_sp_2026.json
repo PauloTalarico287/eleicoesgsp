@@ -1,5 +1,5 @@
 {
-  "atualizado_em": "2026-10-08T05:15:00.083429+00:00",
+  "atualizado_em": "2026-10-08T18:06:20.471848+00:00",
   "ano_eleicao": 2026,
   "uf": "SP",
   "total_candidatos": 2600,
@@ -54381,27 +54381,6 @@
       "foto": "fotos/250002541312.jpg"
     },
     {
-      "id": 250002554075,
-      "nome_completo": "RICARDO AUGUSTO MANGUE SCHIAVETTO",
-      "nome_urna": "GUTO SCHIAVETTO",
-      "nome_social": "#NULO",
-      "numero": 144,
-      "cargo": "SENADOR",
-      "partido_sigla": "MISSÃO",
-      "partido_nome": "PARTIDO MISSÃO",
-      "coligacao": "PARTIDO ISOLADO",
-      "coligacao_composicao": "MISSÃO",
-      "situacao_eleitoral": "NÃO ELEITO",
-      "situacao_candidatura": "#NE",
-      "genero": "MASCULINO",
-      "grau_instrucao": "SUPERIOR COMPLETO",
-      "cor_raca": "BRANCA",
-      "uf": "SP",
-      "codigo_ue": "SP",
-      "unidade_eleitoral": "SÃO PAULO",
-      "foto": "fotos/250002554075.jpg"
-    },
-    {
       "id": 250002553928,
       "nome_completo": "RICARDO AUGUSTO MANGUE SCHIAVETTO",
       "nome_urna": "GUTO SCHIAVETTO",
@@ -54421,6 +54400,27 @@
       "codigo_ue": "SP",
       "unidade_eleitoral": "SÃO PAULO",
       "foto": "fotos/250002553928.jpg"
+    },
+    {
+      "id": 250002554075,
+      "nome_completo": "RICARDO AUGUSTO MANGUE SCHIAVETTO",
+      "nome_urna": "GUTO SCHIAVETTO",
+      "nome_social": "#NULO",
+      "numero": 144,
+      "cargo": "SENADOR",
+      "partido_sigla": "MISSÃO",
+      "partido_nome": "PARTIDO MISSÃO",
+      "coligacao": "PARTIDO ISOLADO",
+      "coligacao_composicao": "MISSÃO",
+      "situacao_eleitoral": "NÃO ELEITO",
+      "situacao_candidatura": "#NE",
+      "genero": "MASCULINO",
+      "grau_instrucao": "SUPERIOR COMPLETO",
+      "cor_raca": "BRANCA",
+      "uf": "SP",
+      "codigo_ue": "SP",
+      "unidade_eleitoral": "SÃO PAULO",
+      "foto": "fotos/250002554075.jpg"
     },
     {
       "id": 250002544514,
