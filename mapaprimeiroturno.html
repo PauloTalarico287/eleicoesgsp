@@ -133,6 +133,8 @@ aside.panel{background:var(--surface);border:1px solid var(--rule);border-radius
 .rank .tr{height:8px;background:var(--chip);border-radius:4px;position:relative}
 .rank .tr i{position:absolute;top:0;bottom:0;border-radius:4px}
 .rank .val{text-align:right;font-size:14px;font-weight:600}
+.rank h4.sub{font-size:12px;color:var(--ink-3);font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin:16px 0 4px}
+.rank .empty{margin:0;padding:8px 0;border-top:1px solid var(--rule);color:var(--ink-2);font-size:14px}
 
 details.full{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:14px 16px}
 details.full summary{cursor:pointer;font-weight:600}
@@ -228,25 +230,25 @@ const label = k=> isZone(k) ? 'Zona '+ +k.slice(-3)+' · '+R[k].nome : k;
 const CH = ['--d3','--d2','--d1','--mid','--u1','--u2','--u3'];
 const LD = ['--b3','--b2','--b1','--mid','--l1','--l2','--l3'];
 const LAYERS = [
- {id:'lula', btn:'Lula', kind:'chg', bins:[-5,-3,-1,1,3,5],
-  f:r=>r.pl26-r.pl22, title:'Variação de Lula entre o 1º turno de 2022 e o de 2026',
-  desc:'Diferença na porcentagem de votos válidos de Lula. Laranja: caiu; violeta: cresceu.', poles:['Lula caiu','Lula cresceu']},
- {id:'bols', btn:'Flávio × Jair', kind:'chg', bins:[-5,-3,-1,1,3,5],
-  f:r=>r.pf26-r.pb22, title:'Flávio em 2026 comparado a Jair Bolsonaro em 2022',
-  desc:'Diferença entre a porcentagem de válidos de Flávio (2026) e a de Jair (1º turno de 2022). Flávio superou o pai em todos os 39 municípios.', poles:['Abaixo de Jair','Acima de Jair']},
- {id:'out', btn:'Outros candidatos', kind:'chg', bins:[-5,-3,-1,1,3,5],
-  f:r=>r.po26-r.po22, title:'Votos em outros candidatos',
-  desc:'Soma de todos os candidatos que não são Lula nem os Bolsonaros, em % dos válidos. Em 2022, Ciro Gomes e Simone Tebet; em 2026, Augusto Cury, Renan Santos, Caiado e outros.', poles:['Encolheu','Cresceu']},
- {id:'abs', btn:'Abstenção', kind:'chg', bins:[-3,-2,-1,1,2,3],
-  f:r=>r.pa26-r.pa22, title:'Variação da abstenção',
-  desc:'Diferença na porcentagem de eleitores aptos que não foram votar.', poles:['Caiu','Subiu']},
- {id:'bn', btn:'Brancos e nulos', kind:'chg', bins:[-1.5,-.75,-.25,.25,.75,1.5],
-  f:r=>(r.pbr26+r.pnu26)-(r.pbr22+r.pnu22), title:'Variação de brancos e nulos',
-  desc:'Diferença na porcentagem de votos brancos e nulos sobre o comparecimento.', poles:['Caiu','Subiu']},
- {id:'lead', btn:'Quem lidera em 2026', kind:'lead', bins:[-20,-10,-3,3,10,20],
+ {id:'lead', rk:[[1,'Onde Lula lidera','Onde Lula fica mais perto de Flávio'],[-1,'Onde Flávio lidera','Onde Flávio fica mais perto de Lula']], btn:'Quem lidera em 2026', kind:'lead', bins:[-20,-10,-3,3,10,20],
   f:r=>r.pl26-r.pf26, title:'Quem ficou na frente no 1º turno de 2026',
   desc:'Vantagem de Lula (vermelho) ou de Flávio (azul), em pontos percentuais dos votos válidos.', poles:['Flávio na frente','Lula na frente']},
- {id:'t2', btn:'2º turno de 2022', kind:'lead', bins:[-20,-10,-3,3,10,20],
+ {id:'lula', rk:[[-1,'Onde Lula mais caiu','Onde Lula menos cresceu'],[1,'Onde Lula cresceu','Onde Lula menos caiu']], btn:'Lula', kind:'chg', bins:[-5,-3,-1,1,3,5],
+  f:r=>r.pl26-r.pl22, title:'Variação de Lula entre o 1º turno de 2022 e o de 2026',
+  desc:'Diferença na porcentagem de votos válidos de Lula. Laranja: caiu; violeta: cresceu.', poles:['Lula caiu','Lula cresceu']},
+ {id:'bols', rk:[[-1,'Onde Flávio ficou abaixo de Jair','Onde Flávio menos superou Jair'],[1,'Onde Flávio mais superou Jair','Onde Flávio ficou menos abaixo de Jair']], btn:'Flávio × Jair', kind:'chg', bins:[-5,-3,-1,1,3,5],
+  f:r=>r.pf26-r.pb22, title:'Flávio em 2026 comparado a Jair Bolsonaro em 2022',
+  desc:'Diferença entre a porcentagem de válidos de Flávio (2026) e a de Jair (1º turno de 2022). Flávio superou o pai em todos os 39 municípios.', poles:['Abaixo de Jair','Acima de Jair']},
+ {id:'out', rk:[[-1,'Onde os outros candidatos mais encolheram','Onde menos cresceram'],[1,'Onde os outros candidatos cresceram','Onde menos encolheram']], btn:'Outros candidatos', kind:'chg', bins:[-5,-3,-1,1,3,5],
+  f:r=>r.po26-r.po22, title:'Votos em outros candidatos',
+  desc:'Soma de todos os candidatos que não são Lula nem os Bolsonaros, em % dos válidos. Em 2022, Ciro Gomes e Simone Tebet; em 2026, Augusto Cury, Renan Santos, Caiado e outros.', poles:['Encolheu','Cresceu']},
+ {id:'abs', rk:[[-1,'Onde a abstenção caiu','Onde a abstenção menos subiu'],[1,'Onde a abstenção mais subiu','Onde a abstenção menos caiu']], btn:'Abstenção', kind:'chg', bins:[-3,-2,-1,1,2,3],
+  f:r=>r.pa26-r.pa22, title:'Variação da abstenção',
+  desc:'Diferença na porcentagem de eleitores aptos que não foram votar.', poles:['Caiu','Subiu']},
+ {id:'bn', rk:[[-1,'Onde brancos e nulos caíram','Onde menos subiram'],[1,'Onde brancos e nulos mais subiram','Onde menos caíram']], btn:'Brancos e nulos', kind:'chg', bins:[-1.5,-.75,-.25,.25,.75,1.5],
+  f:r=>(r.pbr26+r.pnu26)-(r.pbr22+r.pnu22), title:'Variação de brancos e nulos',
+  desc:'Diferença na porcentagem de votos brancos e nulos sobre o comparecimento.', poles:['Caiu','Subiu']},
+ {id:'t2', rk:[[1,'Onde Lula venceu','Onde Lula perdeu por menos'],[-1,'Onde Jair venceu','Onde Jair perdeu por menos']], btn:'2º turno de 2022', kind:'lead', bins:[-20,-10,-3,3,10,20],
   f:r=>r.pl2t-r.pb2t, title:'Referência: o 2º turno de 2022 (Lula × Jair)',
   desc:'Vantagem de Lula (vermelho) ou de Jair (azul) na disputa direta de 2022, para medir o potencial de cada lado num novo 2º turno.', poles:['Jair na frente','Lula na frente']},
 ];
@@ -358,21 +360,27 @@ function panel(){
 // ---------- rankings ----------
 function ranks(){
   const keys = zoom==='cap' ? zones.map(f=>f.id) : muns;
-  const vals = keys.map(k=>({k, v:layer.f(R[k])})).filter(d=>d.v!=null);
+  const vals = keys.map(k=>({k, v:layer.f(R[k])})).filter(d=>d.v!=null && !isNaN(d.v));
   const scope = zoom==='cap'?'zonas da capital':'municípios';
-  let A,B,ta,tb;
-  if(layer.kind==='lead'){ A=[...vals].sort((a,b)=>b.v-a.v).slice(0,10); B=[...vals].sort((a,b)=>a.v-b.v).slice(0,10);
-    const o=layer.id==='lead'?'Flávio':'Jair'; ta='Maior vantagem de Lula · '+scope; tb='Maior vantagem de '+o+' · '+scope; }
-  else { A=[...vals].sort((a,b)=>a.v-b.v).slice(0,10); B=[...vals].sort((a,b)=>b.v-a.v).slice(0,10);
-    ta='Maiores quedas · '+scope; tb='Maiores altas · '+scope; }
+  const N = 10;
   const mx = d3.max(vals,d=>Math.abs(d.v))||1;
-  const li = (d,i)=>{ const w=Math.abs(d.v)/mx*50; const c='var('+(layer.kind==='lead'?(d.v>0?'--l3':'--b3'):(d.v>0?'--u3':'--d3'))+')';
+  const val = v => layer.kind==='lead' ? (v>0?'+':'−')+pf(Math.abs(v)) : sg(v,1,'');
+  const li = (d,n)=>{ const w=Math.abs(d.v)/mx*50; const c='var('+(layer.kind==='lead'?(d.v>0?'--l3':'--b3'):(d.v>0?'--u3':'--d3'))+')';
     const pos = d.v>=0?'left:50%;width:'+w+'%':'left:'+(50-w)+'%;width:'+w+'%';
-    return '<li data-k="'+d.k+'" tabindex="0"><span class="i num">'+(i+1)+'</span><span class="n">'+label(d.k)+(R[d.k].redes&&layer.kind==='chg'?' *':'')+'</span>'+
-      '<span class="tr"><i style="'+pos+';background:'+c+'"></i></span><span class="val num">'+(layer.kind==='lead'?(d.v>0?'+':'−')+pf(Math.abs(d.v)):sg(d.v,1,''))+'</span></li>'; };
-  document.getElementById('ranks').innerHTML =
-    '<div class="rank"><h3>'+ta+'</h3><ol>'+A.map(li).join('')+'</ol></div>'+
-    '<div class="rank"><h3>'+tb+'</h3><ol>'+B.map(li).join('')+'</ol></div>';
+    return '<li data-k="'+d.k+'" tabindex="0"><span class="i num">'+n+'</span><span class="n">'+label(d.k)+(R[d.k].redes&&layer.kind==='chg'?' *':'')+'</span>'+
+      '<span class="tr"><i style="'+pos+';background:'+c+'"></i></span><span class="val num">'+val(d.v)+'</span></li>'; };
+  const col = ([sign, title, fillTitle])=>{
+    // principais: só os territórios do lado certo do zero, do maior para o menor
+    const main = vals.filter(d=> sign>0 ? d.v>0 : d.v<0).sort((a,b)=> sign>0 ? b.v-a.v : a.v-b.v).slice(0,N);
+    // complemento: os mais próximos de zero do outro lado
+    const fill = vals.filter(d=> sign>0 ? d.v<=0 : d.v>=0).sort((a,b)=> Math.abs(a.v)-Math.abs(b.v)).slice(0, N-main.length);
+    let h = '<div class="rank"><h3>'+title+' · '+scope+'</h3>';
+    h += main.length ? '<ol>'+main.map((d,i)=>li(d,i+1)).join('')+'</ol>'
+                     : '<p class="empty">Em nenhum dos '+keys.length+' '+(zoom==='cap'?'territórios':'municípios')+'.</p>';
+    if(fill.length) h += '<h4 class="sub">'+fillTitle+'</h4><ol>'+fill.map(d=>li(d,'·')).join('')+'</ol>';
+    return h+'</div>';
+  };
+  document.getElementById('ranks').innerHTML = layer.rk.map(col).join('');
   document.querySelectorAll('.rank li').forEach(l=>{ const go=()=>{sel=l.dataset.k; render(); document.getElementById('panel').scrollIntoView({block:'nearest',behavior:'smooth'});};
     l.onclick=go; l.onkeydown=e=>{ if(e.key==='Enter'){ go(); } }; });
 }
@@ -411,8 +419,11 @@ render(); full();
 (function(){
   var q=new URLSearchParams(location.search);
   if(q.get('embed')==='1') document.body.classList.add('embed');
-  // dentro de outro site, a altura do iframe acompanha o conteúdo
-  function enviar(){ try{ parent.postMessage({type:'mural-mapa-altura',h:document.documentElement.scrollHeight},'*'); }catch(e){} }
+  // mede o conteúdo (não a janela), para a altura também poder diminuir
+  var ultima=0;
+  function enviar(){ var h=Math.ceil(document.body.getBoundingClientRect().height);
+    if(Math.abs(h-ultima)<2) return; ultima=h;
+    try{ parent.postMessage({type:'mural-mapa-altura',h:h},'*'); }catch(e){} }
   if(window.ResizeObserver) new ResizeObserver(enviar).observe(document.body);
   addEventListener('load',enviar); setTimeout(enviar,600);
 })();
