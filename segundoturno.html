@@ -19,7 +19,7 @@
   /* variação: caiu (laranja) ↔ cresceu (violeta) */
   --d3:#c4511f; --d2:#f08c5e; --d1:#f9c9b1; --u1:#cfc8f2; --u2:#8f80e0; --u3:#4a3aa7;
   /* liderança: Lula (vermelho) ↔ Bolsonaro (azul) */
-  --l3:#c23431; --l2:#e8706a; --l1:#f4b3ae; --b1:#b7d3f6; --b2:#5598e7; --b3:#1c5cab;
+  --l3:#c23431; --l2:#e8706a; --l1:#f4b3ae; --l0:#fbe1df; --b0:#e2edfb; --b1:#b7d3f6; --b2:#5598e7; --b3:#1c5cab;
   --lula:#c23431; --bols:#1c5cab;
   --f-display:"Bricolage Grotesque", "Arial Narrow", system-ui, sans-serif;
   --f-body:"Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -29,7 +29,7 @@
     --bg:#141518; --surface:#1d1e22; --ink:#f1f1ee; --ink-2:#c2c3c7; --ink-3:#8f9196;
     --rule:#33353a; --chip:#2a2c31; --accent:#a99cf2; --mid:#3d3e43;
     --d3:#e0662f; --d2:#b5532a; --d1:#6b3a26; --u1:#3f3970; --u2:#6a5cc4; --u3:#a99cf2;
-    --l3:#ec6d6a; --l2:#b8403d; --l1:#6a2c2b; --b1:#24426b; --b2:#3570bd; --b3:#79aef0;
+    --l3:#ec6d6a; --l2:#b8403d; --l1:#6a2c2b; --l0:#45282a; --b0:#22304a; --b1:#24426b; --b2:#3570bd; --b3:#79aef0;
     --lula:#ec6d6a; --bols:#79aef0; color-scheme:dark;
   }
 }
@@ -37,7 +37,7 @@
   --bg:#141518; --surface:#1d1e22; --ink:#f1f1ee; --ink-2:#c2c3c7; --ink-3:#8f9196;
   --rule:#33353a; --chip:#2a2c31; --accent:#a99cf2; --mid:#3d3e43;
   --d3:#e0662f; --d2:#b5532a; --d1:#6b3a26; --u1:#3f3970; --u2:#6a5cc4; --u3:#a99cf2;
-  --l3:#ec6d6a; --l2:#b8403d; --l1:#6a2c2b; --b1:#24426b; --b2:#3570bd; --b3:#79aef0;
+  --l3:#ec6d6a; --l2:#b8403d; --l1:#6a2c2b; --l0:#45282a; --b0:#22304a; --b1:#24426b; --b2:#3570bd; --b3:#79aef0;
   --lula:#ec6d6a; --bols:#79aef0; color-scheme:dark;
 }
 *{box-sizing:border-box}
@@ -229,9 +229,11 @@ const label = k=> isZone(k) ? 'Zona '+ +k.slice(-3)+' · '+R[k].nome : k;
 
 const CH = ['--d3','--d2','--d1','--mid','--u1','--u2','--u3'];
 const LD = ['--b3','--b2','--b1','--mid','--l1','--l2','--l3'];
+// sem faixa neutra: todo território tem um vencedor, então até a disputa mais apertada leva a cor de quem ganhou
+const WIN = ['--b3','--b2','--b1','--b0','--l0','--l1','--l2','--l3'];
 const LAYERS = [
  {id:'lead', rk:[[1,'Onde Lula venceu','Onde Lula perdeu por menos'],[-1,'Onde Flávio venceu','Onde Flávio perdeu por menos']],
-  btn:'Quem venceu', kind:'lead', bins:[-20,-10,-3,3,10,20], who:['Lula','Flávio'],
+  btn:'Quem venceu', kind:'lead', pal:WIN, bins:[-20,-10,-5,0,5,10,20], who:['Lula','Flávio'],
   f:r=>r.pl26-r.pf26, title:'Quem venceu o 2º turno de 2026',
   desc:'Vantagem de Lula (vermelho) ou de Flávio (azul), em pontos percentuais dos votos válidos.', poles:['Flávio na frente','Lula na frente']},
  {id:'lula', rk:[[-1,'Onde Lula perdeu terreno','Onde Lula menos cresceu'],[1,'Onde Lula mais cresceu','Onde Lula menos perdeu']],
@@ -252,13 +254,13 @@ const LAYERS = [
   f:r=>(r.pbr26+r.pnu26)-(r.pbr22+r.pnu22), title:'Brancos e nulos: 2º turno de 2022 × 2026',
   desc:'Diferença na porcentagem de votos brancos e nulos sobre o comparecimento. Caíram em todos os territórios.', poles:['Caiu','Subiu']},
  {id:'t2', rk:[[1,'Onde Lula venceu','Onde Lula perdeu por menos'],[-1,'Onde Jair venceu','Onde Jair perdeu por menos']],
-  btn:'2º turno de 2022', kind:'lead', bins:[-20,-10,-3,3,10,20], who:['Lula','Jair'],
+  btn:'2º turno de 2022', kind:'lead', pal:WIN, bins:[-20,-10,-5,0,5,10,20], who:['Lula','Jair'],
   f:r=>r.pl22-r.pb22, title:'Referência: quem venceu o 2º turno de 2022 (Lula × Jair)',
   desc:'Vantagem de Lula (vermelho) ou de Jair (azul) em 2022, para comparar com o mapa de 2026.', poles:['Jair na frente','Lula na frente']},
 ];
 let layer = LAYERS[0], zoom='rmsp', sel='Grande SP (total)';
 const cls = (v,b)=>{ if(v==null||isNaN(v)) return 3; let i=0; while(i<b.length && v>=b[i]) i++; return i; };
-const colorOf = (k)=>{ const r=R[k]; const v=layer.f(r); return 'var('+(layer.kind==='lead'?LD:CH)[cls(v,layer.bins)]+')'; };
+const colorOf = (k)=>{ const r=R[k]; const v=layer.f(r); return 'var('+(layer.pal||(layer.kind==='lead'?LD:CH))[cls(v,layer.bins)]+')'; };
 
 // ---------- KPIs ----------
 const muns = Object.keys(R).filter(k=>R[k].nivel==='Município');
@@ -318,12 +320,12 @@ fit(false);
 
 // ---------- legenda ----------
 function legend(){
-  const b=layer.bins, vars=layer.kind==='lead'?LD:CH;
+  const b=layer.bins, vars=layer.pal||(layer.kind==='lead'?LD:CH); const wd='width:'+(vars.length*40-2)+'px';
   const fmt = x=> (x>0?'+':x<0?'−':'')+pf(Math.abs(x),Math.abs(x)<1&&x!==0?2:0);
   const ticks = layer.ticks || b.map(fmt);
-  let h='<div class="ramp"><div class="poles"><span>← '+layer.poles[0]+'</span><span>'+layer.poles[1]+' →</span></div>'+
+  let h='<div class="ramp"><div class="poles" style="'+wd+'"><span>← '+layer.poles[0]+'</span><span>'+layer.poles[1]+' →</span></div>'+
     '<div class="sw">'+vars.map(v=>'<i style="background:var('+v+')"></i>').join('')+'</div>'+
-    '<div class="lb num">'+ticks.map((t,i)=>'<span style="left:calc('+(i+1)+'*40px - 1px)">'+t+'</span>').join('')+'</div></div>';
+    '<div class="lb num" style="'+wd+'">'+ticks.map((t,i)=>'<span style="left:calc('+(i+1)+'*40px - 1px)">'+t+'</span>').join('')+'</div></div>';
   if(layer.kind==='chg') h+='<span class="hatchkey"><svg width="22" height="14" aria-hidden="true"><rect width="22" height="14" fill="url(#hatchk)"/><defs><pattern id="hatchk" patternUnits="userSpaceOnUse" width="5" height="5" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="5" stroke="currentColor" stroke-width="1.1" stroke-opacity=".55"/></pattern></defs></svg>Zona redesenhada (eleitorado mudou mais de 10%)</span>';
   h+='<span>'+(layer.fmt?'Parte do ganho de votos que foi para Lula':'Valores em pontos percentuais')+'</span>';
   document.getElementById('legend').innerHTML=h;
