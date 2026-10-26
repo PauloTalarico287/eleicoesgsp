@@ -207,7 +207,7 @@ body.embed aside.panel{position:static}
     <div><h4>Fonte</h4><p>TSE. 2022: Dados Abertos (votação por município e zona, 2º turno). 2026: portal Resultados (1º e 2º turnos), com 100% das seções totalizadas. Contornos das zonas: malha de zonas eleitorais da capital (2024); municípios: malha do IBGE.</p></div>
     <div><h4>Como ler a variação</h4><p>As cores comparam porcentagens, em pontos percentuais (p.p.): votos válidos para candidatos, eleitores aptos para abstenção e comparecimento para brancos e nulos. O número absoluto de votos aparece no painel, mas sozinho mistura mudança de opinião com mudança no tamanho do eleitorado.</p></div>
     <div><h4>Zonas redesenhadas</h4><p>Entre 2022 e 2026 o TSE redistribuiu eleitores entre zonas da capital. Nas zonas com hachura o eleitorado mudou mais de 10%, então a comparação mistura população diferente e deve ser lida com cuidado. A antiga Zona 398 deixou de existir.</p></div>
-    <div><h4>O que os dados não dizem</h4><p>Dados agregados mostram saldos, não trajetórias individuais. A conta dos "votos a mais" do 2º turno junta eleitores de outros candidatos, quem se absteve no 1º turno e quem votou branco ou nulo; não dá para saber quanto veio de cada grupo. Com dois candidatos, a variação de Flávio é o espelho da de Lula, por isso o mapa mostra uma só.</p></div>
+    <div><h4>O que os dados não dizem</h4><p>Dados agregados mostram saldos, não trajetórias individuais. O ganho de votos entre os turnos vem de três fontes: eleitores de outros candidatos, quem não votou no 1º turno e quem votou branco ou nulo. Não dá para saber quanto veio de cada uma. Com dois candidatos, a variação de Flávio é o espelho da de Lula, por isso o mapa mostra uma só.</p></div>
   </section>
   <footer>Agência Mural de Jornalismo das Periferias · Levantamento com dados do TSE · Atualizado em 26 de outubro de 2026</footer>
 </div>
@@ -238,11 +238,11 @@ const LAYERS = [
   btn:'Lula: 2022 × 2026', kind:'chg', bins:[-3,-1.5,-.5,.5,1.5,3],
   f:r=>r.pl26-r.pl22, title:'Variação de Lula entre o 2º turno de 2022 e o de 2026',
   desc:'Diferença na porcentagem de votos válidos de Lula. Como são só dois candidatos, quando Lula sobe, o lado bolsonarista cai na mesma medida. Laranja: Lula perdeu terreno; violeta: ganhou.', poles:['Lula perdeu','Lula ganhou']},
- {id:'share', rk:[[1,'Onde Lula ficou com mais votos novos','Onde ficou mais equilibrado'],[-1,'Onde Flávio ficou com mais votos novos','Onde Flávio chegou mais perto']],
-  btn:'Votos a mais no 2º turno', kind:'lead', bins:[-20,-10,-2,2,10,20], who:['Lula','Flávio'],
-  f:r=>r.share-50, fmt:v=>'Lula ficou com '+pf(v+50)+'%',
-  title:'Quem ficou com os votos a mais do 2º turno',
-  desc:'Do 1º para o 2º turno de 2026, Lula e Flávio somaram votos que no 1º turno foram para outros candidatos, para brancos e nulos ou não existiram (abstenção). O mapa mostra a fatia desse acréscimo que foi para Lula; 50% é empate.', poles:['Mais para Flávio','Mais para Lula'], ticks:['30%','40%','48%','52%','60%','70%']},
+ {id:'share', rk:[[1,'Onde o ganho foi mais para Lula','Onde ficou mais equilibrado'],[-1,'Onde o ganho foi mais para Flávio','Onde Flávio chegou mais perto']],
+  btn:'Ganho entre os turnos', kind:'lead', bins:[-20,-10,-2,2,10,20], who:['Lula','Flávio'],
+  f:r=>r.share-50, fmt:v=>pf(v+50)+'% do ganho foi para Lula',
+  title:'Quem ganhou mais votos do 1º para o 2º turno',
+  desc:'Lula e Flávio tiveram mais votos no 2º turno do que no 1º. O mapa mostra quanto desse ganho ficou com Lula. Exemplo: 70% quer dizer que, de cada 10 votos ganhos entre os turnos, 7 foram para Lula e 3 para Flávio. Acima de 50%, Lula ganhou mais; abaixo, Flávio.', poles:['Mais para Flávio','Mais para Lula'], ticks:['30%','40%','48%','52%','60%','70%']},
  {id:'abs', rk:[[-1,'Onde a abstenção caiu','Onde a abstenção menos subiu'],[1,'Onde a abstenção subiu','Onde a abstenção menos caiu']],
   btn:'Abstenção', kind:'chg', bins:[-3,-2,-1,1,2,3],
   f:r=>r.pa26-r.pa22, title:'Abstenção: 2º turno de 2022 × 2º turno de 2026',
@@ -325,7 +325,7 @@ function legend(){
     '<div class="sw">'+vars.map(v=>'<i style="background:var('+v+')"></i>').join('')+'</div>'+
     '<div class="lb num">'+ticks.map((t,i)=>'<span style="left:calc('+(i+1)+'*40px - 1px)">'+t+'</span>').join('')+'</div></div>';
   if(layer.kind==='chg') h+='<span class="hatchkey"><svg width="22" height="14" aria-hidden="true"><rect width="22" height="14" fill="url(#hatchk)"/><defs><pattern id="hatchk" patternUnits="userSpaceOnUse" width="5" height="5" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="5" stroke="currentColor" stroke-width="1.1" stroke-opacity=".55"/></pattern></defs></svg>Zona redesenhada (eleitorado mudou mais de 10%)</span>';
-  h+='<span>'+(layer.fmt?'Fatia de Lula no acréscimo de votos':'Valores em pontos percentuais')+'</span>';
+  h+='<span>'+(layer.fmt?'Parte do ganho de votos que foi para Lula':'Valores em pontos percentuais')+'</span>';
   document.getElementById('legend').innerHTML=h;
 }
 
@@ -354,7 +354,7 @@ function panel(){
    '</tbody></table>'+
    '<div class="t2"><div class="h">Do 1º para o 2º turno de 2026</div>'+
    '<p class="pot">Lula foi de <b class="num">'+nf.format(r.l1)+'</b> para <b class="num">'+nf.format(r.l26)+'</b> votos (<span class="num">'+sgn(r.gl)+'</span>); Flávio, de <b class="num">'+nf.format(r.f1)+'</b> para <b class="num">'+nf.format(r.f26)+'</b> (<span class="num">'+sgn(r.gf)+'</span>). '+
-   'Lula ficou com <b class="num">'+pf(r.share)+'%</b> dos votos a mais. No 1º turno, outros candidatos somaram <span class="num">'+nf.format(r.o1)+'</span> votos aqui, e a abstenção foi de '+pf(r.pa1)+'% para '+pf(r.pa26)+'%.</p></div>'+
+   'De cada 10 votos ganhos entre os turnos, <b class="num">'+pf(r.share/10)+'</b> foram para Lula. No 1º turno, outros candidatos somaram <span class="num">'+nf.format(r.o1)+'</span> votos aqui, e a abstenção foi de '+pf(r.pa1)+'% para '+pf(r.pa26)+'%.</p></div>'+
    (k!=='Grande SP (total)'?'<button type="button" class="linkbtn" id="back">Voltar ao total da Grande SP</button>':'');
   const bk=document.getElementById('back'); if(bk) bk.onclick=()=>{sel='Grande SP (total)'; render();};
 }
@@ -390,7 +390,7 @@ function ranks(){
 // ---------- tabela completa ----------
 const COLS = [
  ['Território',k=>label(k)],['Lula 2T22',k=>R[k].pl22],['Lula 2T26',k=>R[k].pl26],['Lula var.',k=>R[k].pl26-R[k].pl22],
- ['Jair 2T22',k=>R[k].pb22],['Flávio 2T26',k=>R[k].pf26],['Lula 1T26',k=>R[k].pl1],['Fatia Lula nos votos a mais',k=>R[k].share],
+ ['Jair 2T22',k=>R[k].pb22],['Flávio 2T26',k=>R[k].pf26],['Lula 1T26',k=>R[k].pl1],['% do ganho p/ Lula',k=>R[k].share],
  ['Abst. 2T22',k=>R[k].pa22],['Abst. 1T26',k=>R[k].pa1],['Abst. 2T26',k=>R[k].pa26],
  ['Br+Nu 2T22',k=>R[k].pbr22+R[k].pnu22],['Br+Nu 2T26',k=>R[k].pbr26+R[k].pnu26]];
 let sortI=0, sortD=1;
