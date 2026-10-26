@@ -1,0 +1,178 @@
+# ============================================================
+# Baixa os resultados de PRESIDENTE – 2º TURNO 2026 – direto do portal
+# Resultados do TSE: os 39 municípios da Grande SP + todas as zonas da capital.
+# Agência Mural
+#
+# Funciona no Google Colab ou no seu computador (python baixar_2turno_2026.py).
+# Ele só BAIXA os arquivos brutos e junta tudo num zip pequeno
+# (resultados_2026_2turno_brutos.zip). Mande esse zip para o Claude.
+# ============================================================
+
+import base64
+import json
+import os
+import re
+import time
+import unicodedata
+import zipfile
+
+import requests
+
+BASE = "https://resultados.tse.jus.br/oficial"
+ELEICAO = "6258"            # 2º turno 2026
+E = f"e{int(ELEICAO):06d}"  # e006258
+CARGO = "c0001"             # presidente
+PASTA = "resultados_2026_2turno_brutos"
+os.makedirs(PASTA, exist_ok=True)
+
+S = requests.Session()
+S.headers.update({
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                  "(KHTML, like Gecko) Chrome/129.0 Safari/537.36",
+    "Referer": f"{BASE}/app/index.html",
+})
+log = []
+
+
+def baixar(url, tentativas=3):
+    for i in range(tentativas):
+        try:
+            r = S.get(url, params={"nocache": int(time.time() * 1000)}, timeout=30)
+            if r.status_code == 200 and r.content:
+                return r.content
+            if r.status_code == 404:
+                return None
+        except requests.RequestException as e:
+            erro = e
+        time.sleep(1 + i)
+    return None
+
+
+def decodificar(conteudo):
+    """Lê JSON puro ou JWS (cabeçalho.conteúdo.assinatura)."""
+    txt = conteudo.decode("utf-8", "ignore").strip()
+    if txt.startswith("{") or txt.startswith("["):
+        return json.loads(txt)
+    partes = txt.split(".")
+    if len(partes) >= 2:
+        p = partes[1] + "=" * (-len(partes[1]) % 4)
+        return json.loads(base64.urlsafe_b64decode(p))
+    raise ValueError("formato desconhecido")
+
+
+def norm(s):
+    s = unicodedata.normalize("NFKD", str(s)).encode("ascii", "ignore").decode()
+    return re.sub(r"[^A-Z0-9]", "", s.upper())
+
+
+RMSP = [
+    "Arujá", "Barueri", "Biritiba-Mirim", "Caieiras", "Cajamar", "Carapicuíba",
+    "Cotia", "Diadema", "Embu das Artes", "Embu-Guaçu", "Ferraz de Vasconcelos",
+    "Francisco Morato", "Franco da Rocha", "Guararema", "Guarulhos",
+    "Itapecerica da Serra", "Itapevi", "Itaquaquecetuba", "Jandira", "Juquitiba",
+    "Mairiporã", "Mauá", "Mogi das Cruzes", "Osasco", "Pirapora do Bom Jesus",
+    "Poá", "Ribeirão Pires", "Rio Grande da Serra", "Salesópolis", "Santa Isabel",
+    "Santana de Parnaíba", "Santo André", "São Bernardo do Campo",
+    "São Caetano do Sul", "São Lourenço da Serra", "São Paulo", "Suzano",
+    "Taboão da Serra", "Vargem Grande Paulista",
+]
+RMSP_N = {norm(m): m for m in RMSP}
+
+# ---------- 1) Lista de municípios e zonas (arquivo de configuração) ----------
+config = None
+for url in [
+    f"{BASE}/ele2026/{ELEICAO}/config/mun-{E}-cm.json",
+    f"{BASE}/ele2026/{ELEICAO}/config/mun-{E}-cm.jws",
+    f"{BASE}/ele2026/{ELEICAO}/config/sp/mun-{E}-cm.json",
+    f"{BASE}/ele2026/{ELEICAO}/config/sp/mun-{E}-cm.jws",
+]:
+    c = baixar(url)
+    if c:
+        try:
+            config = decodificar(c)
+            with open(f"{PASTA}/config_{os.path.basename(url)}", "wb") as f:
+                f.write(c)
+            print("Configuração encontrada:", url)
+            break
+        except Exception:
+            pass
+
+municipios = {}  # nome oficial -> (código TSE, [zonas])
+
+
+def varrer(no, uf=None):
+    if isinstance(no, dict):
+        cd = str(no.get("cd", ""))
+        if len(cd) == 2 and ("mu" in no or "abr" in no):
+            uf = cd.upper()
+        nm = no.get("nm") or no.get("ds")
+        if nm and cd and (uf == "SP" or str(no.get("cdi", "")).startswith("35")):
+            if norm(nm) in RMSP_N and len(cd) >= 4:
+                zonas = [str(z.get("cd", z)) if isinstance(z, dict) else str(z)
+                         for z in no.get("z", [])]
+                municipios[RMSP_N[norm(nm)]] = (cd.zfill(5), zonas)
+        for v in no.values():
+            varrer(v, uf)
+    elif isinstance(no, list):
+        for v in no:
+            varrer(v, uf)
+
+
+if config:
+    varrer(config)
+print(f"Municípios da Grande SP identificados: {len(municipios)} de 39")
+
+if "São Paulo" not in municipios:
+    municipios["São Paulo"] = ("71072", [])
+zonas_cap = municipios["São Paulo"][1]
+if not zonas_cap:
+    print("Lista de zonas da capital não veio na configuração; "
+          "testando zonas 0001 a 0450 (demora uns minutos)...")
+    zonas_cap = [f"{z:04d}" for z in range(1, 451)]
+
+# ---------- 2) Arquivos por município ----------
+ok = 0
+for nome, (cd, _) in sorted(municipios.items()):
+    url = f"{BASE}/ele2026/{ELEICAO}/dados/sp/sp{cd}-{CARGO}-{E}-u.jws"
+    c = baixar(url)
+    if c:
+        with open(f"{PASTA}/mun_{cd}_{norm(nome)}.jws", "wb") as f:
+            f.write(c)
+        ok += 1
+    else:
+        log.append(f"FALHOU município {nome} ({cd}): {url}")
+    time.sleep(0.2)
+print(f"Municípios baixados: {ok}")
+
+# ---------- 3) Arquivos por zona da capital ----------
+okz = 0
+for z in zonas_cap:
+    z = str(z).zfill(4)
+    url = f"{BASE}/ele2026/{ELEICAO}/dados/sp/sp71072-z{z}-{CARGO}-{E}-u.jws"
+    c = baixar(url)
+    if c:
+        with open(f"{PASTA}/zona_71072_z{z}.jws", "wb") as f:
+            f.write(c)
+        okz += 1
+    time.sleep(0.2)
+print(f"Zonas da capital baixadas: {okz}")
+
+# ---------- 4) Empacotar ----------
+with open(f"{PASTA}/log.txt", "w", encoding="utf-8") as f:
+    f.write("\n".join(log) or "sem falhas")
+    f.write(f"\n\nmunicipios_identificados={len(municipios)} baixados={ok} zonas={okz}\n")
+
+saida = "resultados_2026_2turno_brutos.zip"
+with zipfile.ZipFile(saida, "w", zipfile.ZIP_DEFLATED) as z:
+    for n in os.listdir(PASTA):
+        z.write(os.path.join(PASTA, n), n)
+print(f"\nPronto: {saida} ({os.path.getsize(saida)/1024:.0f} KB)")
+if log:
+    print("Algumas falhas (veja log.txt dentro do zip):")
+    print("\n".join(log[:10]))
+
+try:
+    from google.colab import files
+    files.download(saida)
+except ImportError:
+    print("Arquivo salvo na pasta onde você rodou o script.")
