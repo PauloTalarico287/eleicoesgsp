@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Santinhos dão voto?</title>
+<style>
+  :root { --sm-gap: 20px; }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: #3DFF9E;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .sm-wrap {
+    display: flex; flex-direction: column; gap: 28px;
+    color: #0a1f12;
+    padding: 24px 16px 40px;
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+  .sm-hero { padding: 2px 0 6px; display: flex; flex-direction: column; gap: 6px; }
+  .sm-title { font-size: 22px; font-weight: 700; margin: 0; color: #0a1f12; }
+  .sm-dek { font-size: 15px; font-weight: 500; color: #0a1f12; margin: 0; max-width: 65ch; }
+  .sm-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+  .sm-controls label { font-size: 13px; color: #0a1f12; font-weight: 600; }
+  .sm-controls select {
+    font-family: inherit; font-size: 14px; padding: 7px 10px; border-radius: 8px;
+    border: 1px solid #0a1f12; background: #ffffff; color: #0a1f12;
+    max-width: 100%;
+  }
+  .sm-panels { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sm-gap); }
+  @media (max-width: 720px) { .sm-panels { grid-template-columns: 1fr; } }
+  .sm-panel { border: 1px solid #0a1f12; border-radius: 12px; padding: 16px; background: #ffffff; color: #0a1f12; min-width: 0; }
+  .sm-panel h3 { margin: 0 0 4px; font-size: 14px; font-weight: 600; }
+  .sm-panel .sm-sub { margin: 0 0 14px; font-size: 12px; color: #555; }
+  .sm-bar-row { position: relative; margin-bottom: 10px; }
+  .sm-bar-label { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; margin-bottom: 3px; }
+  .sm-bar-name-wrap { display: flex; align-items: baseline; gap: 6px; overflow: hidden; min-width: 0; }
+  .sm-bar-name { font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sm-flag { flex: none; font-size: 10.5px; padding: 1px 7px; border-radius: 999px; background: #0a1f12; color: #3DFF9E; font-weight: 600; white-space: nowrap; }
+  .sm-legend { font-size: 12px; color: #0a1f12; display: flex; align-items: center; gap: 6px; }
+  .sm-legend .sm-flag { position: static; }
+  .sm-bar-votos { font-variant-numeric: tabular-nums; flex: none; color: #0a1f12; opacity: 0.75; }
+  .sm-bar-track { height: 18px; border-radius: 5px; background: rgba(10, 31, 18, 0.12); overflow: hidden; }
+  .sm-bar-fill { height: 100%; border-radius: 5px; }
+  .sm-table-wrap { overflow-x: auto; border: 1px solid #0a1f12; border-radius: 12px; background: #ffffff; }
+  table.sm-table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 640px; color: #0a1f12; }
+  table.sm-table th, table.sm-table td { padding: 8px 12px; text-align: left; border-bottom: 1px solid rgba(10, 31, 18, 0.15); white-space: nowrap; }
+  table.sm-table th { font-weight: 600; color: #0a1f12; opacity: 0.7; font-size: 12px; text-transform: uppercase; letter-spacing: 0.03em; }
+  table.sm-table td.sm-votos { font-variant-numeric: tabular-nums; text-align: right; }
+  .sm-table-title { font-size: 14px; font-weight: 600; margin: 0 0 8px; color: #0a1f12; }
+  .sm-footer { font-size: 11px; color: #0a1f12; opacity: 0.6; margin-top: 4px; }
+</style>
+</head>
+<body>
+<div class="sm-wrap">
+  <div class="sm-hero">
+    <p class="sm-title">Santinhos dão voto?</p>
+    <p class="sm-dek">Em escolas analisadas pela Mural, a maioria dos candidatos que lideraram a votação não tinha grandes quantidades de santinhos jogados no chão.</p>
+  </div>
+
+  <div class="sm-controls">
+    <label for="sm-escola">Escola</label>
+    <select id="sm-escola"></select>
+    <span class="sm-legend"><span class="sm-flag">material</span> candidato tinha santinho/material na porta da escola, segundo o relato de campo</span>
+  </div>
+
+  <div class="sm-panels">
+    <div class="sm-panel">
+      <h3>Deputado Estadual — top 5</h3>
+      <p class="sm-sub" id="sm-sub-estadual">—</p>
+      <div id="sm-chart-estadual"></div>
+    </div>
+    <div class="sm-panel">
+      <h3>Deputado Federal — top 5</h3>
+      <p class="sm-sub" id="sm-sub-federal">—</p>
+      <div id="sm-chart-federal"></div>
+    </div>
+  </div>
+
+  <div>
+    <p class="sm-table-title">Candidato mais votado em cada escola, por cargo</p>
+    <div class="sm-table-wrap">
+      <table class="sm-table" id="sm-winners">
+        <thead>
+          <tr>
+            <th>Quebrada</th>
+            <th>Escola</th>
+            <th>Cargo</th>
+            <th>Candidato mais votado</th>
+            <th>Partido</th>
+            <th>Votos</th>
+            <th>Tinha material na porta?</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <p class="sm-footer">Agência Mural — Santinhômetro. Dados de 1º turno, votos por escola, candidatos a deputado estadual e federal.</p>
+</div>
+
+<script>
+(function () {
+  var ROWS = [{"escola": "EE. Francisco Milton de Andrade", "quebrada": "Guarulhos", "cargo": "Deputado Estadual", "rank": 1, "numero": 22800, "candidato": "Giovanni Sanches", "partido": "PL", "votos": 855, "material": true}, {"escola": "EE. Francisco Milton de Andrade", "quebrada": "Guarulhos", "cargo": "Deputado Estadual", "rank": 2, "numero": 11000, "candidato": "Delegado Mesquita", "partido": "PP", "votos": 479, "material": false}, {"escola": "EE. Francisco Milton de Andrade", "quebrada": "Guarulhos", "cargo": "Deputado Estadual", "rank": 3, "numero": 30122, "candidato": "Izaias Oliveira", "partido": "NOVO", "votos": 214, "material": false}, {"escola": "EE. Francisco Milton de Andrade", "quebrada": "Guarulhos", "cargo": "Deputado Estadual", "rank": 4, "numero": 22011, "candidato": "Eduarda Campopiano", "partido": "PL", "votos": 129, "material": false}, {"escola": "EE. Francisco Milton de Andrade", "quebrada": "Guarulhos", "cargo": "Deputado Estadual", "rank": 5, "numero": 13588, "candidato": "Marcelo Seminaldo", "partido": "PT", "votos": 107, "material": false}, {"escola": "EE. Francisco Milton de Andrade", "quebrada": "Guarulhos", "cargo": "Deputado Federal", "rank": 1, "numero": 2280, "candidato": "Thiago Surfista", "partido": "PL", "votos": 682, "material": false}, {"escola": "EE. Francisco Milton de Andrade", "quebrada": "Guarulhos", "cargo": "Deputado Federal", "rank": 2, "numero": 2211, "candidato": "Lucas Pavanato", "partido": "PL", "votos": 335, "material": false}, {"escola": "EE. Francisco Milton de Andrade", "quebrada": "Guarulhos", "cargo": "Deputado Federal", "rank": 3, "numero": 5522, "candidato": "Guti", "partido": "PSD", "votos": 200, "material": false}, {"escola": "EE. Francisco Milton de Andrade", "quebrada": "Guarulhos", "cargo": "Deputado Federal", "rank": 4, "numero": 5070, "candidato": "Erika Hilton", "partido": "PSOL", "votos": 184, "material": false}, {"escola": "EE. Francisco Milton de Andrade", "quebrada": "Guarulhos", "cargo": "Deputado Federal", "rank": 5, "numero": 1358, "candidato": "Alencar Santana", "partido": "PT", "votos": 175, "material": false}, {"escola": "EE. Jerônymo Monteiro", "quebrada": "Cidade Dutra", "cargo": "Deputado Estadual", "rank": 1, "numero": 55800, "candidato": "Goulart", "partido": "PSD", "votos": 215, "material": true}, {"escola": "EE. Jerônymo Monteiro", "quebrada": "Cidade Dutra", "cargo": "Deputado Estadual", "rank": 2, "numero": 22011, "candidato": "Eduarda Campopiano", "partido": "PL", "votos": 161, "material": false}, {"escola": "EE. Jerônymo Monteiro", "quebrada": "Cidade Dutra", "cargo": "Deputado Estadual", "rank": 3, "numero": 50789, "candidato": "Carlos Giannazi", "partido": "PSOL", "votos": 126, "material": false}, {"escola": "EE. Jerônymo Monteiro", "quebrada": "Cidade Dutra", "cargo": "Deputado Estadual", "rank": 4, "numero": 13133, "candidato": "Eduardo Suplicy", "partido": "PT", "votos": 121, "material": false}, {"escola": "EE. Jerônymo Monteiro", "quebrada": "Cidade Dutra", "cargo": "Deputado Estadual", "rank": 5, "numero": 15115, "candidato": "Regina Nunes", "partido": "MDB", "votos": 108, "material": false}, {"escola": "EE. Jerônymo Monteiro", "quebrada": "Cidade Dutra", "cargo": "Deputado Federal", "rank": 1, "numero": 2211, "candidato": "Lucas Pavanato", "partido": "PL", "votos": 272, "material": false}, {"escola": "EE. Jerônymo Monteiro", "quebrada": "Cidade Dutra", "cargo": "Deputado Federal", "rank": 2, "numero": 5070, "candidato": "Erika Hilton", "partido": "PSOL", "votos": 182, "material": false}, {"escola": "EE. Jerônymo Monteiro", "quebrada": "Cidade Dutra", "cargo": "Deputado Federal", "rank": 3, "numero": 1389, "candidato": "Alfredinho", "partido": "PT", "votos": 155, "material": true}, {"escola": "EE. Jerônymo Monteiro", "quebrada": "Cidade Dutra", "cargo": "Deputado Federal", "rank": 4, "numero": 1502, "candidato": "Sidney Cruz", "partido": "MDB", "votos": 95, "material": false}, {"escola": "EE. Jerônymo Monteiro", "quebrada": "Cidade Dutra", "cargo": "Deputado Federal", "rank": 5, "numero": 1353, "candidato": "Nilto Tatto", "partido": "PT", "votos": 89, "material": true}, {"escola": "E.E. João Ricardo Borges de Lima", "quebrada": "Mauá", "cargo": "Deputado Estadual", "rank": 1, "numero": 25000, "candidato": "Atila Jacomussi", "partido": "PRD", "votos": 677, "material": true}, {"escola": "E.E. João Ricardo Borges de Lima", "quebrada": "Mauá", "cargo": "Deputado Estadual", "rank": 2, "numero": 13789, "candidato": "Rômulo", "partido": "PT", "votos": 516, "material": true}, {"escola": "E.E. João Ricardo Borges de Lima", "quebrada": "Mauá", "cargo": "Deputado Estadual", "rank": 3, "numero": 22011, "candidato": "Eduarda Campopiano", "partido": "PL", "votos": 204, "material": false}, {"escola": "E.E. João Ricardo Borges de Lima", "quebrada": "Mauá", "cargo": "Deputado Estadual", "rank": 4, "numero": 22333, "candidato": "Mazinho", "partido": "PL", "votos": 137, "material": false}, {"escola": "E.E. João Ricardo Borges de Lima", "quebrada": "Mauá", "cargo": "Deputado Estadual", "rank": 5, "numero": 20650, "candidato": "Ivan Silva", "partido": "PODE", "votos": 117, "material": false}, {"escola": "E.E. João Ricardo Borges de Lima", "quebrada": "Mauá", "cargo": "Deputado Federal", "rank": 1, "numero": 1586, "candidato": "Renan Pessoa", "partido": "MDB", "votos": 412, "material": false}, {"escola": "E.E. João Ricardo Borges de Lima", "quebrada": "Mauá", "cargo": "Deputado Federal", "rank": 2, "numero": 2211, "candidato": "Lucas Pavanato", "partido": "PL", "votos": 276, "material": false}, {"escola": "E.E. João Ricardo Borges de Lima", "quebrada": "Mauá", "cargo": "Deputado Federal", "rank": 3, "numero": 5070, "candidato": "Erika Hilton", "partido": "PSOL", "votos": 261, "material": false}, {"escola": "E.E. João Ricardo Borges de Lima", "quebrada": "Mauá", "cargo": "Deputado Federal", "rank": 4, "numero": 2599, "candidato": "Neguinho do Gás", "partido": "PRD", "votos": 209, "material": false}, {"escola": "E.E. João Ricardo Borges de Lima", "quebrada": "Mauá", "cargo": "Deputado Federal", "rank": 5, "numero": 4567, "candidato": "Leonardo Alves", "partido": "PSDB", "votos": 183, "material": true}, {"escola": "E.E. Prof. Luiz Gonzaga Pinto e Silva", "quebrada": "Jardim São Luís", "cargo": "Deputado Estadual", "rank": 1, "numero": 22011, "candidato": "Eduarda Campopiano", "partido": "PL", "votos": 377, "material": false}, {"escola": "E.E. Prof. Luiz Gonzaga Pinto e Silva", "quebrada": "Jardim São Luís", "cargo": "Deputado Estadual", "rank": 2, "numero": 13133, "candidato": "Eduardo Suplicy", "partido": "PT", "votos": 309, "material": false}, {"escola": "E.E. Prof. Luiz Gonzaga Pinto e Silva", "quebrada": "Jardim São Luís", "cargo": "Deputado Estadual", "rank": 3, "numero": 13644, "candidato": "Rodrigo Mar", "partido": "PT", "votos": 209, "material": false}, {"escola": "E.E. Prof. Luiz Gonzaga Pinto e Silva", "quebrada": "Jardim São Luís", "cargo": "Deputado Estadual", "rank": 4, "numero": 50110, "candidato": "Ediane Maria", "partido": "PSOL", "votos": 154, "material": false}, {"escola": "E.E. Prof. Luiz Gonzaga Pinto e Silva", "quebrada": "Jardim São Luís", "cargo": "Deputado Estadual", "rank": 5, "numero": 44250, "candidato": "Alexandre Leite", "partido": "UNIÃO", "votos": 123, "material": true}, {"escola": "E.E. Prof. Luiz Gonzaga Pinto e Silva", "quebrada": "Jardim São Luís", "cargo": "Deputado Federal", "rank": 1, "numero": 2211, "candidato": "Lucas Pavanato", "partido": "PL", "votos": 532, "material": false}, {"escola": "E.E. Prof. Luiz Gonzaga Pinto e Silva", "quebrada": "Jardim São Luís", "cargo": "Deputado Federal", "rank": 2, "numero": 5070, "candidato": "Erika Hilton", "partido": "PSOL", "votos": 494, "material": false}, {"escola": "E.E. Prof. Luiz Gonzaga Pinto e Silva", "quebrada": "Jardim São Luís", "cargo": "Deputado Federal", "rank": 3, "numero": 1351, "candidato": "Reis", "partido": "PT", "votos": 295, "material": false}, {"escola": "E.E. Prof. Luiz Gonzaga Pinto e Silva", "quebrada": "Jardim São Luís", "cargo": "Deputado Federal", "rank": 4, "numero": 4040, "candidato": "Tabata Amaral", "partido": "PSB", "votos": 166, "material": false}, {"escola": "E.E. Prof. Luiz Gonzaga Pinto e Silva", "quebrada": "Jardim São Luís", "cargo": "Deputado Federal", "rank": 5, "numero": 5000, "candidato": "Sâmia Bomfim", "partido": "PSOL", "votos": 134, "material": false}, {"escola": "EE. Prof. Odair Pacheco Pedroso", "quebrada": "Cotia", "cargo": "Deputado Estadual", "rank": 1, "numero": 22999, "candidato": "Rogério Franco", "partido": "PL", "votos": 300, "material": true}, {"escola": "EE. Prof. Odair Pacheco Pedroso", "quebrada": "Cotia", "cargo": "Deputado Estadual", "rank": 2, "numero": 22011, "candidato": "Eduarda Campopiano", "partido": "PL", "votos": 289, "material": false}, {"escola": "EE. Prof. Odair Pacheco Pedroso", "quebrada": "Cotia", "cargo": "Deputado Estadual", "rank": 3, "numero": 25000, "candidato": "Atila Jacomussi", "partido": "PRD", "votos": 129, "material": false}, {"escola": "EE. Prof. Odair Pacheco Pedroso", "quebrada": "Cotia", "cargo": "Deputado Estadual", "rank": 4, "numero": 13133, "candidato": "Eduardo Suplicy", "partido": "PT", "votos": 116, "material": false}, {"escola": "EE. Prof. Odair Pacheco Pedroso", "quebrada": "Cotia", "cargo": "Deputado Estadual", "rank": 5, "numero": 10023, "candidato": "Ely Santos", "partido": "REPUBLICANOS", "votos": 105, "material": false}, {"escola": "EE. Prof. Odair Pacheco Pedroso", "quebrada": "Cotia", "cargo": "Deputado Federal", "rank": 1, "numero": 2211, "candidato": "Lucas Pavanato", "partido": "PL", "votos": 398, "material": false}, {"escola": "EE. Prof. Odair Pacheco Pedroso", "quebrada": "Cotia", "cargo": "Deputado Federal", "rank": 2, "numero": 5070, "candidato": "Erika Hilton", "partido": "PSOL", "votos": 245, "material": false}, {"escola": "EE. Prof. Odair Pacheco Pedroso", "quebrada": "Cotia", "cargo": "Deputado Federal", "rank": 3, "numero": 5500, "candidato": "Igor Soares", "partido": "PSD", "votos": 149, "material": true}, {"escola": "EE. Prof. Odair Pacheco Pedroso", "quebrada": "Cotia", "cargo": "Deputado Federal", "rank": 4, "numero": 1211, "candidato": "Eduardo Xaropinho", "partido": "PDT", "votos": 133, "material": true}, {"escola": "EE. Prof. Odair Pacheco Pedroso", "quebrada": "Cotia", "cargo": "Deputado Federal", "rank": 5, "numero": 7777, "candidato": "Alexandre Pereira", "partido": "SOLIDARIEDADE", "votos": 122, "material": false}, {"escola": "EE. Prof. Francisco de Assis Pires Corrêa", "quebrada": "Cohab José Bonifácio", "cargo": "Deputado Estadual", "rank": 1, "numero": 22011, "candidato": "Eduarda Campopiano", "partido": "PL", "votos": 386, "material": false}, {"escola": "EE. Prof. Francisco de Assis Pires Corrêa", "quebrada": "Cohab José Bonifácio", "cargo": "Deputado Estadual", "rank": 2, "numero": 13133, "candidato": "Eduardo Suplicy", "partido": "PT", "votos": 304, "material": false}, {"escola": "EE. Prof. Francisco de Assis Pires Corrêa", "quebrada": "Cohab José Bonifácio", "cargo": "Deputado Estadual", "rank": 3, "numero": 15115, "candidato": "Regina Nunes", "partido": "MDB", "votos": 210, "material": false}, {"escola": "EE. Prof. Francisco de Assis Pires Corrêa", "quebrada": "Cohab José Bonifácio", "cargo": "Deputado Estadual", "rank": 4, "numero": 13800, "candidato": "Jorge do Carmo", "partido": "PT", "votos": 142, "material": true}, {"escola": "EE. Prof. Francisco de Assis Pires Corrêa", "quebrada": "Cohab José Bonifácio", "cargo": "Deputado Estadual", "rank": 5, "numero": 50700, "candidato": "Sofia Favero", "partido": "PSOL", "votos": 138, "material": false}, {"escola": "EE. Prof. Francisco de Assis Pires Corrêa", "quebrada": "Cohab José Bonifácio", "cargo": "Deputado Federal", "rank": 1, "numero": 5070, "candidato": "Erika Hilton", "partido": "PSOL", "votos": 528, "material": false}, {"escola": "EE. Prof. Francisco de Assis Pires Corrêa", "quebrada": "Cohab José Bonifácio", "cargo": "Deputado Federal", "rank": 2, "numero": 2255, "candidato": "Dra. Sandra Tadeu", "partido": "PL", "votos": 523, "material": true}, {"escola": "EE. Prof. Francisco de Assis Pires Corrêa", "quebrada": "Cohab José Bonifácio", "cargo": "Deputado Federal", "rank": 3, "numero": 2211, "candidato": "Lucas Pavanato", "partido": "PL", "votos": 464, "material": false}, {"escola": "EE. Prof. Francisco de Assis Pires Corrêa", "quebrada": "Cohab José Bonifácio", "cargo": "Deputado Federal", "rank": 4, "numero": 1333, "candidato": "Juliana Cardoso", "partido": "PT", "votos": 199, "material": true}, {"escola": "EE. Prof. Francisco de Assis Pires Corrêa", "quebrada": "Cohab José Bonifácio", "cargo": "Deputado Federal", "rank": 5, "numero": 1380, "candidato": "Jilmar Tatto", "partido": "PT", "votos": 168, "material": true}, {"escola": "E.E. Parque Jane II", "quebrada": "Embu das Artes", "cargo": "Deputado Estadual", "rank": 1, "numero": 10023, "candidato": "Ely Santos", "partido": "REPUBLICANOS", "votos": 315, "material": true}, {"escola": "E.E. Parque Jane II", "quebrada": "Embu das Artes", "cargo": "Deputado Estadual", "rank": 2, "numero": 13400, "candidato": "Rosângela Santos", "partido": "PT", "votos": 180, "material": false}, {"escola": "E.E. Parque Jane II", "quebrada": "Embu das Artes", "cargo": "Deputado Estadual", "rank": 3, "numero": 22011, "candidato": "Eduarda Campopiano", "partido": "PL", "votos": 119, "material": false}, {"escola": "E.E. Parque Jane II", "quebrada": "Embu das Artes", "cargo": "Deputado Estadual", "rank": 4, "numero": 40000, "candidato": "Abidan Henrique", "partido": "PSB", "votos": 99, "material": false}, {"escola": "E.E. Parque Jane II", "quebrada": "Embu das Artes", "cargo": "Deputado Estadual", "rank": 5, "numero": 22150, "candidato": "Léo Novais", "partido": "PL", "votos": 31, "material": true}, {"escola": "E.E. Parque Jane II", "quebrada": "Embu das Artes", "cargo": "Deputado Federal", "rank": 1, "numero": 1023, "candidato": "Ney Santos", "partido": "REPUBLICANOS", "votos": 403, "material": true}, {"escola": "E.E. Parque Jane II", "quebrada": "Embu das Artes", "cargo": "Deputado Federal", "rank": 2, "numero": 2211, "candidato": "Lucas Pavanato", "partido": "PL", "votos": 154, "material": false}, {"escola": "E.E. Parque Jane II", "quebrada": "Embu das Artes", "cargo": "Deputado Federal", "rank": 3, "numero": 5070, "candidato": "Erika Hilton", "partido": "PSOL", "votos": 120, "material": false}, {"escola": "E.E. Parque Jane II", "quebrada": "Embu das Artes", "cargo": "Deputado Federal", "rank": 4, "numero": 4040, "candidato": "Tabata Amaral", "partido": "PSB", "votos": 64, "material": false}, {"escola": "E.E. Parque Jane II", "quebrada": "Embu das Artes", "cargo": "Deputado Federal", "rank": 5, "numero": 1358, "candidato": "Alencar Santana", "partido": "PT", "votos": 32, "material": false}, {"escola": "E.E. Roberto Bianchi", "quebrada": "Suzano", "cargo": "Deputado Estadual", "rank": 1, "numero": 22000, "candidato": "Rodrigo Ashiuchi", "partido": "PL", "votos": 903, "material": false}, {"escola": "E.E. Roberto Bianchi", "quebrada": "Suzano", "cargo": "Deputado Estadual", "rank": 2, "numero": 22011, "candidato": "Eduarda Campopiano", "partido": "PL", "votos": 79, "material": false}, {"escola": "E.E. Roberto Bianchi", "quebrada": "Suzano", "cargo": "Deputado Estadual", "rank": 3, "numero": 11999, "candidato": "Dr Rafu", "partido": "PP", "votos": 50, "material": false}, {"escola": "E.E. Roberto Bianchi", "quebrada": "Suzano", "cargo": "Deputado Estadual", "rank": 4, "numero": 13600, "candidato": "Rodrigo Valverde", "partido": "PT", "votos": 47, "material": false}, {"escola": "E.E. Roberto Bianchi", "quebrada": "Suzano", "cargo": "Deputado Estadual", "rank": 5, "numero": 13133, "candidato": "Eduardo Suplicy", "partido": "PT", "votos": 39, "material": false}, {"escola": "E.E. Roberto Bianchi", "quebrada": "Suzano", "cargo": "Deputado Federal", "rank": 1, "numero": 2299, "candidato": "Marcio Alvino", "partido": "PL", "votos": 490, "material": false}, {"escola": "E.E. Roberto Bianchi", "quebrada": "Suzano", "cargo": "Deputado Federal", "rank": 2, "numero": 2211, "candidato": "Lucas Pavanato", "partido": "PL", "votos": 186, "material": false}, {"escola": "E.E. Roberto Bianchi", "quebrada": "Suzano", "cargo": "Deputado Federal", "rank": 3, "numero": 1089, "candidato": "Gerice Lione", "partido": "REPUBLICANOS", "votos": 101, "material": true}, {"escola": "E.E. Roberto Bianchi", "quebrada": "Suzano", "cargo": "Deputado Federal", "rank": 4, "numero": 5070, "candidato": "Erika Hilton", "partido": "PSOL", "votos": 82, "material": false}, {"escola": "E.E. Roberto Bianchi", "quebrada": "Suzano", "cargo": "Deputado Federal", "rank": 5, "numero": 1111, "candidato": "Mauricio Neves", "partido": "PP", "votos": 46, "material": false}, {"escola": "EMEF. Jornalista Millor Fernandes", "quebrada": "Campo Limpo", "cargo": "Deputado Estadual", "rank": 1, "numero": 22011, "candidato": "Eduarda Campopiano", "partido": "PL", "votos": 356, "material": false}, {"escola": "EMEF. Jornalista Millor Fernandes", "quebrada": "Campo Limpo", "cargo": "Deputado Estadual", "rank": 2, "numero": 13133, "candidato": "Eduardo Suplicy", "partido": "PT", "votos": 259, "material": false}, {"escola": "EMEF. Jornalista Millor Fernandes", "quebrada": "Campo Limpo", "cargo": "Deputado Estadual", "rank": 3, "numero": 50110, "candidato": "Ediane Maria", "partido": "PSOL", "votos": 190, "material": true}, {"escola": "EMEF. Jornalista Millor Fernandes", "quebrada": "Campo Limpo", "cargo": "Deputado Estadual", "rank": 4, "numero": 13700, "candidato": "Donato", "partido": "PT", "votos": 141, "material": false}, {"escola": "EMEF. Jornalista Millor Fernandes", "quebrada": "Campo Limpo", "cargo": "Deputado Estadual", "rank": 5, "numero": 50700, "candidato": "Sofia Favero", "partido": "PSOL", "votos": 132, "material": false}, {"escola": "EMEF. Jornalista Millor Fernandes", "quebrada": "Campo Limpo", "cargo": "Deputado Federal", "rank": 1, "numero": 5070, "candidato": "Erika Hilton", "partido": "PSOL", "votos": 505, "material": false}, {"escola": "EMEF. Jornalista Millor Fernandes", "quebrada": "Campo Limpo", "cargo": "Deputado Federal", "rank": 2, "numero": 2211, "candidato": "Lucas Pavanato", "partido": "PL", "votos": 491, "material": false}, {"escola": "EMEF. Jornalista Millor Fernandes", "quebrada": "Campo Limpo", "cargo": "Deputado Federal", "rank": 3, "numero": 5010, "candidato": "Natália Boulos", "partido": "PSOL", "votos": 165, "material": false}, {"escola": "EMEF. Jornalista Millor Fernandes", "quebrada": "Campo Limpo", "cargo": "Deputado Federal", "rank": 4, "numero": 2040, "candidato": "Antonio Carlos Rodrigues", "partido": "PODE", "votos": 163, "material": true}, {"escola": "EMEF. Jornalista Millor Fernandes", "quebrada": "Campo Limpo", "cargo": "Deputado Federal", "rank": 5, "numero": 4040, "candidato": "Tabata Amaral", "partido": "PSB", "votos": 141, "material": false}, {"escola": "EMEF. Oscar Pennacino", "quebrada": "Osasco", "cargo": "Deputado Estadual", "rank": 1, "numero": 20200, "candidato": "Rogerio Lins", "partido": "PODE", "votos": 1412, "material": false}, {"escola": "EMEF. Oscar Pennacino", "quebrada": "Osasco", "cargo": "Deputado Estadual", "rank": 2, "numero": 13131, "candidato": "Emídio", "partido": "PT", "votos": 258, "material": false}, {"escola": "EMEF. Oscar Pennacino", "quebrada": "Osasco", "cargo": "Deputado Estadual", "rank": 3, "numero": 22011, "candidato": "Eduarda Campopiano", "partido": "PL", "votos": 248, "material": false}, {"escola": "EMEF. Oscar Pennacino", "quebrada": "Osasco", "cargo": "Deputado Estadual", "rank": 4, "numero": 44777, "candidato": "Dr. Márcio Lindoso", "partido": "UNIÃO", "votos": 210, "material": true}, {"escola": "EMEF. Oscar Pennacino", "quebrada": "Osasco", "cargo": "Deputado Estadual", "rank": 5, "numero": 50700, "candidato": "Sofia Favero", "partido": "PSOL", "votos": 100, "material": false}, {"escola": "EMEF. Oscar Pennacino", "quebrada": "Osasco", "cargo": "Deputado Federal", "rank": 1, "numero": 2211, "candidato": "Lucas Pavanato", "partido": "PL", "votos": 423, "material": false}, {"escola": "EMEF. Oscar Pennacino", "quebrada": "Osasco", "cargo": "Deputado Federal", "rank": 2, "numero": 5070, "candidato": "Erika Hilton", "partido": "PSOL", "votos": 332, "material": false}, {"escola": "EMEF. Oscar Pennacino", "quebrada": "Osasco", "cargo": "Deputado Federal", "rank": 3, "numero": 2230, "candidato": "Pedro Sotero", "partido": "PL", "votos": 246, "material": false}, {"escola": "EMEF. Oscar Pennacino", "quebrada": "Osasco", "cargo": "Deputado Federal", "rank": 4, "numero": 1325, "candidato": "Joao Paulo Cunha", "partido": "PT", "votos": 183, "material": false}, {"escola": "EMEF. Oscar Pennacino", "quebrada": "Osasco", "cargo": "Deputado Federal", "rank": 5, "numero": 2019, "candidato": "Ribamar Silva", "partido": "PODE", "votos": 135, "material": true}, {"escola": "EMEI. Ronald de Carvalho", "quebrada": "Cohab José Bonifácio", "cargo": "Deputado Estadual", "rank": 1, "numero": 22011, "candidato": "Eduarda Campopiano", "partido": "PL", "votos": 61, "material": false}, {"escola": "EMEI. Ronald de Carvalho", "quebrada": "Cohab José Bonifácio", "cargo": "Deputado Estadual", "rank": 2, "numero": 13133, "candidato": "Eduardo Suplicy", "partido": "PT", "votos": 40, "material": false}, {"escola": "EMEI. Ronald de Carvalho", "quebrada": "Cohab José Bonifácio", "cargo": "Deputado Estadual", "rank": 3, "numero": 13800, "candidato": "Jorge do Carmo", "partido": "PT", "votos": 33, "material": true}, {"escola": "EMEI. Ronald de Carvalho", "quebrada": "Cohab José Bonifácio", "cargo": "Deputado Estadual", "rank": 4, "numero": 50700, "candidato": "Sofia Favero", "partido": "PSOL", "votos": 31, "material": false}, {"escola": "EMEI. Ronald de Carvalho", "quebrada": "Cohab José Bonifácio", "cargo": "Deputado Estadual", "rank": 5, "numero": 15115, "candidato": "Regina Nunes", "partido": "MDB", "votos": 28, "material": false}, {"escola": "EMEI. Ronald de Carvalho", "quebrada": "Cohab José Bonifácio", "cargo": "Deputado Federal", "rank": 1, "numero": 5070, "candidato": "Erika Hilton", "partido": "PSOL", "votos": 93, "material": false}, {"escola": "EMEI. Ronald de Carvalho", "quebrada": "Cohab José Bonifácio", "cargo": "Deputado Federal", "rank": 2, "numero": 2211, "candidato": "Lucas Pavanato", "partido": "PL", "votos": 82, "material": false}, {"escola": "EMEI. Ronald de Carvalho", "quebrada": "Cohab José Bonifácio", "cargo": "Deputado Federal", "rank": 3, "numero": 2255, "candidato": "Dra. Sandra Tadeu", "partido": "PL", "votos": 77, "material": false}, {"escola": "EMEI. Ronald de Carvalho", "quebrada": "Cohab José Bonifácio", "cargo": "Deputado Federal", "rank": 4, "numero": 1380, "candidato": "Jilmar Tatto", "partido": "PT", "votos": 37, "material": true}, {"escola": "EMEI. Ronald de Carvalho", "quebrada": "Cohab José Bonifácio", "cargo": "Deputado Federal", "rank": 5, "numero": 1333, "candidato": "Juliana Cardoso", "partido": "PT", "votos": 21, "material": false}, {"escola": "EE. Diretor Ricardo Genesio da Silva", "quebrada": "Osasco", "cargo": "Deputado Estadual", "rank": 1, "numero": 20200, "candidato": "Rogerio Lins", "partido": "PODE", "votos": 1090, "material": false}, {"escola": "EE. Diretor Ricardo Genesio da Silva", "quebrada": "Osasco", "cargo": "Deputado Estadual", "rank": 2, "numero": 22011, "candidato": "Eduarda Campopiano", "partido": "PL", "votos": 168, "material": false}, {"escola": "EE. Diretor Ricardo Genesio da Silva", "quebrada": "Osasco", "cargo": "Deputado Estadual", "rank": 3, "numero": 13131, "candidato": "Emídio", "partido": "PT", "votos": 153, "material": false}, {"escola": "EE. Diretor Ricardo Genesio da Silva", "quebrada": "Osasco", "cargo": "Deputado Estadual", "rank": 4, "numero": 44777, "candidato": "Dr. Márcio Lindoso", "partido": "UNIÃO", "votos": 121, "material": true}, {"escola": "EE. Diretor Ricardo Genesio da Silva", "quebrada": "Osasco", "cargo": "Deputado Estadual", "rank": 5, "numero": 50700, "candidato": "Sofia Favero", "partido": "PSOL", "votos": 76, "material": false}, {"escola": "EE. Diretor Ricardo Genesio da Silva", "quebrada": "Osasco", "cargo": "Deputado Federal", "rank": 1, "numero": 2211, "candidato": "Lucas Pavanato", "partido": "PL", "votos": 314, "material": false}, {"escola": "EE. Diretor Ricardo Genesio da Silva", "quebrada": "Osasco", "cargo": "Deputado Federal", "rank": 2, "numero": 5070, "candidato": "Erika Hilton", "partido": "PSOL", "votos": 262, "material": false}, {"escola": "EE. Diretor Ricardo Genesio da Silva", "quebrada": "Osasco", "cargo": "Deputado Federal", "rank": 3, "numero": 2230, "candidato": "Pedro Sotero", "partido": "PL", "votos": 178, "material": false}, {"escola": "EE. Diretor Ricardo Genesio da Silva", "quebrada": "Osasco", "cargo": "Deputado Federal", "rank": 4, "numero": 1032, "candidato": "Eder B2", "partido": "REPUBLICANOS", "votos": 124, "material": false}, {"escola": "EE. Diretor Ricardo Genesio da Silva", "quebrada": "Osasco", "cargo": "Deputado Federal", "rank": 5, "numero": 4021, "candidato": "Julião Soares", "partido": "PSB", "votos": 99, "material": false}];
+  var COLORS = { 'Deputado Estadual': '#1d4ed8', 'Deputado Federal': '#b45309' };
+
+  var escolaSelect = document.getElementById('sm-escola');
+  var built = false;
+
+  function escolaKey(r) { return r.quebrada + ' — ' + r.escola; }
+
+  function barColorFor(cargo) { return COLORS[cargo] || '#1d4ed8'; }
+
+  function renderBars(containerId, rows) {
+    var el = document.getElementById(containerId);
+    el.innerHTML = '';
+    if (!rows.length) {
+      el.innerHTML = '<p style="font-size:13px;color:#555">Sem dados.</p>';
+      return;
+    }
+    var maxVotos = rows[0].votos || 1;
+    rows.forEach(function (r) {
+      var row = document.createElement('div');
+      row.className = 'sm-bar-row';
+
+      var label = document.createElement('div');
+      label.className = 'sm-bar-label';
+      var nameWrap = document.createElement('span');
+      nameWrap.className = 'sm-bar-name-wrap';
+      var name = document.createElement('span');
+      name.className = 'sm-bar-name';
+      name.textContent = r.candidato + ' (' + r.partido + ')';
+      nameWrap.appendChild(name);
+      if (r.material) {
+        var flag = document.createElement('span');
+        flag.className = 'sm-flag';
+        flag.textContent = 'material';
+        nameWrap.appendChild(flag);
+      }
+      var votos = document.createElement('span');
+      votos.className = 'sm-bar-votos';
+      votos.textContent = r.votos.toLocaleString('pt-BR');
+      label.appendChild(nameWrap);
+      label.appendChild(votos);
+
+      var track = document.createElement('div');
+      track.className = 'sm-bar-track';
+      var fill = document.createElement('div');
+      fill.className = 'sm-bar-fill';
+      var pct = Math.max(4, Math.round((r.votos / maxVotos) * 100));
+      fill.style.width = pct + '%';
+      fill.style.background = barColorFor(r.cargo);
+      track.appendChild(fill);
+
+      row.appendChild(label);
+      row.appendChild(track);
+      el.appendChild(row);
+    });
+  }
+
+  function renderForEscola(escola, allRows) {
+    var rowsFor = function (cargo) {
+      return allRows
+        .filter(function (r) { return escolaKey(r) === escola && r.cargo === cargo; })
+        .sort(function (a, b) { return a.rank - b.rank; });
+    };
+    var estadual = rowsFor('Deputado Estadual');
+    var federal = rowsFor('Deputado Federal');
+    renderBars('sm-chart-estadual', estadual);
+    renderBars('sm-chart-federal', federal);
+
+    var escolaLabel = estadual.length ? estadual[0].escola : (federal.length ? federal[0].escola : escola);
+    document.getElementById('sm-sub-estadual').textContent = escolaLabel;
+    document.getElementById('sm-sub-federal').textContent = escolaLabel;
+  }
+
+  function renderWinnersTable(rows) {
+    var tbody = document.querySelector('#sm-winners tbody');
+    tbody.innerHTML = '';
+    var sorted = rows.slice().sort(function (a, b) {
+      if (a.quebrada !== b.quebrada) return a.quebrada.localeCompare(b.quebrada, 'pt-BR');
+      if (a.escola !== b.escola) return a.escola.localeCompare(b.escola, 'pt-BR');
+      return a.cargo.localeCompare(b.cargo, 'pt-BR');
+    });
+    sorted.forEach(function (r) {
+      var tr = document.createElement('tr');
+      var cells = [r.quebrada, r.escola, r.cargo, r.candidato, r.partido];
+      cells.forEach(function (v) {
+        var td = document.createElement('td');
+        td.textContent = v;
+        tr.appendChild(td);
+      });
+      var tdVotos = document.createElement('td');
+      tdVotos.className = 'sm-votos';
+      tdVotos.textContent = r.votos.toLocaleString('pt-BR');
+      tr.appendChild(tdVotos);
+      var tdMaterial = document.createElement('td');
+      tdMaterial.textContent = r.material ? 'Sim' : 'Não';
+      tr.appendChild(tdMaterial);
+      tbody.appendChild(tr);
+    });
+  }
+
+  var winners = ROWS.filter(function (r) { return r.rank === 1; });
+
+  var escolas = Array.from(new Set(ROWS.map(escolaKey))).sort(function (a, b) {
+    return a.localeCompare(b, 'pt-BR');
+  });
+  escolaSelect.innerHTML = '';
+  escolas.forEach(function (e) {
+    var opt = document.createElement('option');
+    opt.value = e;
+    opt.textContent = e;
+    escolaSelect.appendChild(opt);
+  });
+  escolaSelect.addEventListener('change', function () {
+    renderForEscola(escolaSelect.value, ROWS);
+  });
+  renderForEscola(escolas[0], ROWS);
+  renderWinnersTable(winners);
+})();
+</script>
+</body>
+</html>
